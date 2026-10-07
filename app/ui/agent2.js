@@ -7,6 +7,8 @@ AG_TOOLS.push(...[
  ['get_today','وش عند المستخدم اليوم: المنشورات المجدولة والمتأخرة، البث، تسليمات الشراكات، تجهيز المواسم، مهامه الشخصية، وسنابات اليوم.',P({})],
  ['add_todo','يضيف مهمة لقائمة مهام اليوم.',P({text:str('المهمة')},['text'])],
  ['search_footage','يبحث داخل كلام المستخدم في تسجيلاته وبثوثه القديمة (أرشيف تسجيلاتي) ويرجع الفيديو والدقيقة والجملة. استخدمه لما يسأل «وين قلت…» أو يبي مقطع قال فيه شي.',P({query:str('الكلمة أو الجملة'),limit:num('عدد الفيديوهات، الافتراضي 6')},['query'])],
+ ['get_snap_story','يعرض ستوري سناب ليوم معين وسناباته وكم منها انتشر.',P({date:str('YYYY-MM-DD، الافتراضي اليوم')})],
+ ['save_snap_story','يحفظ ستوري سناب ليوم (6-10 سنابات متسلسلة باللهجة السعودية). إذا فيه ستوري لنفس اليوم يضيف السنابات بعدها إلا لو replace=true.',P({date:str('YYYY-MM-DD، الافتراضي اليوم'),title:str('موضوع الستوري'),replace:{type:'boolean'},frames:{type:'array',items:{type:'object',properties:{type:str('video|photo|text|q|poll|link'),text:str('الكلام على الشاشة، قصير'),notes:str('وش أصوّر أو أقول'),dur:num('ثواني'),a:str('خيار التصويت الأول'),b:str('خيار التصويت الثاني'),url:str('للرابط')}}}},['frames'])],
  ['get_money_summary','ملخص الدخل والمصاريف لهالشهر واللي قبله، والمبالغ اللي ما وصلت من الشراكات.',P({})],
 ].map(([name,description,parameters])=>({type:'function',function:{name,description,parameters}})));
 {const _r=agRun;agRun=function(name,a){a=a||{};
@@ -26,4 +28,11 @@ AG_TOOLS.push(...[
   if(name==='search_footage'){if(typeof footageSearch!=='function')return {error:'الأرشيف مو متوفر'};const q=String(a.query||'').trim();if(!q)return {error:'اكتب وش تدور'};
     return footageSearch(q,Math.min(+a.limit||6,10)).then(r=>{if(r==null)return {error:'الأرشيف يحتاج تحديث البرنامج أو ما فيه تسجيلات مفهرسة'};
       return {query:q,videos:r.map(v=>({name:v.name,date:v.date,matches:v.count,hits:(v.hits||[]).slice(0,4).map(h=>({at:h.at,text:h.text}))})),_ui:{t:r.length?'لقيت «'+q+'» في '+r.length+' فيديو':'ما لقيت «'+q+'» بتسجيلاتك',go:'go:footage'}}})}
+  if(name==='get_snap_story'){if(typeof snStory!=='function')return {error:'سناب مو متوفر'};const d=/^\d{4}-\d{2}-\d{2}$/.test(a.date||'')?a.date:ymd(new Date()),st=snStory(d);
+    return st?{date:d,title:st.title,frames:(st.frames||[]).map(f=>({type:f.type,text:f.text,notes:f.notes,dur:f.dur,done:!!f.done}))}:{date:d,note:'ما فيه ستوري لهاليوم'}}
+  if(name==='save_snap_story'){if(typeof snStory!=='function')return {error:'سناب مو متوفر'};const d=/^\d{4}-\d{2}-\d{2}$/.test(a.date||'')?a.date:ymd(new Date());
+    const fr=(Array.isArray(a.frames)?a.frames:[]).filter(f=>f&&typeof f==='object').slice(0,12).map(f=>{const type=snType(f.type);return {id:uid(),type,text:String(f.text||'').trim().slice(0,140),notes:String(f.notes||'').trim().slice(0,240),dur:Math.max(1,Math.min(60,Math.round(+f.dur)||SN_T[type][2])),a:type==='poll'?String(f.a||'').slice(0,40):'',b:type==='poll'?String(f.b||'').slice(0,40):'',url:type==='link'?String(f.url||'').slice(0,300):'',done:false}});
+    if(!fr.length)return {error:'ما فيه سنابات'};const st=snStory(d)||{date:d,title:'',frames:[]};
+    st.title=String(a.title||st.title||'').slice(0,80);st.frames=a.replace?fr:[...(st.frames||[]),...fr];put('snaps',st,true);render(true);
+    return {ok:true,date:d,count:st.frames.length,_ui:{t:`رتّبت ستوري سناب (${fr.length} سنابات)`,go:'go:snap'}}}
   return _r(name,a)}}
