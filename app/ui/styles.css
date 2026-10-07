@@ -899,3 +899,4 @@ input[dir="ltr"]::placeholder,input.ltr::placeholder{direction:rtl;text-align:ri
 .ks-k{display:inline-flex;gap:4px;direction:ltr}
 .ks kbd{font:600 .74rem/1 var(--mono,ui-monospace,monospace);padding:4px 7px;border-radius:6px;border:1px solid var(--line);border-bottom-width:2px;background:var(--bg);color:var(--text);min-width:22px;text-align:center}
 .ks-w{font-size:.76rem;color:var(--muted);align-self:center}
+.rep-strip2{margin-top:10px}
