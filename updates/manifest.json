@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.5.0",
-    "notes": "ترجمة متحركة للمقاطع بالعربي وتصميم أنظف",
+    "version": "2.6.0",
+    "notes": "شاشة ترحيب، خطواتك الأولى، إصلاحات كثيرة وتحسينات بالتصميم",
     "minShell": "2.5.0",
     "files": [
       {
@@ -11,8 +11,8 @@
       },
       {
         "path": "app.js",
-        "sha256": "ff090c7f37dab949f80ddc5be588133f39be00567bbc9cdd40b36c9e5bcbf8c2",
-        "size": 109810
+        "sha256": "9357a1eba679469b6fa8ffe787631244f551bdf7a16b27cc174cb6934e7f88d2",
+        "size": 111467
       },
       {
         "path": "capui.js",
@@ -21,8 +21,8 @@
       },
       {
         "path": "clips.js",
-        "sha256": "e2ca09840de8e4b6ee89b08dc283b5eb545b9cce0747b640a9c27af5880bf6c9",
-        "size": 24248
+        "sha256": "7246971f198c928b3f390543c98c04eb40e25f61ef4fdf59494db4080b4eed0e",
+        "size": 24280
       },
       {
         "path": "fonts/f0.woff2",
@@ -161,35 +161,40 @@
       },
       {
         "path": "growth.js",
-        "sha256": "d14fa4138b777626a32bc5f82fd38a0e08b2c5968b74d2803c24186b46986fb7",
-        "size": 53460
+        "sha256": "942dcebf4659c13ebc89a66199dfb29802bfe159655ab6a6af0b4178878e26e1",
+        "size": 53844
       },
       {
         "path": "index.html",
-        "sha256": "28d15374dd1b66e0fbd6900624b8f1fbf660d18c131e0af3c48950ebedbf3ca3",
-        "size": 1535
+        "sha256": "9a04d52466be80eabc017eba812ad42924087718d23c3266817ef79cbf5e4f65",
+        "size": 1569
+      },
+      {
+        "path": "polish.js",
+        "sha256": "5f94972a7ff7d75854b473ab36a289d17b3f88a0c2e0c83e1d54312191a2cfc9",
+        "size": 17944
       },
       {
         "path": "studies.js",
-        "sha256": "56b2463a305597cd8c6d066249617e12fc3e88208e1ee41ade3efcd1ffac8863",
-        "size": 61438
+        "sha256": "91b21956408738c94e71b3c5f885beb5ed8fac93ad5a7ce06bef016d5e39a430",
+        "size": 61574
       },
       {
         "path": "styles.css",
-        "sha256": "0f19ba78fde3f94ae4982204aa48ee4cbedc3e61666331e72f21f0159962b4af",
-        "size": 55173
+        "sha256": "eee0774d508b7959403c0e31c7fabaa1826b0ec1af204b40ea03cc6ef84dfa58",
+        "size": 63906
       },
       {
         "path": "videos.js",
-        "sha256": "27856a1fb401cf79512d39d38a2fb618789c26247027fbd1b226d58e2b486470",
-        "size": 28383
+        "sha256": "1ed7880381a3e90e5d4865d1e8d5770ac58dd10ad9940a29f997b8538c519b43",
+        "size": 28380
       }
     ]
   },
   "shell": {
-    "version": "2.5.0",
-    "url": "https://raw.githubusercontent.com/onzqa7/conent-porject/main/updates/shell/content-studio-2.5.0.zip",
-    "sha256": "cb4c21335440cefc143379bdd25b0cfa50632214f5192b194023f94150865ccc",
-    "notes": "ترجمة متحركة للمقاطع بالعربي (تشتغل على جهازك) وتصميم أنظف"
+    "version": "2.6.0",
+    "url": "https://raw.githubusercontent.com/onzqa7/conent-porject/main/updates/shell/content-studio-2.6.0.zip",
+    "sha256": "08b8bad14b4ee768194233c786f1004535a5bfff12a004131ff81659a5349a94",
+    "notes": "تحسين دقة الترجمة المتحركة وصيغة التاريخ"
   }
 }

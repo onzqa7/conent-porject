@@ -103,3 +103,14 @@ function streamStats(){const n=new Date(),ms=new Date(n.getFullYear(),n.getMonth
   const ids=S.ideas.filter(i=>i.status!=='done').sort((a,b)=>({approved:0,new:1,study:2,later:3}[a.status]??4)-({approved:0,new:1,study:2,later:3}[b.status]??4)).slice(0,5);if(!ids.length)return;
   const box=document.createElement('div');box.className='wseed';box.innerHTML=`<span class="small faint">ابدأ من فكرة:</span>${ids.map(i=>`<button type="button" class="chipbtn" data-wseed="${i.id}">${I.bulb}${esc(i.title.slice(0,40))}</button>`).join('')}`;t.closest('label').after(box)}}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-wseed]');if(!b)return;const i=find('ideas',b.dataset.wseed);if(!i)return;readWriter();ui.writer.topic=[i.title,i.description].filter(Boolean).join('\n');if(i.platform&&PLATFORMS[i.platform])ui.writer.platform=i.platform;render(true)});
+
+/* keyboard access: clickable cards act like buttons, search box opens on Enter, Tab stays inside dialogs */
+const KSEL='[data-act]:not(button):not(a):not(input):not(select):not(textarea):not(label):not(form)';
+{const _dr=doRender;doRender=function(){_dr();$$('#view '+KSEL).forEach(el=>{if(!el.hasAttribute('tabindex'))el.tabIndex=0;if(!el.getAttribute('role'))el.setAttribute('role','button')})}}
+document.addEventListener('keydown',e=>{
+  if((e.key==='Enter'||e.key===' ')&&!e.ctrlKey&&!e.altKey){const t=e.target;
+    if(t.id==='searchBtn'){e.preventDefault();openPalette();return}
+    if(t.matches&&t.matches(KSEL)&&!/INPUT|TEXTAREA|SELECT/.test(t.tagName)){e.preventDefault();t.click();return}}
+  if(e.key==='Tab'){const root=ob?$('#ob-root'):$('#modal-root').innerHTML?$('#modal-root'):null;if(!root)return;
+    const f=$$('button:not([disabled]),[href],input:not([type=hidden]):not([disabled]),select,textarea,[tabindex]:not([tabindex="-1"])',root).filter(x=>x.offsetParent!==null);if(!f.length)return;
+    const a=f[0],z=f[f.length-1];if(!root.contains(document.activeElement)){e.preventDefault();a.focus()}else if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus()}}});

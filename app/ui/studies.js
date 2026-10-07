@@ -265,7 +265,7 @@ function viewsChart(rows,days){const daily=days&&days<=30;const key=d=>daily?ymd
   if(daily){for(let i=days-1;i>=0;i--)m.set(ymd(new Date(+startDay(new Date())-i*DAY)),0)}
   rows.forEach(r=>{const k=key(pd(r.date));m.set(k,(m.get(k)||0)+(+r.views||0))});
   const e=[...m.entries()].sort((a,b)=>a[0]<b[0]?-1:1).slice(-60);const mx=Math.max(1,...e.map(x=>x[1]));const W=640,H=200,bw=W/e.length;
-  const ticks=[0,.5,1].map(f=>`<line x1="0" x2="${W}" y1="${H-f*H*0.92}" y2="${H-f*H*0.92}" class="gl"/><text x="2" y="${H-f*H*0.92-4}" class="tk" text-anchor="start">${nf(mx*f)}</text>`).join('');
+  const ticks=[0,.5,1].map(f=>`<line x1="0" x2="${W}" y1="${H-f*H*0.92}" y2="${H-f*H*0.92}" class="gl"/><text x="2" y="${H-f*H*0.92-4}" class="tk" text-anchor="start" direction="ltr">${nf(mx*f)}</text>`).join('');
   const bars=e.map(([k,v],i)=>{const h=v/mx*H*0.92;const d=new Date(k);return `<rect x="${i*bw+bw*0.15}" y="${H-h}" width="${Math.max(1,bw*0.7)}" height="${Math.max(0,h)}" rx="2" class="b"><title>${fmt(d,{day:'numeric',month:'short'})}: ${nfull(v)}</title></rect>`}).join('');
   const lbl=e.map(([k],i)=>i%Math.ceil(e.length/6)===0?`<text x="${i*bw+bw/2}" y="${H+16}" class="tk" text-anchor="middle">${fmt(new Date(k),{day:'numeric',month:'short'})}</text>`:'').join('');
   return `<svg class="vchart" viewBox="0 0 ${W} ${H+22}" preserveAspectRatio="none" role="img" aria-label="المشاهدات">${ticks}${bars}${lbl}</svg>`}
@@ -359,7 +359,7 @@ document.addEventListener('click',async e=>{
 document.addEventListener('change',async e=>{const t=e.target;if(t.id==='csvFile'&&t.files[0]){const f=t.files[0];const txt=await f.text();t.value='';openCsv(txt,f.name)}});
 document.addEventListener('submit',e=>{const f=e.target;
   if(f.id==='studyForm'){e.preventDefault();const inp=readStudyForm();runStudy(ui.study.type,inp,curStudy()&&curStudy().status==='failed'?curStudy():null)}
-  else if(f.id==='perfForm'){e.preventDefault();const fd=new FormData(f);const r=ed;Object.assign(r,{title:fd.get('title').trim(),platform:fd.get('platform'),format:fd.get('format'),date:fd.get('date')||toInput(new Date())});MKEYS.forEach(([k])=>r[k]=+fd.get(k)||0);put('perf',r,true);closeModal();toast('انحفظت النتيجة');render(true)}
+  else if(f.id==='perfForm'){e.preventDefault();const fd=new FormData(f);const r=ed;if(!MKEYS.some(([k])=>+fd.get(k))){toast('اكتب رقم وحد على الأقل، مثل المشاهدات');return}Object.assign(r,{title:fd.get('title').trim(),platform:fd.get('platform'),format:fd.get('format'),date:fd.get('date')||toInput(new Date())});MKEYS.forEach(([k])=>r[k]=+fd.get(k)||0);put('perf',r,true);closeModal();toast('انحفظت النتيجة');render(true)}
   else if(f.id==='csvForm'){e.preventDefault();const fd=new FormData(f);doCsv(fd.get('platform'),fd.get('format'))}
   else if(f.id==='sChatForm'){e.preventDefault();const v=$('#sChatIn').value;askStudy(v)}
 });

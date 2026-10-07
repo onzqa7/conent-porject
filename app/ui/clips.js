@@ -21,7 +21,7 @@ function vClips(){
 function vClipsHome(){
   const o=ui.clipsOpt;const projs=[...S.clips].sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
   return `<div class="head"><div><div class="eyebrow">جديد</div><h1>استوديو المقاطع</h1><p class="sub">ارفع فيديو أو تسجيل بث، ويحلل البرنامج الصوت والمشاهد ويطلع أقوى اللحظات، وبعدها Claude يشاهدها ويقيّمها ويكتب لها عنوان وكابشن. تصدّرها بضغطة جاهزة للتيك توك والريلز والشورتس.</p></div></div>
-  <div class="drop" id="dropZone"><div class="ic">${I.film}</div><h2>اسحب الفيديو هنا</h2><p class="muted">MP4، MOV، MKV، WEBM… حتى تسجيلات البث الطويلة</p>
+  <div class="drop" id="dropZone"><div class="ic">${I.film}</div><h2>اسحب الفيديو هنا</h2><p class="muted">يدعم <bdi dir="ltr">MP4 · MOV · MKV · WEBM</bdi>، حتى تسجيلات البث الطويلة</p>
    <button class="btn primary lg" data-cact="pick">${I.upload} اختر فيديو من جهازك</button>
    <div class="opts">
     <label class="f">طول اللقطة<select id="co-len">${[15,20,30,45,60,90].map(x=>`<option value="${x}" ${+o.clipLen===x?'selected':''}>${x} ثانية</option>`).join('')}</select></label>

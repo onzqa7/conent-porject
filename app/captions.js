@@ -83,7 +83,7 @@ async function transcribe({ file, start, end, model = 'best', language = 'ar', e
       const onData = d => {
         const s = d.toString(); err = (err + s).slice(-6000);
         const m = s.match(/progress\s*=\s*(\d+)%/g);
-        if (m) onProgress(0.05 + 0.95 * (+m[m.length - 1].replace(/\D/g, '')) / 100, 'whisper');
+        if (m) onProgress(0.05 + 0.95 * Math.min(100, +m[m.length - 1].replace(/\D/g, '')) / 100, 'whisper');
       };
       p.stderr.on('data', onData); p.stdout.on('data', onData);
       p.on('error', e => { running.delete(p); reject(e.code === 'ENOENT' ? new Error('أداة التفريغ مو موجودة في البرنامج') : e); });
@@ -99,8 +99,13 @@ async function transcribe({ file, start, end, model = 'best', language = 'ar', e
     for (const seg of json.transcription || []) {
       const w = String(seg.text || '').replace(/\[[^\]]*\]|\([^)]*\)/g, '').trim();
       if (!w) continue;
-      const s = start + (seg.offsets ? seg.offsets.from : 0) / 1000, e = start + (seg.offsets ? seg.offsets.to : 0) / 1000;
-      if (PUNCT.test(w) && words.length) { words[words.length - 1].w += w; words[words.length - 1].e = Math.max(words[words.length - 1].e, e); continue; }
+      const s = start + (seg.offsets ? seg.offsets.from : 0) / 1000, e = Math.min(end ?? Infinity, start + (seg.offsets ? seg.offsets.to : 0) / 1000);
+      if (end != null && s >= end) break;
+      if (PUNCT.test(w)) {
+        // a lone quote/bracket can open the next word as easily as close the last one, so drop it; drop leading punctuation too
+        if (words.length && !/^["'«»()]+$/.test(w)) { words[words.length - 1].w += w; words[words.length - 1].e = Math.max(words[words.length - 1].e, e); }
+        continue;
+      }
       words.push({ s: +s.toFixed(2), e: +Math.max(e, s + 0.08).toFixed(2), w });
     }
     onProgress(1, 'done');

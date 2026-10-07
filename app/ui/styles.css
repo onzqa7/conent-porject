@@ -723,3 +723,20 @@ h2{font-size:1.05rem}
 .wseed{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:-4px}
 .wseed .chipbtn{display:inline-flex;align-items:center;gap:5px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .wseed .chipbtn svg{width:13px;height:13px;flex:none;color:var(--accent-text)}
+
+/* ===== v2.6 audit fixes ===== */
+:root[data-theme="light"]{--faint:#687183}
+table.ptable{display:table;width:100%;max-height:none;border-collapse:collapse}
+.rvtable th,.rvtable td{padding:9px 12px;text-align:start;border-top:1px solid var(--line);white-space:nowrap}
+.rvtable th{font-size:.78rem;color:var(--muted);font-weight:600;background:var(--raised);border-top:0}
+.heat{grid-template-columns:54px repeat(8,minmax(0,1fr));font-size:.6rem}
+.heat .hl{overflow:visible;letter-spacing:-.02em}
+.modal header{position:sticky;top:-40px;background:var(--surface);z-index:3;border-radius:18px 18px 0 0}
+.modal footer{position:sticky;bottom:-40px;background:var(--surface);z-index:3;border-radius:0 0 18px 18px}
+input[dir="ltr"]::placeholder,input.ltr::placeholder{direction:rtl;text-align:right}
+.board{scrollbar-width:thin}.board::-webkit-scrollbar-thumb{background-color:var(--line2)}
+[data-act]:not(button):not(a):not(input):not(select):not(textarea):focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.voicep .f+.row{margin-top:12px}.voicep{display:flex;flex-direction:column;gap:10px}
+.fontpick b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:1100px){.app{grid-template-columns:200px minmax(0,1fr)}.brand span{display:none}.ev .tm,.ev time{display:none}}
+.pick span{display:inline-flex;align-items:center;gap:6px}.pick span svg{width:15px;height:15px;flex:none}

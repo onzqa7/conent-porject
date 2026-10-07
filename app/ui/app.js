@@ -7,6 +7,7 @@ const uid=()=>'i'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 const LOC='ar-SA-u-ca-gregory-nu-latn';
 const fmt=(d,o)=>new Intl.DateTimeFormat(LOC,o).format(d);
 const hijri=d=>{try{return new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura-nu-latn',{day:'numeric',month:'long',year:'numeric'}).format(d)}catch(e){return ''}};
+const normAr=s=>String(s||'').toLowerCase().replace(/[\u064B-\u0652\u0640]/g,'').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي');
 const pad=n=>String(n).padStart(2,'0');
 const ymd=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 const toInput=d=>`${ymd(d)}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
@@ -164,7 +165,7 @@ const sys=()=>`أنت مستشار محتوى ومدير سوشل ميديا م�
 function aiErr(e){const c=e&&e.code;if(c==='cancelled')return;toast(c==='auth'?'مفتاح Claude غير صحيح، حدّثه من الإعدادات':c==='offline'?'ما فيه اتصال بالإنترنت':c==='not_granted'?'لازم تسمح للمساعد الذكي من نافذة الأذونات':c==='rate_limited'?'طلبات كثيرة، انتظر شوي وجرّب':c==='refused'?'المساعد اعتذر عن هذا الطلب':'المساعد ما رد، جرّب مرة ثانية')}
 async function aiText(task,onText,tier){if(!sample)throw {code:'not_granted'};return (await sample([{role:'user',content:sys()+'\n\nالمطلوب:\n'+task}],{onText,modelTier:tier||'default',cache:false})).text}
 async function aiJSON(task,shape,tier){if(!sample)throw {code:'not_granted'};return await sample.json([{role:'user',content:sys()+'\n\nالمطلوب:\n'+task+'\n\nأرجع JSON فقط بهذا الشكل بالضبط بدون أي شرح:\n'+shape}],{modelTier:tier||'default'})}
-const noAiNote=()=>window.desktop?'<p class="note" style="margin-top:12px">المساعد الذكي يحتاج مفتاح Claude. أضفه من <button class="btn sm" data-act="go" data-v="settings">الإعدادات</button>.</p>':'<p class="note" style="margin-top:12px">المساعد الذكي يشتغل لما تفتح الصفحة من حسابك في Claude.</p>';
+const noAiNote=()=>window.desktop?'<p class="note" style="margin-top:12px">المساعد الذكي يحتاج مفتاح Claude. أضفه من <button type="button" class="btn sm" data-act="go" data-v="settings">الإعدادات</button>.</p>':'<p class="note" style="margin-top:12px">المساعد الذكي يشتغل لما تفتح الصفحة من حسابك في Claude.</p>';
 const aiBtn=(act,label,extra='')=>`<button class="btn ai" data-act="${act}" ${extra} ${sample?'':`disabled title="${window.desktop?'أضف مفتاح Claude من الإعدادات':'المساعد الذكي غير متاح في هذا العرض'}"`}>${label}</button>`;
 function md(t){const L=esc(t).split('\n');let h='',lt=null;const close=()=>{if(lt){h+=`</${lt}>`;lt=null}};const inl=s=>s.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
 for(const l of L){let m;if(m=l.match(/^\s*[-•*]\s+(.*)/)){if(lt!=='ul'){close();h+='<ul>';lt='ul'}h+=`<li>${inl(m[1])}</li>`;continue}
@@ -247,7 +248,7 @@ function vCal(){
   S.streams.forEach(s=>{const d=pd(s.date);if(d&&(ui.pf==='all'||s.platform===ui.pf))(byDay[ymd(d)]=byDay[ymd(d)]||[]).push({...s,k:'stream'})});
   const days=['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
   let cells='';for(let i=0;i<42;i++){const d=new Date(start);d.setDate(start.getDate()+i);const key=ymd(d),its=(byDay[key]||[]).sort(byDate);
-    cells+=`<div class="cell ${d.getMonth()!==m.getMonth()?'out':''} ${key===today?'today':''}" data-day="${key}" data-act="dayAdd"><span class="d">${d.getDate()}</span>${its.slice(0,4).map(x=>x.k==='stream'?`<div class="ev stream" data-act="openStream" data-id="${x.id}" title="${esc(x.title)}">● ${esc(x.title)}</div>`:`<div class="ev ${x.status==='published'?'published':''}" draggable="true" data-drag="${x.id}" data-act="editPost" data-id="${x.id}" style="--pc:${PL((x.platforms||[])[0]).c};border-inline-start-color:var(--pc)" title="${esc(x.title)}">${fmt(pd(x.date),{hour:'numeric',minute:'2-digit'})} ${esc(x.title||'بدون عنوان')}</div>`).join('')}${its.length>4?`<span class="more">+${its.length-4} أكثر</span>`:''}</div>`}
+    cells+=`<div class="cell ${d.getMonth()!==m.getMonth()?'out':''} ${key===today?'today':''}" data-day="${key}" data-act="dayAdd"><span class="d">${d.getDate()}</span>${its.slice(0,4).map(x=>x.k==='stream'?`<div class="ev stream" data-act="openStream" data-id="${x.id}" title="${esc(x.title)}">● ${esc(x.title)}</div>`:`<div class="ev ${x.status==='published'?'published':''}" draggable="true" data-drag="${x.id}" data-act="editPost" data-id="${x.id}" style="--pc:${PL((x.platforms||[])[0]).c};border-inline-start-color:var(--pc)" title="${esc(x.title)}"><span class="tm">${fmt(pd(x.date),{hour:'numeric',minute:'2-digit'})}</span> ${esc(x.title||'بدون عنوان')}</div>`).join('')}${its.length>4?`<span class="more">+${its.length-4} أكثر</span>`:''}</div>`}
   const noDate=fposts().filter(p=>!pd(p.date));
   return `<div class="ph" style="margin-bottom:12px"><div class="row"><button class="iconbtn" data-act="mon" data-d="-1" aria-label="الشهر السابق">${I.prev}</button><h2 style="min-width:150px;text-align:center">${fmt(m,{month:'long',year:'numeric'})}</h2><button class="iconbtn" data-act="mon" data-d="1" aria-label="الشهر التالي">${I.next}</button><button class="btn sm" data-act="mon" data-d="0">اليوم</button></div><span class="muted small">اضغط على يوم لإضافة منشور، واسحب المنشور لتغيير يومه.</span></div>
   <div class="cal">${days.map(d=>`<div class="dn">${d}</div>`).join('')}${cells}</div>
@@ -265,8 +266,13 @@ function vList(){
 
 /* ---------- modal ---------- */
 let modalClose=null;
-function openModal(html,wide,onClose){$('#modal-root').innerHTML=`<div class="scrim" data-scrim><div class="modal ${wide?'wide':''}" role="dialog" aria-modal="true">${html}</div></div>`;modalClose=onClose||null;setTimeout(()=>{const f=$('#modal-root [autofocus]')||$('#modal-root input,#modal-root textarea');f&&f.focus()},30)}
-function closeModal(){if(modalClose)modalClose();modalClose=null;$('#modal-root').innerHTML='';if(pending)render()}
+function openModal(html,wide,onClose){if(!$('#modal-root').innerHTML)modalOpener=document.activeElement;modalDirty=false;$('#modal-root').innerHTML=`<div class="scrim" data-scrim><div class="modal ${wide?'wide':''}" role="dialog" aria-modal="true">${html}</div></div>`;modalClose=onClose||null;setTimeout(()=>{const f=$('#modal-root [autofocus]')||$('#modal-root input,#modal-root textarea');f&&f.focus()},30)}
+function closeModal(){if(modalClose)modalClose();modalClose=null;modalDirty=false;$('#modal-root').innerHTML='';if(pending)render();const o=modalOpener;modalOpener=null;if(o&&o.isConnected&&o.focus)o.focus()}
+let modalOpener=null,modalDirty=false,scrimDown=false,escArm={};
+document.addEventListener('mousedown',e=>{scrimDown=!!e.target.matches?.('[data-scrim]')},true);
+document.addEventListener('input',e=>{if(e.target.closest?.('#modal-root .modal'))modalDirty=true},true);
+function armEsc(k,msg){const now=Date.now();if(escArm[k]&&now-escArm[k]<3000){escArm[k]=0;return true}escArm[k]=now;toast(msg);return false}
+function requestClose(){if(modalDirty&&!$('#modal-root .palette')&&!armEsc('modal','عندك تعديلات ما انحفظت. اضغط مرة ثانية عشان تقفل بدون حفظ'))return;closeModal()}
 const mhead=t=>`<header><h2>${t}</h2><button class="iconbtn" data-act="closeModal" aria-label="إغلاق">${I.x}</button></header>`;
 
 /* post editor */
@@ -363,7 +369,7 @@ function vWriter(){
     <button class="btn primary ai" type="submit" ${sample&&!w.busy?'':'disabled'}>${w.busy?'يكتب…':'اكتب'}</button>
     ${!sample?noAiNote():''}
    </form></section>
-   <section class="panel" style="display:flex;flex-direction:column;gap:12px"><div class="ph"><h2>${w.editingId?'تعديل: '+esc(find('scripts',w.editingId)?.title||''):'الناتج'}</h2><div class="row"><button class="btn sm" data-act="wCopy">${I.copy} انسخ</button><button class="btn sm" data-act="wToPost">حوّل لمنشور</button><button class="btn sm primary" data-act="wSave">${w.editingId?'حدّث':'احفظ في المكتبة'}</button></div></div>
+   <section class="panel" style="display:flex;flex-direction:column;gap:12px"><div class="ph"><h2>${w.editingId?'تعديل: '+esc(find('scripts',w.editingId)?.title||''):'الناتج'}</h2><div class="row"><button class="btn sm" data-act="wCopy">${I.copy} انسخ</button><button class="btn sm" data-act="wToPost">حوّل لمنشور</button><button class="btn sm primary" data-act="wSave">${w.editingId?'حدّث':'احفظ'}</button></div></div>
     ${w.busy?`<div class="out" id="wOut"><span class="thinking">يكتب…</span></div>`:`<textarea id="w-out" rows="18" style="min-height:420px" placeholder="الناتج يطلع هنا، وتقدر تعدّل عليه بحرية.">${esc(w.out)}</textarea>`}
     ${!w.busy&&w.out?`<div class="row">${aiBtn('wRefine','أقصر','data-how="اختصره للنصف مع الحفاظ على أقوى الأفكار"')}${aiBtn('wRefine','أطول وأعمق','data-how="وسّعه وأضف أمثلة وتفاصيل عملية"')}${aiBtn('wRefine','أخف دم','data-how="خلّه أخف دم وأقرب للجمهور مع الحفاظ على الفكرة"')}${aiBtn('wRefine','أكثر احترافية','data-how="خلّه أكثر احترافية ورصانة"')}</div>`:''}
    </section>
@@ -417,7 +423,7 @@ function vStreamEd(s){
     <div class="small muted">المجموع <b class="num" style="color:${tot>target?'var(--bad)':'var(--fg)'}">${tot}</b> من <span class="num">${target}</span> دقيقة ${tot>target?'· تجاوزت المدة':tot<target?`· باقي ${target-tot} دقيقة`:'· مضبوط'}</div>
     <div class="durbar"><div style="width:${Math.min(100,tot/target*100)}%;${tot>target?'background:var(--bad)':''}"></div></div>
     <div id="rundownBusy"></div>
-    <div class="segs" style="margin-top:14px" data-stream="${s.id}">${segs.map((g,i)=>{const st=acc;acc+=+g.min||0;return `<div class="segrow"><span class="tm">${mmss(st*60).replace(/:00$/,'')}</span>
+    <div class="segs" style="margin-top:14px" data-stream="${s.id}">${segs.map((g,i)=>{const st=acc;acc+=+g.min||0;return `<div class="segrow"><span class="tm" title="تبدأ بعد ${st} دقيقة">${st?`+${st} د`:'البداية'}</span>
      <div class="wide" style="min-width:0"><input type="text" data-seg="${i}" data-k="title" value="${esc(g.title)}" placeholder="اسم الفقرة"><textarea data-seg="${i}" data-k="points" placeholder="نقاط الحديث، كل نقطة بسطر">${esc(g.points)}</textarea></div>
      <label class="f" style="font-size:.75rem">دقائق<input type="number" min="1" data-seg="${i}" data-k="min" value="${+g.min||5}"></label>
      <label class="f" style="font-size:.75rem">النوع<select data-seg="${i}" data-k="type">${SEGTYPES.map(t=>`<option ${g.type===t?'selected':''}>${t}</option>`).join('')}</select></label>
@@ -461,7 +467,7 @@ async function sendChat(text){const c=ui.chat;if(!text.trim()||c.busy||!sample)r
 function spark(h){if(!h||h.length<2)return '';const v=h.map(x=>+x.n),mn=Math.min(...v),mx=Math.max(...v),W=240,H=46,r=mx-mn||1;const pts=v.map((y,i)=>[i/(v.length-1)*W,H-4-(y-mn)/r*(H-10)]);const d=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');const l=pts[pts.length-1];return `<svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true"><path d="${d} L${W} ${H} L0 ${H}Z" fill="var(--accent-soft)"/><path d="${d}" fill="none" stroke="var(--accent)" stroke-width="2" vector-effect="non-scaling-stroke"/><circle cx="${l[0]}" cy="${l[1]}" r="3" fill="var(--accent)"/></svg>`}
 function vAccounts(){
   return `<div class="head"><div><h1>الحسابات</h1><p class="sub">كل حساباتك، متابعينك، وأهدافك في مكان واحد.</p></div><button class="btn primary" data-act="newAccount">${I.plus} أضف حساب</button></div>
-  ${S.accounts.length?`<div class="grid g-auto">${S.accounts.map(a=>{const h=a.history||[],prev=h.length>1?+h[h.length-2].n:null,diff=prev!=null?(+a.followers||0)-prev:null,goal=+a.goal||0;return `<article class="panel acc"><div class="top"><div class="av" style="background:${PL(a.platform).c};${a.platform==='x'||a.platform==='threads'?'color:var(--bg)':''}">${esc(PL(a.platform).a)}</div><div style="min-width:0;flex:1"><h3>${esc(PL(a.platform).n)} ${exTag(a)}</h3><div class="small muted" style="overflow:hidden;text-overflow:ellipsis">@${esc(a.handle)}</div></div><button class="btn sm ghost" data-act="editAccount" data-id="${a.id}">تعديل</button></div>
+  ${S.accounts.length?`<div class="grid g-auto">${S.accounts.map(a=>{const h=a.history||[],prev=h.length>1?+h[h.length-2].n:null,diff=prev!=null?(+a.followers||0)-prev:null,goal=+a.goal||0;return `<article class="panel acc"><div class="top"><div class="av" style="background:${PL(a.platform).c};${a.platform==='x'||a.platform==='threads'?'color:var(--bg)':''}">${esc(PL(a.platform).a)}</div><div style="min-width:0;flex:1"><h3>${esc(PL(a.platform).n)} ${exTag(a)}</h3><div class="small muted" style="overflow:hidden;text-overflow:ellipsis">${a.handle?`<bdi dir="ltr">@${esc(a.handle)}</bdi>`:'بدون اسم مستخدم'}</div></div><button class="btn sm ghost" data-act="editAccount" data-id="${a.id}">تعديل</button></div>
     <div class="row" style="justify-content:space-between;align-items:flex-end"><div><div class="big">${nfull(a.followers)}</div><div class="small muted">متابع ${diff!=null?`<span style="color:${diff>=0?'var(--ok)':'var(--bad)'}" class="num">${diff>=0?'+':''}${nfull(diff)}</span> من آخر تحديث`:''}</div></div>
     <form class="row" data-folupd="${a.id}" style="flex-wrap:nowrap"><input type="number" min="0" placeholder="الرقم الجديد" style="width:120px" aria-label="تحديث المتابعين"><button class="btn sm">حدّث</button></form></div>
     ${spark(h)}
@@ -529,7 +535,7 @@ function curStream(){return find('streams',ui.streamId)}
 function saveStream(s,silent){put('streams',s,silent)}
 
 document.addEventListener('click',async e=>{
-  if(e.target.matches('[data-scrim]')){closeModal();return}
+  if(e.target.matches('[data-scrim]')){if(scrimDown)requestClose();return}
   const el=e.target.closest('[data-act]');if(!el)return;
   const a=el.dataset.act,id=el.dataset.id;
   if(el.tagName==='INPUT'&&el.type==='checkbox'&&a!=='ckToggle')return;
@@ -560,7 +566,7 @@ document.addEventListener('click',async e=>{
     case 'wNew':Object.assign(ui.writer,{topic:'',notes:'',out:'',editingId:null});render(true);break;
     case 'wOpen':{const s=find('scripts',id);Object.assign(ui.writer,{type:s.type||'points',topic:s.topic||'',platform:s.platform||'',out:s.body||'',editingId:s.id});render(true);$('#main').scrollTop=0;break}
     case 'wCopy':readWriter();copy(ui.writer.out);break;
-    case 'wSave':{readWriter();const w=ui.writer;if(!w.out.trim()){toast('ما فيه نص تحفظه');break}const old=w.editingId&&find('scripts',w.editingId);const s=put('scripts',{...(old||{}),type:w.type,topic:w.topic,platform:w.platform,title:(w.topic.split('\n')[0]||WTYPES[w.type].n).slice(0,80),body:w.out});w.editingId=s.id;toast('انحفظ في المكتبة');break}
+    case 'wSave':{readWriter();const w=ui.writer;if(!w.out.trim()){toast('ما فيه نص تحفظه');break}const old=w.editingId&&find('scripts',w.editingId);const s=put('scripts',{...(old||{}),type:w.type,topic:w.topic,platform:w.platform,title:(w.topic.split('\n')[0]||WTYPES[w.type].n).slice(0,80),body:w.out});w.editingId=s.id;toast('انحفظ في كتاباتك تحت');break}
     case 'wToPost':{readWriter();const w=ui.writer;openPost(null,{title:(w.topic.split('\n')[0]||'').slice(0,80),platforms:w.platform?[w.platform]:[],caption:w.out,status:'draft',format:w.type==='thread'?'ثريد':w.type==='long'?'فيديو طويل':w.type==='short'?'ريلز / مقطع قصير':'منشور نصي'});break}
     case 'wRefine':writerAI(el.dataset.how);break;
     case 'newStream':newStream();break;
@@ -604,7 +610,7 @@ document.addEventListener('click',async e=>{
     case 'clearEx':confirmBtn(el,'ex',()=>{COLS.forEach(c=>S[c]=S[c].filter(x=>!x.example));saveLocal();render(true);toast('انحذفت الأمثلة')});break;
   }
 });
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(live){endLive();return}if($('#modal-root').innerHTML)closeModal()}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){if($('.menu')){closeMenu();$('#createBtn')?.focus();return}if(live){if(armEsc('live','اضغط Esc مرة ثانية عشان تنهي البث'))endLive();return}if($('#modal-root').innerHTML)requestClose()}
   if(live&&(e.key===' '||e.key==='ArrowLeft')&&!/INPUT|TEXTAREA/.test(document.activeElement?.tagName)){e.preventDefault();document.querySelector('[data-act=liveNext]')?.click()}
   if(e.target.id==='chatIn'&&e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('#chatForm').requestSubmit()}});
 document.addEventListener('input',e=>{if(e.target.closest('#postForm'))updCounter()});
@@ -616,9 +622,9 @@ document.addEventListener('change',e=>{const t=e.target;
   if(t.id==='importFile'&&t.files[0]){const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);let n=0;COLS.forEach(c=>(d[c]||[]).forEach(x=>{if(x&&typeof x==='object'){put(c,{...x,id:x.id||uid()},true);n++}}));if(d.profile)putProfile(d.profile);render(true);toast(`استوردت ${n} عنصر`)}catch(err){toast('الملف مو نسخة احتياطية صالحة')}};r.readAsText(t.files[0])}
 });
 document.addEventListener('submit',e=>{e.preventDefault();const f=e.target;
-  if(f.id==='postForm'){const p=readPostForm();if(!p.title&&!p.caption){toast('اكتب عنوان أو نص');return}if(!p.platforms.length){toast('اختر منصة وحدة على الأقل');return}const isNew=!p.id;put('posts',p);closeModal();toast(isNew?'انضاف المنشور':'انحفظ')}
+  if(f.id==='postForm'){const p=readPostForm();if(!p.title&&!p.caption){toast('اكتب عنوان أو نص');return}if(!p.platforms.length){toast('اختر منصة وحدة على الأقل');return}if(p.status==='scheduled'&&!pd(p.date)){toast('المجدول يحتاج موعد');return}const isNew=!p.id;put('posts',p);closeModal();toast(isNew?'انضاف المنشور':'انحفظ')}
   else if(f.id==='ideaForm'){const i=readIdeaForm();if(!i.title){toast('اكتب الفكرة');return}put('ideas',i);closeModal();toast('انحفظت الفكرة')}
-  else if(f.id==='accForm'){const fd=new FormData(f);const a=ed;const nf2=+fd.get('followers')||0;Object.assign(a,{platform:fd.get('platform'),handle:fd.get('handle').trim().replace(/^@/,''),goal:+fd.get('goal')||'',weekly:+fd.get('weekly')||0,url:fd.get('url').trim(),notes:fd.get('notes')});if(nf2!==+a.followers||!a.history){a.history=[...(a.history||[]),{d:ymd(new Date()),n:nf2}].slice(-60)}a.followers=nf2;put('accounts',a);closeModal()}
+  else if(f.id==='accForm'){const fd=new FormData(f);const a=ed;if(!String(fd.get('handle')||'').trim().replace(/^@/,'')){toast('اكتب اسم المستخدم');f.querySelector('[name=handle]')?.focus();return}const nf2=+fd.get('followers')||0;Object.assign(a,{platform:fd.get('platform'),handle:fd.get('handle').trim().replace(/^@/,''),goal:+fd.get('goal')||'',weekly:+fd.get('weekly')||0,url:fd.get('url').trim(),notes:fd.get('notes')});if(nf2!==+a.followers||!a.history){a.history=[...(a.history||[]),{d:ymd(new Date()),n:nf2}].slice(-60)}a.followers=nf2;put('accounts',a);closeModal()}
   else if(f.id==='libForm'){const fd=new FormData(f);Object.assign(ed,{kind:fd.get('kind'),title:fd.get('title').trim()||'بدون عنوان',body:fd.get('body')});put('library',ed);closeModal()}
   else if(f.id==='profForm'){const fd=new FormData(f);putProfile(Object.fromEntries(fd.entries()));toast('انحفظ ملفك')}
   else if(f.id==='keyForm'){const k=$('#apiKey').value.trim();if(!k)return;window.desktop.setKey(k).then(r=>{if(r&&r.ok){sample=desktopSample();toast('انحفظ المفتاح، المساعد جاهز');render(true)}else toast((r&&r.error)||'المفتاح ما اشتغل، تأكد منه')})}
@@ -690,8 +696,8 @@ function paletteItems(){return [
   ...S.scripts.map(s=>['script:'+s.id,'كتابة: '+s.title,I.pen]),
 ]}
 let palSel=0;
-function openPalette(){$('#modal-root').innerHTML=`<div class="scrim" data-scrim><div class="palette" role="dialog" aria-label="بحث"><input type="text" id="palIn" placeholder="اكتب اسم منشور، فكرة، بث، أو أمر…" autocomplete="off"><ul id="palList" role="listbox"></ul></div></div>`;palSel=0;drawPalette();setTimeout(()=>$('#palIn').focus(),20)}
-function drawPalette(){const q=($('#palIn')?.value||'').trim();const items=paletteItems().filter(x=>!q||x[1].includes(q)).slice(0,40);palSel=Math.min(palSel,Math.max(0,items.length-1));$('#palList').innerHTML=items.length?items.map((x,i)=>`<li role="option" data-pal="${esc(x[0])}" aria-selected="${i===palSel}">${x[2]}<span>${esc(x[1])}</span></li>`).join(''):'<li class="muted">ما لقيت شي</li>'}
+function openPalette(){if($('#modal-root .modal'))return;if(!$('#modal-root').innerHTML)modalOpener=document.activeElement;$('#modal-root').innerHTML=`<div class="scrim" data-scrim><div class="palette" role="dialog" aria-label="بحث"><input type="text" id="palIn" placeholder="اكتب اسم منشور، فكرة، بث، أو أمر…" autocomplete="off"><ul id="palList" role="listbox"></ul></div></div>`;palSel=0;drawPalette();setTimeout(()=>$('#palIn').focus(),20)}
+function drawPalette(){const q=($('#palIn')?.value||'').trim();const items=paletteItems().filter(x=>!q||normAr(x[1]).includes(normAr(q))).slice(0,40);palSel=Math.min(palSel,Math.max(0,items.length-1));$('#palList').innerHTML=items.length?items.map((x,i)=>`<li role="option" data-pal="${esc(x[0])}" aria-selected="${i===palSel}">${x[2]}<span>${esc(x[1])}</span></li>`).join(''):'<li class="muted">ما لقيت شي</li>'}
 function runPalette(key){closeModal();const [k,v]=key.split(':');
   if(k==='go')go(v);else if(k==='post')openPost(v);else if(k==='idea')openIdea(v);else if(k==='stream'){ui.streamId=v;go('streams')}else if(k==='clip'){openProject(v)}else if(k==='study'){ui.study={type:find('studies',v)?.type,openId:v,form:{}};go('studies')}else if(k==='publish'){openPublish({})}else if(k==='newStudy'){ui.study={type:STUDY_TYPES[v]?v:null,openId:null,form:{}};go('studies')}else if(k==='script'){const s=find('scripts',v);Object.assign(ui.writer,{type:s.type||'points',topic:s.topic||'',platform:s.platform||'',out:s.body||'',editingId:s.id});go('writer')}
   else if(k==='repurpose')openRepurpose();else if(k==='newPost')openPost(null,{});else if(k==='newIdea')openIdea(null);else if(k==='newStream')newStream();else if(k==='clipsPick'){go('clips');clipsPick()}}
@@ -704,7 +710,7 @@ document.addEventListener('click',e=>{const li=e.target.closest('[data-pal]');if
   const m=e.target.closest('.menu button[data-mact]');if(m){const a=m.dataset.mact;closeMenu();runPalette(a);return}
   if(!e.target.closest('.menu')&&!e.target.closest('#createBtn'))closeMenu()},true);
 function closeMenu(){$('.menu')?.remove()}
-function openCreateMenu(btn){closeMenu();const r=btn.getBoundingClientRect();const m=document.createElement('div');m.className='menu';m.style.top=(r.bottom+6)+'px';m.style.right=(innerWidth-r.right)+'px';m.style.width=r.width+'px';
+function openCreateMenu(btn){if($('.menu')){closeMenu();return}const r=btn.getBoundingClientRect();const m=document.createElement('div');m.className='menu';m.style.top=(r.bottom+6)+'px';m.style.right=(innerWidth-r.right)+'px';m.style.width=r.width+'px';
   m.innerHTML=[['newPost','منشور',I.cal],['newIdea','فكرة',I.bulb],['newStream','بث',I.live],['publish','انشر لكل المنصات',I.send],['clipsPick','مقاطع من فيديو',I.cut],['go:studies','دراسة',I.flask],['go:writer','سكربت أو نقاط',I.pen]].map(x=>`<button data-mact="${x[0]}">${x[2]}${x[1]}</button>`).join('');document.body.appendChild(m)}
 
 /* ---------- boot ---------- */
