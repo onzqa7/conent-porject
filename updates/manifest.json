@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.3",
-    "notes": "الوكيل يرتّب لك ستوري سناب",
+    "version": "2.9.4",
+    "notes": "أوقات الصلاة بيومك وتنبيه لو المنشور على وقت أذان، والوكيل يرتّب ستوري سناب",
     "minShell": "2.5.0",
     "files": [
       {
@@ -226,8 +226,8 @@
       },
       {
         "path": "index.html",
-        "sha256": "ef4366f2a6a887b271b0d5b034bfc7a6912b87e0db5248e68511f47e14e9c3a3",
-        "size": 2580
+        "sha256": "729249cb6d3a6c645edd1ce2a694fc7a0be129938a470b0ffbadee294c739cb8",
+        "size": 2614
       },
       {
         "path": "insights.js",
@@ -253,6 +253,11 @@
         "path": "polish.js",
         "sha256": "d5fb38ddc272c10d964e6d7e764139650962784738a0ac8be6619e48fa841d13",
         "size": 18483
+      },
+      {
+        "path": "prayer.js",
+        "sha256": "0b917f92b7bac0ecc655aae5c9cfaef995345d5751b53156d001a786e7c8930a",
+        "size": 5073
       },
       {
         "path": "pro.js",
@@ -296,8 +301,8 @@
       },
       {
         "path": "styles.css",
-        "sha256": "0eb6dd09918037b10a41bea98d5b9225bf85866ce49011f0b081f55d5b5e2283",
-        "size": 77989
+        "sha256": "3a9e5d94784543eb34c9aa7ac19b4d0a7e12239fb7df161e644b435ea7fe98ca",
+        "size": 78813
       },
       {
         "path": "today.js",
@@ -311,8 +316,8 @@
       },
       {
         "path": "whatsnew.js",
-        "sha256": "2eaba91a181a16017a317d99ec232a640cdc01646456cfd294a1514ad4340dcf",
-        "size": 2771
+        "sha256": "dbcd6c0b6ea1da2e572eb5af3d377f34153e3572e90354d6c9306b84357ef16c",
+        "size": 3129
       }
     ]
   },
