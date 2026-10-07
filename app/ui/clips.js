@@ -171,7 +171,7 @@ function openProject(id){const p=find('clips',id);if(!p)return;ui.projId=id;ui.c
 async function exportSelected(){
   const p=curProj();if(!p)return;const sel=p.candidates.filter(c=>c.selected);if(!sel.length)return;
   const fmt=($('#co-fmt2')||{}).value||ui.clipsOpt.fmt;ui.clipsOpt.fmt=fmt;
-  const items=sel.map((c,i)=>({id:c.id,start:c.start,end:c.end,fmt,name:`${String(p.candidates.indexOf(c)+1).padStart(2,'0')} ${(c.ai&&c.ai.title)||p.name}`}));
+  const items=sel.map((c,i)=>({id:c.id,start:c.start,end:c.end,fmt,name:`${String(p.candidates.indexOf(c)+1).padStart(2,'0')} ${(c.ai&&c.ai.title)||p.name}`,cap:typeof capFor==='function'?capFor(c):null}));
   ui.exp={label:`يجهّز…`};render(true);
   const off=window.desktop.clips.onExportProgress((jobId,i,n,pr)=>{if(jobId!==p.id)return;ui.exp.label=`يصدّر ${i+1} من ${n} · ${Math.round(pr*100)}%`;const el=$('#expProg');if(el)el.textContent=ui.exp.label});
   const r=await window.desktop.clips.export(p.id,p.file,items,p.outDir);

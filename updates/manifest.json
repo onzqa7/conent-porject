@@ -1,8 +1,8 @@
 {
   "ui": {
-    "version": "2.4.0",
-    "notes": "أكبر تحديث: الجدولة والنشر التلقائي، صندوق التعليقات، تتبع المنافسين، أسلوبك بالكتابة، وتحويل فكرة وحدة لمحتوى كثير",
-    "minShell": "2.4.0",
+    "version": "2.5.0",
+    "notes": "ترجمة متحركة للمقاطع بالعربي وتصميم أنظف",
+    "minShell": "2.5.0",
     "files": [
       {
         "path": "api.js",
@@ -11,13 +11,18 @@
       },
       {
         "path": "app.js",
-        "sha256": "db5dffba5cf33174742e5b8de0ba28270e37e1e1ceaf2d79c1facee81f8e46b1",
-        "size": 109685
+        "sha256": "ff090c7f37dab949f80ddc5be588133f39be00567bbc9cdd40b36c9e5bcbf8c2",
+        "size": 109810
+      },
+      {
+        "path": "capui.js",
+        "sha256": "7031a57ff8149ade160168fc65c47e1184b899137cdd8c3093eaf7978d896841",
+        "size": 15319
       },
       {
         "path": "clips.js",
-        "sha256": "afe9074ab23aaf740c25f21df1ef6c80deb417f25b43ec6b69fce9843843fd7b",
-        "size": 24202
+        "sha256": "e2ca09840de8e4b6ee89b08dc283b5eb545b9cce0747b640a9c27af5880bf6c9",
+        "size": 24248
       },
       {
         "path": "fonts/f0.woff2",
@@ -156,23 +161,23 @@
       },
       {
         "path": "growth.js",
-        "sha256": "a779c32d7833f2c1f63da77f95dc27b959de41ec2f52701c410237de3dc39463",
-        "size": 53537
+        "sha256": "d14fa4138b777626a32bc5f82fd38a0e08b2c5968b74d2803c24186b46986fb7",
+        "size": 53460
       },
       {
         "path": "index.html",
-        "sha256": "076cde1265e729a00d7779ac9ca7fa1f6be33840b4d8e2c7bc3ae844ebaa9e67",
-        "size": 1502
+        "sha256": "28d15374dd1b66e0fbd6900624b8f1fbf660d18c131e0af3c48950ebedbf3ca3",
+        "size": 1535
       },
       {
         "path": "studies.js",
-        "sha256": "3a7bb28932f5a57523e7f8e2cabbc193f253fcd3081c342bf72554b4fe619a3d",
-        "size": 60614
+        "sha256": "56b2463a305597cd8c6d066249617e12fc3e88208e1ee41ade3efcd1ffac8863",
+        "size": 61438
       },
       {
         "path": "styles.css",
-        "sha256": "8db79188197d283258333509417561203859177c4a231cd364285177b26c690c",
-        "size": 48595
+        "sha256": "0f19ba78fde3f94ae4982204aa48ee4cbedc3e61666331e72f21f0159962b4af",
+        "size": 55173
       },
       {
         "path": "videos.js",
@@ -182,9 +187,9 @@
     ]
   },
   "shell": {
-    "version": "2.4.0",
-    "url": "https://raw.githubusercontent.com/onzqa7/conent-porject/main/updates/shell/content-studio-2.4.0.zip",
-    "sha256": "a049948b0cec9266309ce1250325f39dbab771d67e70726e8f78e524b17c8866",
-    "notes": "أكبر تحديث: النشر المجدول التلقائي، التعليقات، المنافسين، أسلوبك، وإعادة التدوير"
+    "version": "2.5.0",
+    "url": "https://raw.githubusercontent.com/onzqa7/conent-porject/main/updates/shell/content-studio-2.5.0.zip",
+    "sha256": "cb4c21335440cefc143379bdd25b0cfa50632214f5192b194023f94150865ccc",
+    "notes": "ترجمة متحركة للمقاطع بالعربي (تشتغل على جهازك) وتصميم أنظف"
   }
 }

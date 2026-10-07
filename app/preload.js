@@ -34,6 +34,16 @@ contextBridge.exposeInMainWorld('desktop', {
     defaultDir: () => ipcRenderer.invoke('clips:defaultDir'),
     onProgress: fn => on('clips:progress', fn),
     onExportProgress: fn => on('clips:exportProgress', fn),
+    caps: {
+      status: () => ipcRenderer.invoke('caps:status'),
+      download: key => ipcRenderer.invoke('caps:download', key),
+      cancelDownload: () => ipcRenderer.invoke('caps:cancelDownload'),
+      deleteModel: key => ipcRenderer.invoke('caps:deleteModel', key),
+      transcribe: (jobId, file, start, end, opts) => ipcRenderer.invoke('caps:transcribe', jobId, file, start, end, opts),
+      cancel: () => ipcRenderer.invoke('caps:cancel'),
+      onProgress: fn => on('caps:progress', fn),
+      onDlProgress: fn => on('caps:dlProgress', fn),
+    },
   },
   social: {
     list: (jobId, url, opts) => ipcRenderer.invoke('social:list', jobId, url, opts),

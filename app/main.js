@@ -9,6 +9,7 @@ const Anthropic = require('@anthropic-ai/sdk');
 const media = require('./media');
 const social = require('./social');
 const connect = require('./connect');
+const captions = require('./captions');
 
 const MODEL = 'claude-opus-5-5';
 const CONFIG = (() => { try { return JSON.parse(fs.readFileSync(path.join(__dirname, 'config.json'), 'utf8')); } catch { return {}; } })();
@@ -407,13 +408,23 @@ ipcMain.handle('clips:thumb', async (_e, jobId, file, t, name) => {
 ipcMain.handle('clips:export', async (e, jobId, file, items, outDir) => {
   if (!allowed.has(path.resolve(file))) return { error: 'الملف غير مسموح' };
   const results = [];
+  let info = null;
   const safe = s => String(s || 'clip').replace(/[\\/:*?"<>|]/g, '').trim().slice(0, 60) || 'clip';
   for (let i = 0; i < items.length; i++) {
     const it = items[i];
     let out = path.join(outDir, `${safe(it.name)}.mp4`), k = 2;
     while (fs.existsSync(out)) out = path.join(outDir, `${safe(it.name)} (${k++}).mp4`);
     try {
-      await media.exportClip(file, it.start, it.end, it.fmt, out, p => { if (!e.sender.isDestroyed()) e.sender.send('clips:exportProgress', jobId, i, items.length, p); });
+      let burn = null;
+      if (it.cap && Array.isArray(it.cap.words) && it.cap.words.length) {
+        if (!info) info = await media.probe(file).catch(() => null);
+        const [W, H] = media.outSize(it.fmt, info);
+        const words = it.cap.words.filter(w => w.e > it.start && w.s < it.end).map(w => ({ s: Math.max(0, w.s - it.start), e: Math.min(it.end, w.e) - it.start, w: String(w.w), k: !!w.k }));
+        if (words.length) burn = captions.prepareBurn(words, it.cap.opts || {}, W, H, path.join(__dirname, 'fonts'));
+      }
+      try {
+        await media.exportClip(file, it.start, it.end, it.fmt, out, p => { if (!e.sender.isDestroyed()) e.sender.send('clips:exportProgress', jobId, i, items.length, p); }, burn);
+      } finally { if (burn) burn.cleanup(); }
       results.push({ id: it.id, path: out });
     } catch (err) {
       if (err.cancelled) return { results, error: 'cancelled' };
@@ -422,6 +433,22 @@ ipcMain.handle('clips:export', async (e, jobId, file, items, outDir) => {
   }
   return { results };
 });
+
+/* ---------- captions IPC ---------- */
+ipcMain.handle('caps:status', () => captions.status());
+ipcMain.handle('caps:download', async (e, key) => {
+  try { await captions.downloadModel(key, (p, got, total) => { if (!e.sender.isDestroyed()) e.sender.send('caps:dlProgress', key, p, got, total); }); return { ok: true }; }
+  catch (err) { return { error: err.cancelled ? 'cancelled' : String(err.message || err) }; }
+});
+ipcMain.handle('caps:cancelDownload', () => { captions.cancelDownload(); return true; });
+ipcMain.handle('caps:deleteModel', (_e, key) => { captions.deleteModel(key); return captions.status(); });
+ipcMain.handle('caps:transcribe', async (e, jobId, file, start, end, opts) => {
+  if (!allowed.has(path.resolve(file))) return { error: 'الملف غير مسموح' };
+  try {
+    return await captions.transcribe({ file, start, end, model: opts && opts.model, language: opts && opts.language, extractWav: media.extractWav }, (p, stage) => { if (!e.sender.isDestroyed()) e.sender.send('caps:progress', jobId, p, stage); });
+  } catch (err) { return { error: err.cancelled ? 'cancelled' : String(err.message || err), code: err.code }; }
+});
+ipcMain.handle('caps:cancel', () => { captions.cancelAll(); media.cancelAll(); return true; });
 
 /* ---------- updates IPC ---------- */
 ipcMain.handle('update:state', () => publicUpdateState());
@@ -524,10 +551,13 @@ app.whenReady().then(() => {
   media.setFfmpegPath(locateFfmpeg());
   social.setPaths(locateBin('yt-dlp', 'YTDLP_PATH'), locateFfmpeg());
   connect.init({ net, shell, safeStorage, storeFile: path.join(userDir(), 'connections.bin') });
+  const wexe = process.platform === 'win32' ? 'main.exe' : 'whisper-cli';
+  const wpk = path.join(process.resourcesPath || '', 'bin', 'whisper', wexe);
+  captions.init({ net, workDir: path.join(userDir(), 'captions'), whisperPath: fs.existsSync(wpk) ? wpk : process.env.WHISPER_PATH || null });
   uiInfo = currentUi();
   backupDaily();
   registerProtocols();
   createWindow();
   setupTray();
 });
-app.on('window-all-closed', () => { media.cancelAll(); social.cancelAll(); app.quit(); });
+app.on('window-all-closed', () => { media.cancelAll(); social.cancelAll(); captions.cancelAll(); captions.cancelDownload(); app.quit(); });

@@ -315,8 +315,13 @@ function dashStudies(){const last=[...S.studies].filter(x=>x.report).sort((a,b)=
    ${last?`<button class="srow" data-sact="open" data-id="${last.id}" style="margin-bottom:10px"><span class="ic">${I[STUDY_TYPES[last.type]?.i||'flask']}</span><span style="min-width:0;flex:1"><b>${esc(last.report.title)}</b><span class="small muted">${esc(STUDY_TYPES[last.type]?.n||'')}</span></span></button>${open.length?`<div class="small muted" style="margin-bottom:6px">الخطوة الجاية:</div><div class="note">${esc(open[0].title)}</div>`:'<p class="small muted">نفذت كل خطواتها 👏</p>'}`
    :`<div class="empty"><b>سوّ أول دراسة</b><span>ابحث عن الترندات في مجالك، أو ادرس منافس، أو خل Claude يسوي لك خطة ٣٠ يوم.</span><button class="btn primary sm" data-act="go" data-v="studies">ابدأ</button></div>`}</section>
   <section class="panel"><div class="ph"><h2>${I.chart} أداء آخر ٧ أيام</h2><button class="btn ghost sm" data-act="go" data-v="analytics">التحليلات</button></div>
-   ${rows.length?`<div class="row" style="gap:28px"><div><div class="big num" style="font-family:var(--f-display);font-size:1.8rem;font-weight:700">${nf(v)}</div><div class="small muted">مشاهدة من ${rows.length} منشور</div></div><div><div class="big num" style="font-family:var(--f-display);font-size:1.8rem;font-weight:700">${erate(rows).toFixed(1)}%</div><div class="small muted">نسبة التفاعل</div></div></div>`
+   ${rows.length?`<div class="row" style="gap:28px"><div><div class="big num" style="font-family:var(--f-display);font-size:1.8rem;font-weight:700">${nf(v)}</div><div class="small muted">مشاهدة من ${rows.length} منشور</div></div><div><div class="big num" style="font-family:var(--f-display);font-size:1.8rem;font-weight:700">${erate(rows).toFixed(1)}%</div><div class="small muted">نسبة التفاعل</div></div></div>${perfSpark(rows)}`
    :`<p class="small muted">سجّل أرقام منشوراتك أو استوردها، وتطلع لك هنا.</p><button class="btn sm" data-act="go" data-v="analytics">${I.plus} سجّل أرقام</button>`}</section></div>`}
+
+function perfSpark(rows){const days=[];for(let i=6;i>=0;i--){const d=new Date(Date.now()-i*DAY);days.push({k:toInput(d).slice(0,10),d,v:0})}
+  for(const r of rows){const x=days.find(o=>o.k===String(r.date||'').slice(0,10));if(x)x.v+=+r.views||0}
+  const mx=Math.max(1,...days.map(o=>o.v)),top=[...rows].sort((a,b)=>(+b.views||0)-(+a.views||0))[0];
+  return `<div class="spark">${days.map(o=>`<div class="sb" title="${nf(o.v)}"><i style="height:${Math.max(4,Math.round(o.v/mx*100))}%" class="${o.v?'':'z'}"></i><span>${o.d.toLocaleDateString('ar-SA-u-ca-gregory',{weekday:'short'})}</span></div>`).join('')}</div>${top?`<div class="sparktop small"><span class="muted">الأقوى:</span> <b>${esc(top.title||'منشور')}</b> <span class="faint num">${nf(+top.views||0)} مشاهدة</span></div>`:''}`}
 
 /* ---------- events ---------- */
 function studyFromPlan(st){const r=st.report;const base=startDay(new Date(+new Date()+DAY));let n=0;

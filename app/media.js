@@ -7,9 +7,9 @@ let FFMPEG = process.env.FFMPEG_PATH || 'ffmpeg';
 function setFfmpegPath(p) { FFMPEG = p; }
 
 const running = new Set();
-function run(args, { onStderrLine, onStdoutLine } = {}) {
+function run(args, { onStderrLine, onStdoutLine, cwd } = {}) {
   return new Promise((resolve, reject) => {
-    const p = spawn(FFMPEG, ['-hide_banner', '-nostdin', ...args], { windowsHide: true });
+    const p = spawn(FFMPEG, ['-hide_banner', '-nostdin', ...args], { windowsHide: true, ...(cwd ? { cwd } : {}) });
     running.add(p);
     let err = '', outBuf = '', errBuf = '';
     const lines = (buf, chunk, fn) => {
@@ -125,20 +125,35 @@ async function thumb(file, t, outPath, width = 480) {
   return outPath;
 }
 
-const FORMATS = {
-  original: () => ['-vf', 'scale=trunc(iw/2)*2:trunc(ih/2)*2'],
-  vertical: () => ['-filter_complex', '[0:v]split[a][b];[a]scale=270:480:force_original_aspect_ratio=increase,crop=270:480,boxblur=8:3,scale=1080:1920[bg];[b]scale=1080:-2[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2,setsar=1[v]', '-map', '[v]', '-map', '0:a?'],
-  verticalCrop: () => ['-vf', 'scale=-2:1920,crop=1080:1920,setsar=1'],
-  square: () => ['-vf', 'scale=1080:1080:force_original_aspect_ratio=increase,crop=1080:1080,setsar=1'],
+// Each format is a filter graph ending in [v]; an optional extra filter (burned captions) is chained after it.
+const GRAPHS = {
+  original: '[0:v]scale=trunc(iw/2)*2:trunc(ih/2)*2[v]',
+  vertical: '[0:v]split[a][b];[a]scale=270:480:force_original_aspect_ratio=increase,crop=270:480,boxblur=8:3,scale=1080:1920[bg];[b]scale=1080:-2[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2,setsar=1[v]',
+  verticalCrop: '[0:v]scale=-2:1920,crop=1080:1920,setsar=1[v]',
+  square: '[0:v]scale=1080:1080:force_original_aspect_ratio=increase,crop=1080:1080,setsar=1[v]',
 };
-async function exportClip(file, start, end, fmt, outPath, onProgress) {
+const OUT_SIZE = { vertical: [1080, 1920], verticalCrop: [1080, 1920], square: [1080, 1080] };
+function outSize(fmt, info) {
+  if (OUT_SIZE[fmt]) return OUT_SIZE[fmt];
+  const w = info && info.width || 1920, h = info && info.height || 1080;
+  return [w - (w % 2), h - (h % 2)];
+}
+async function exportClip(file, start, end, fmt, outPath, onProgress, burn) {
   const len = Math.max(0.5, end - start);
   fs.mkdirSync(path.dirname(outPath), { recursive: true });
-  await run(['-ss', String(start), '-t', String(len), '-i', file, ...(FORMATS[fmt] || FORMATS.original)(),
+  let graph = GRAPHS[fmt] || GRAPHS.original;
+  if (burn) graph = graph.replace(/\[v\]$/, '[v0]') + ';[v0]' + burn.filter + '[v]';
+  await run(['-ss', String(start), '-t', String(len), '-i', file, '-filter_complex', graph, '-map', '[v]', '-map', '0:a?',
     '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '20', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '160k', '-movflags', '+faststart', '-y', outPath], {
+    cwd: burn && burn.cwd,
     onStderrLine: l => { const t = hms((/time=([\d:.]+)/.exec(l) || [])[1] || ''); if (t != null) onProgress(Math.min(1, t / len)); },
   });
   return outPath;
 }
+// 16 kHz mono WAV for speech recognition.
+async function extractWav(file, start, end, outPath) {
+  await run(['-ss', String(Math.max(0, start)), '-t', String(Math.max(0.5, end - start)), '-i', file, '-vn', '-ac', '1', '-ar', '16000', '-c:a', 'pcm_s16le', '-y', outPath]);
+  return outPath;
+}
 
-module.exports = { setFfmpegPath, probe, audioEnergy, sceneCuts, findCandidates, thumb, exportClip, cancelAll };
+module.exports = { setFfmpegPath, probe, audioEnergy, sceneCuts, findCandidates, thumb, exportClip, extractWav, outSize, cancelAll };
