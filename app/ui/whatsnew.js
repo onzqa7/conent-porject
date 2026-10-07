@@ -1,6 +1,10 @@
 /* "وش الجديد": after an update, one short screen with the new things and a button to each.
    Shown once per version list; reachable again from the palette. */
 const WN=[
+ ['2.9.4',[
+  [I.clock,'أوقات الصلاة','بـ«يومك» أوقات الصلاة لمدينتك، ويعلّمك لو منشور أو بث على وقت أذان.','go:dash'],
+  [I.ghost,'الوكيل يرتّب ستوري سناب','قل له «رتّب لي ستوري بكرة عن…» ويحطها لك بصفحة سناب.','go:agent'],
+ ]],
  ['2.9',[
   [I.layers,'واجهات OBS','شريط الفقرة، عدّاد البداية، الهدف، شات تويتش وكيك، التنبيهات والتصويت. تنسخ الرابط لـ OBS.','go:overlays'],
   [I.cut||I.scissors,'تنظيف المقطع','يشيل الصمت والحشو والتكرار. افتح أي فيديو باستوديو المقاطع واضغط «نظّف الفيديو».','go:clips'],

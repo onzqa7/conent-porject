@@ -883,3 +883,12 @@ input[dir="ltr"]::placeholder,input.ltr::placeholder{direction:rtl;text-align:ri
 .wn-it b{display:block;font-size:.95rem}.wn-it small{display:block;color:var(--muted);font-size:.8rem;margin-top:2px;line-height:1.6}
 .wn-ic{width:34px;height:34px;flex:none;border-radius:10px;display:grid;place-items:center;background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent-text)}
 .wn-ic svg{width:18px;height:18px}
+/* v2.9.4 prayer times */
+.pr-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:0 0 10px;font-size:.78rem;color:var(--muted)}
+.pr-ic svg{width:15px;height:15px;color:var(--faint);vertical-align:-3px}
+.pr{display:inline-flex;gap:5px;align-items:baseline;padding:4px 9px;border-radius:999px;background:var(--raised);border:1px solid var(--line);font-variant-numeric:tabular-nums}
+.pr b{font-weight:600;color:var(--text);font-size:.76rem}
+.pr.past{opacity:.55}
+.pr.next{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent)}
+.pr-city{margin-inline-start:auto;width:auto;padding:3px 8px;font-size:.76rem;height:auto;border-radius:8px}
+.pr-warn{margin:6px 0 0;padding:7px 10px;border-radius:9px;background:color-mix(in srgb,var(--warn,#e0a100) 14%,transparent);color:var(--text)}
