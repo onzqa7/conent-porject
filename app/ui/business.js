@@ -39,9 +39,9 @@ const payOver=d=>BZ_OPEN.includes(d.stage)&&d.payDue&&d.payDue<bzToday();
 const delivPf=(deal,d)=>{const t=BZ_DT[d.type]||{};const ps=deal.platforms||[];return ps.includes(t.pf)?t.pf:(ps[0]||t.pf||'instagram')};
 
 /* numbers from the creator's own data */
-function perfRows(pf){const cut=+new Date()-120*DAY;let r=S.perf.filter(x=>(!pf||x.platform===pf)&&+x.views>0);const recent=r.filter(x=>(pd(x.date)||0)>=cut);return recent.length>=3?recent:r}
-function avgViews(pf){const r=perfRows(pf);return r.length?Math.round(r.reduce((a,b)=>a+(+b.views||0),0)/r.length):0}
-function engRate(){const r=perfRows();const v=r.reduce((a,b)=>a+(+b.views||0),0);return v?r.reduce((a,b)=>a+(+b.likes||0)+(+b.comments||0)+(+b.shares||0),0)/v:0}
+function bzPerfRows(pf){const cut=+new Date()-120*DAY;let r=S.perf.filter(x=>(!pf||x.platform===pf)&&+x.views>0);const recent=r.filter(x=>(pd(x.date)||0)>=cut);return recent.length>=3?recent:r}
+function avgViews(pf){const r=bzPerfRows(pf);return r.length?Math.round(r.reduce((a,b)=>a+(+b.views||0),0)/r.length):0}
+function engRate(){const r=bzPerfRows();const v=r.reduce((a,b)=>a+(+b.views||0),0);return v?r.reduce((a,b)=>a+(+b.likes||0)+(+b.comments||0)+(+b.shares||0),0)/v:0}
 const followersOf=pf=>S.accounts.filter(a=>a.platform===pf).reduce((a,b)=>a+(+b.followers||0),0);
 const pct=x=>(x*100).toFixed(1)+'%';
 function estPrice(deal){const ds=deal.deliverables||[];if(!ds.length)return null;let lo=0,hi=0;
@@ -225,7 +225,7 @@ const kitP=()=>bzP().kit||{};
 function setKit(patch){setBz({kit:{...kitP(),...patch}})}
 function kitData(){const p=S.profile||{},k=kitP(),L=bzP().lic||{};
   const accs=[...S.accounts].sort((a,b)=>(+b.followers||0)-(+a.followers||0)).map(a=>({pf:a.platform,handle:a.handle,followers:+a.followers||0,avg:avgViews(a.platform)}));
-  const top=[...perfRows()].sort((a,b)=>(+b.views||0)-(+a.views||0)).slice(0,3);
+  const top=[...bzPerfRows()].sort((a,b)=>(+b.views||0)-(+a.views||0)).slice(0,3);
   const paid=S.deals.filter(d=>d.stage==='paid'&&!d.example);const brands=[...new Set(paid.map(d=>d.brand).filter(Boolean))];
   return {name:k.name||p.name||'',tagline:k.tagline??(p.niche?`صانع محتوى ${p.niche}`:''),bio:k.bio||'',audience:k.audience??(p.audience||''),city:k.city??'السعودية',email:k.email||'',phone:k.phone||'',lic:k.hideLic?'':(L.no||''),
     rates:Object.keys(BZ_DT).map(t=>[t,+((k.rates||{})[t])||0]).filter(x=>x[1]>0),accs,top,brands:k.hideBrands?[]:brands,deals:k.hideBrands?0:paid.length,
