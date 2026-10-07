@@ -36,7 +36,7 @@ function mergeVideo(v,acc){if(!v.vid&&!v.url)return 0;const pf=v.platform||acc?.
   for(const k of ['views','likes','comments','shares'])if(v[k]!=null)r[k]=+v[k];
   r.hist=[...(r.hist||[]),{t:Date.now(),v:+r.views||0}].slice(-12);
   return isNew?1:0}
-async function syncAccount(a){if(ui.vids.sync[a.id]?.busy)return;const urls=accountUrls(a);if(!urls.length){toast('أضف اسم المستخدم أو رابط الحساب أول');openAccount(a.id);return}
+async function syncAccount(a,quiet){if(ui.vids.sync[a.id]?.busy)return;const urls=accountUrls(a);if(!urls.length){if(quiet)return;toast('أضف اسم المستخدم أو رابط الحساب أول');openAccount(a.id);return}
   const job='s'+uid();const st=ui.vids.sync[a.id]={busy:true,job,stage:'list',done:0,total:0};render(true);
   const off=window.desktop.social.onProgress((jid,p)=>{if(jid!==job)return;Object.assign(st,p);const el=$(`[data-syncst="${a.id}"]`);if(el)el.textContent=syncLabel(st)});
   let added=0,seen=0,err=null;
@@ -45,7 +45,8 @@ async function syncAccount(a){if(ui.vids.sync[a.id]?.busy)return;const urls=acco
       for(const v of r.items){if(!v.platform)v.platform=a.platform;added+=mergeVideo(v,a);seen++}
       if(r.channel&&r.channel.followers&&+r.channel.followers!==+a.followers){a.followers=+r.channel.followers;a.history=[...(a.history||[]),{d:ymd(new Date()),n:a.followers}].slice(-60)}}
     if(seen||!err)a.syncedAt=Date.now();put('accounts',a,true);saveLocal();
-    if(err&&!seen){toast(err.error);if(err.code==='login'||err.code==='blocked')ui.vids.openCfg=true}else toast(seen?`جبت ${seen} فيديو${added?` (${added} جديد)`:''}`:'ما لقيت فيديوهات في هالحساب')}
+    if(quiet){if(added)toast(`جبت ${added} فيديو جديد من ${PL(a.platform).n}`)}
+    else if(err&&!seen){toast(err.error);if(err.code==='login'||err.code==='blocked')ui.vids.openCfg=true}else toast(seen?`جبت ${seen} فيديو${added?` (${added} جديد)`:''}`:'ما لقيت فيديوهات في هالحساب')}
   finally{off();delete ui.vids.sync[a.id];render(true)}}
 var syncLabel=st=>st.stage==='details'&&st.total?`يجيب التفاصيل ${st.done}/${st.total}`:'يقرأ الحساب…';
 async function addByLink(url){url=url.trim();if(!/^https?:\/\//.test(url)){toast('الصق رابط صحيح');return}

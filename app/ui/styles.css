@@ -876,3 +876,10 @@ input[dir="ltr"]::placeholder,input.ltr::placeholder{direction:rtl;text-align:ri
 .ins-it small{margin-inline-start:auto;color:var(--faint);font-size:.72rem;white-space:nowrap}
 .linkbtn{background:none;border:0;padding:0;color:var(--accent-text);font:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 .linkbtn:hover{color:var(--text)}
+/* v2.9.2 what's new */
+.wn-list{display:grid;gap:8px;margin-top:10px}
+.wn-it{display:flex;align-items:flex-start;gap:12px;text-align:start;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--raised);color:var(--text);font:inherit;cursor:pointer;transition:border-color .15s,transform .15s}
+.wn-it:hover{border-color:var(--accent);transform:translateY(-1px)}
+.wn-it b{display:block;font-size:.95rem}.wn-it small{display:block;color:var(--muted);font-size:.8rem;margin-top:2px;line-height:1.6}
+.wn-ic{width:34px;height:34px;flex:none;border-radius:10px;display:grid;place-items:center;background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent-text)}
+.wn-ic svg{width:18px;height:18px}

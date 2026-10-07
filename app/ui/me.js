@@ -26,7 +26,7 @@ async function autoSync(){
   const last=+S.prefs.meSync||0;if(Date.now()-last<20*3600e3)return;
   const accs=S.accounts.filter(a=>typeof accountUrls!=='function'||accountUrls(a).length);if(!accs.length)return;
   S.prefs.meSync=Date.now();saveLocal();
-  for(const a of accs){try{await syncAccount(a)}catch(e){}}
+  for(const a of accs){try{await syncAccount(a,true)}catch(e){}}
 }
 // Other accounts are linked in the YouTube video descriptions: read a few recent videos and add what they point to.
 const ME_LINKS=[['tiktok',/tiktok\.com\/@([\w.]+)/i],['instagram',/instagram\.com\/([\w.]+)/i],['snapchat',/snapchat\.com\/(?:add\/|@)([\w.-]+)/i],['x',/(?:^|[^\w.-])(?:(?:www|mobile)\.)?(?:twitter|x)\.com\/(\w{1,15})/i],['twitch',/twitch\.tv\/(\w+)/i],['kick',/kick\.com\/([\w-]+)/i],['threads',/threads\.(?:net|com)\/@([\w.]+)/i],['facebook',/facebook\.com\/([\w.]+)/i]];
@@ -42,6 +42,6 @@ async function discoverAccounts(){
   S.prefs.meFound=Date.now();let added=[];
   for(const [pf,h] of Object.entries(found)){const a=S.accounts.find(x=>x.platform===pf);if(a&&a.handle)continue;
     if(a){a.handle=h;put('accounts',a,true)}else put('accounts',{platform:pf,handle:h,followers:0,goal:'',weekly:3,url:'',notes:'لقيته من وصف فيديوهاتك'},true);added.push(PL(pf).n)}
-  saveLocal();if(added.length){toast('لقيت حساباتك من وصف فيديوهاتك: '+added.join('، '));render(true);for(const a of S.accounts.filter(a=>added.includes(PL(a.platform).n)))try{await syncAccount(a)}catch(e){}}
+  saveLocal();if(added.length){toast('لقيت حساباتك من وصف فيديوهاتك: '+added.join('، '));render(true);for(const a of S.accounts.filter(a=>added.includes(PL(a.platform).n)))try{await syncAccount(a,true)}catch(e){}}
 }
 {const _ab=afterBoot;afterBoot=function(){applyMe();_ab();setTimeout(async()=>{try{await autoSync()}catch(e){}try{await discoverAccounts()}catch(e){}},4000)}}

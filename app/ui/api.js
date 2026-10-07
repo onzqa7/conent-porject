@@ -105,19 +105,19 @@ async function apiConnect(k,btn){
 
 /* ---------- API-based sync (overrides the public reader when connected) ---------- */
 const _syncAccount=syncAccount;
-syncAccount=async function(a){
-  if(!hasApi()||!apiAccount(a))return _syncAccount(a);
+syncAccount=async function(a,quiet){
+  if(!hasApi()||!apiAccount(a))return _syncAccount(a,quiet);
   if(ui.vids.sync[a.id]?.busy)return;
   ui.vids.sync[a.id]={busy:true,stage:'api'};render(true);
   try{const r=await window.desktop.api.list(a.platform,+(S.prefs.vidLimit||30));
     if(r.error){
       delete ui.vids.sync[a.id];
       if(r.code==='auth'){toast(r.error);await loadApi();return}
-      if(a.platform==='x'){toast('أرقام إكس تحتاج خطة مدفوعة، بجيبها بالطريقة العادية');return _syncAccount(a)}
-      toast(r.error);return}
+      if(a.platform==='x'){if(!quiet)toast('أرقام إكس تحتاج خطة مدفوعة، بجيبها بالطريقة العادية');return _syncAccount(a,quiet)}
+      if(!quiet)toast(r.error);return}
     let added=0;for(const v of r.items){added+=mergeVideo(v,a);const row=S.perf.find(x=>x.vid===v.vid&&x.platform===a.platform);if(row){for(const f of ['saves','reach','follows','watchMin','avgView'])if(v[f]!=null)row[f]=+v[f];row.api=true}}
     linkAccount(a.platform,r.profile);a.syncedAt=Date.now();put('accounts',a,true);saveLocal();
-    toast(r.items.length?`جبت ${r.items.length} من ${PL(a.platform).n} الرسمي${added?` (${added} جديد)`:''}`:'ما لقيت منشورات في هالحساب')}
+    if(!quiet||added)toast(r.items.length?`جبت ${r.items.length} من ${PL(a.platform).n} الرسمي${added?` (${added} جديد)`:''}`:'ما لقيت منشورات في هالحساب')}
   finally{delete ui.vids.sync[a.id];render(true)}};
 const _syncLabel=syncLabel;
 syncLabel=st=>st.stage==='api'?'يجيب من الـ API الرسمي…':_syncLabel(st);
