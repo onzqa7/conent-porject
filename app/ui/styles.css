@@ -892,3 +892,10 @@ input[dir="ltr"]::placeholder,input.ltr::placeholder{direction:rtl;text-align:ri
 .pr.next{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent)}
 .pr-city{margin-inline-start:auto;width:auto;padding:3px 8px;font-size:.76rem;height:auto;border-radius:8px}
 .pr-warn{margin:6px 0 0;padding:7px 10px;border-radius:9px;background:color-mix(in srgb,var(--warn,#e0a100) 14%,transparent);color:var(--text)}
+/* v2.9.7 shortcuts */
+.ks h3{font-size:.8rem;color:var(--muted);margin:14px 0 6px;font-weight:600}.ks h3:first-child{margin-top:0}
+.ks-list{display:grid;gap:4px}
+.ks-it{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:7px 10px;border-radius:9px;background:var(--raised);font-size:.86rem}
+.ks-k{display:inline-flex;gap:4px;direction:ltr}
+.ks kbd{font:600 .74rem/1 var(--mono,ui-monospace,monospace);padding:4px 7px;border-radius:6px;border:1px solid var(--line);border-bottom-width:2px;background:var(--bg);color:var(--text);min-width:22px;text-align:center}
+.ks-w{font-size:.76rem;color:var(--muted);align-self:center}
