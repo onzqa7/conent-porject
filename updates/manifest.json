@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.9",
-    "notes": "انشر جدول بثوثك + إصلاحات الوكيل وواجهات البث والتقرير",
+    "version": "2.9.10",
+    "notes": "صورة جدول البثوث للستوري",
     "minShell": "2.5.0",
     "files": [
       {
@@ -296,8 +296,8 @@
       },
       {
         "path": "schedpost.js",
-        "sha256": "d8edf871d541bd86cad59bf03c9eba456b3b5d2d7b253f239c3cd99117e79321",
-        "size": 2218
+        "sha256": "f402421b70e8a086b4fd5146a87ca412c17e4ca3826264e791964ac38c1bc9a7",
+        "size": 5300
       },
       {
         "path": "seasons.css",
@@ -346,8 +346,8 @@
       },
       {
         "path": "whatsnew.js",
-        "sha256": "f0e479d076f221a060024df3f68dcdda20707fb9de9c2decebce2faec479272c",
-        "size": 4991
+        "sha256": "3b2a273acd2f0fdf78f98701dcbdf3e786b6b47dabb5d13aece5224f566ceeaa",
+        "size": 5222
       }
     ]
   },
