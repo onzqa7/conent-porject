@@ -1,6 +1,10 @@
 /* "وش الجديد": after an update, one short screen with the new things and a button to each.
    Shown once per version list; reachable again from the palette. */
 const WN=[
+ ['2.9.7',[
+  [I.cmd||I.bolt,'اختصارات الكيبورد','اضغط ؟ تشوفها كلها: N منشور جديد، I فكرة، Alt مع رقم للصفحات. وتشتغل والكيبورد عربي.','keys'],
+  [I.layers,'الوكيل يدير واجهات البث','قل له «شغّل عدّاد ١٠ دقايق» أو «سوّ تصويت وش نلعب» أو «حدّث الهدف لـ ٤٢٠».','go:agent'],
+ ]],
  ['2.9.5',[
   [I.yt||I.pack||I.star,'جهّز فيديو البث لليوتيوب','بصفحة البث تحت «بعد البث»: يعبّي لك تجهيز الفيديو بالفقرات والعلامات اللي حطيتها وقت البث كفصول.','go:streams'],
   [I.clock,'أوقات الصلاة','بـ«يومك» أوقات الصلاة لمدينتك، ويعلّمك لو منشور أو بث على وقت أذان.','go:dashboard'],
@@ -29,6 +33,7 @@ function openWhatsNew(all){const seen=S.prefs.wnSeen;
   S.prefs.wnSeen=wnLatest();saveLocal()}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-wn]');if(!b)return;const k=b.dataset.wn;closeModal();
   if(k==='bio'){S.prefs.biz={...(S.prefs.biz||{}),tab:'bio'};saveLocal();go('business')}
+  else if(k==='keys')setTimeout(openKeys,30);
   else setTimeout(()=>runPalette(k),30)});
 {const _ab=afterBoot;afterBoot=function(){_ab();setTimeout(()=>{if(S.prefs.wnSeen!==wnLatest()&&!$('#modal-root').innerHTML&&!(typeof live!=='undefined'&&live))openWhatsNew()},2500)}}
 {const _pi=paletteItems;paletteItems=function(){return [..._pi(),['whatsnew','وش الجديد بالتحديثات',I.star]]}}
