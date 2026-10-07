@@ -18,6 +18,14 @@ contextBridge.exposeInMainWorld('desktop', {
   clearKey: () => ipcRenderer.invoke('key:clear'),
   save: (filename, data) => ipcRenderer.invoke('file:save', filename, data),
   ask: (messages, effort, onText) => withText('ai:ask', [messages, effort], onText),
+  agent: {
+    cfg: () => ipcRenderer.invoke('agent:cfg'),
+    set: patch => ipcRenderer.invoke('agent:set', patch),
+    models: () => ipcRenderer.invoke('agent:models'),
+    // returns { id, done } so the caller can cancel a running turn
+    chat: (messages, tools, onText, opts) => { const id = 'g' + (++seq); const listener = (_e, rid, text) => { if (rid === id && onText) onText(text); }; ipcRenderer.on('ai:text', listener); return { id, done: ipcRenderer.invoke('agent:chat', id, messages, tools, opts).finally(() => ipcRenderer.removeListener('ai:text', listener)) }; },
+    cancel: id => ipcRenderer.invoke('agent:cancel', id),
+  },
   research: (messages, effort, onText) => withText('ai:research', [messages, effort], onText),
   vision: (prompt, images, effort, onText) => withText('ai:vision', [prompt, images, effort], onText),
   showItem: p => ipcRenderer.invoke('shell:showItem', p),

@@ -9,6 +9,7 @@ const Anthropic = require('@anthropic-ai/sdk');
 const media = require('./media');
 const social = require('./social');
 const connect = require('./connect');
+const agent = require('./agent');
 const captions = require('./captions');
 
 const MODEL = 'claude-opus-5-5';
@@ -191,6 +192,7 @@ async function runStream(c, messages, effort, onText, withFallback) {
   return { text, truncated: final.stop_reason === 'max_tokens' };
 }
 async function ask(e, id, messages, effort) {
+  if (agent.useForAll()) return agent.ask(id, messages, t => { if (!e.sender.isDestroyed()) e.sender.send('ai:text', id, t); });
   const c = getClient();
   if (!c) return { code: 'not_granted', error: 'أضف مفتاح Claude من الإعدادات' };
   const send = t => { if (!e.sender.isDestroyed()) e.sender.send('ai:text', id, t); };
@@ -232,6 +234,8 @@ async function runResearch(c, messages, effort, onText, withFallback) {
   return { text: finalText, sources: [...sources.values()].slice(0, 40) };
 }
 async function research(e, id, messages, effort) {
+  // Other providers have no built-in web search, so studies run from the model's own knowledge.
+  if (agent.useForAll()) return agent.ask(id, [{ role: 'user', content: 'ملاحظة: ما عندك بحث إنترنت الحين، اعتمد على معرفتك ووضّح إن المعلومات قد تكون قديمة.' }, { role: 'assistant', content: 'تمام.' }, ...messages], t => { if (!e.sender.isDestroyed()) e.sender.send('ai:text', id, t); });
   const c = getClient();
   if (!c) return { code: 'not_granted', error: 'أضف مفتاح Claude من الإعدادات' };
   const send = t => { if (!e.sender.isDestroyed()) e.sender.send('ai:text', id, t); };
@@ -242,7 +246,12 @@ async function research(e, id, messages, effort) {
   }
 }
 ipcMain.handle('ai:research', (e, id, messages, effort) => research(e, id, messages, effort));
-ipcMain.handle('key:has', () => !!readKey());
+ipcMain.handle('key:has', () => !!readKey() || agent.useForAll());
+ipcMain.handle('agent:cfg', () => agent.publicCfg());
+ipcMain.handle('agent:set', (_e, patch) => agent.setCfg(patch || {}));
+ipcMain.handle('agent:models', () => agent.listModels());
+ipcMain.handle('agent:chat', (e, id, messages, tools, opts) => agent.chat(id, messages, tools, t => { if (!e.sender.isDestroyed()) e.sender.send('ai:text', id, t); }, opts || {}));
+ipcMain.handle('agent:cancel', (_e, id) => { agent.cancel(id); return true; });
 ipcMain.handle('key:clear', () => { try { fs.unlinkSync(keyFile()); } catch {} client = null; return true; });
 ipcMain.handle('key:set', async (_e, k) => {
   try { await new Anthropic({ apiKey: k }).models.retrieve(MODEL); } catch (err) { return { ok: false, ...errInfo(err) }; }
@@ -555,6 +564,7 @@ app.whenReady().then(() => {
   connect.init({ net, shell, safeStorage, storeFile: path.join(userDir(), 'connections.bin') });
   const wexe = process.platform === 'win32' ? 'main.exe' : 'whisper-cli';
   const wpk = path.join(process.resourcesPath || '', 'bin', 'whisper', wexe);
+  agent.init({ net, safeStorage, cfgFile: path.join(userDir(), 'agent.json'), keyFile: path.join(userDir(), 'agent-keys.bin') });
   captions.init({ net, workDir: path.join(userDir(), 'captions'), whisperPath: fs.existsSync(wpk) ? wpk : process.env.WHISPER_PATH || null });
   uiInfo = currentUi();
   backupDaily();
