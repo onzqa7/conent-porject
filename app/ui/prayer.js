@@ -4,17 +4,18 @@ const PR_CITIES={riyadh:['الرياض',24.7136,46.6753],jeddah:['جدة',21.485
 const PR_N={fajr:'الفجر',dhuhr:'الظهر',asr:'العصر',maghrib:'المغرب',isha:'العشاء'};
 const prCity=()=>PR_CITIES[S.prefs.city]?S.prefs.city:'riyadh';
 const prRad=d=>d*Math.PI/180,prDeg=r=>r*180/Math.PI,prFix=(a,b)=>{a=a-b*Math.floor(a/b);return a<0?a+b:a};
-function prIsRamadan(d){try{return new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{month:'numeric'}).format(d).replace(/\D/g,'')==='9'}catch(e){return false}}
+function prIsRamadan(d){try{return new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{month:'numeric',timeZone:'Asia/Riyadh'}).format(d).replace(/\D/g,'')==='9'}catch(e){return false}}
 // times for a local calendar day, as Date objects in Saudi time (UTC+3) converted to the machine's clock
 function prTimes(day=new Date(),city=prCity()){
-  const [,lat,lng]=PR_CITIES[city]||PR_CITIES.riyadh,y=day.getFullYear(),m=day.getMonth()+1,dd=day.getDate();
+  // the Saudi calendar day of this instant, whatever timezone the PC is set to
+  const sa=new Date(+day+3*3600e3),[,lat,lng]=PR_CITIES[city]||PR_CITIES.riyadh,y=sa.getUTCFullYear(),m=sa.getUTCMonth()+1,dd=sa.getUTCDate();
   const jd=367*y-Math.floor(7*(y+Math.floor((m+9)/12))/4)+Math.floor(275*m/9)+dd+1721013.5+(12-3)/24;// noon in Saudi time
   const D=jd-2451545,g=prFix(357.529+0.98560028*D,360),q=prFix(280.459+0.98564736*D,360),L=prFix(q+1.915*Math.sin(prRad(g))+0.02*Math.sin(prRad(2*g)),360);
   const e=23.439-0.00000036*D,RA=prFix(prDeg(Math.atan2(Math.cos(prRad(e))*Math.sin(prRad(L)),Math.cos(prRad(L))))/15,24),decl=prDeg(Math.asin(Math.sin(prRad(e))*Math.sin(prRad(L))));
   const eqt=q/15-RA,noon=prFix(12+3-lng/15-eqt,24);
   const T=a=>prDeg(Math.acos((-Math.sin(prRad(a))-Math.sin(prRad(decl))*Math.sin(prRad(lat)))/(Math.cos(prRad(decl))*Math.cos(prRad(lat)))))/15;
   const asrA=-prDeg(Math.atan(1/(1+Math.tan(prRad(Math.abs(lat-decl))))));// shadow factor 1
-  const h={fajr:noon-T(18.5),dhuhr:noon+2/60,asr:noon+T(asrA),maghrib:noon+T(0.833)};h.isha=h.maghrib+(prIsRamadan(day)?120:90)/60;
+  const h={fajr:noon-T(18.5),dhuhr:noon+2/60,asr:noon+T(asrA),maghrib:noon+T(0.833)};h.isha=h.maghrib+(prIsRamadan(new Date(Date.UTC(y,m-1,dd,9)))?120:90)/60;
   // hours in UTC+3 -> a real instant
   const base=Date.UTC(y,m-1,dd)-3*3600e3,out={};for(const [k,v] of Object.entries(h))out[k]=new Date(base+Math.round(v*60)*60e3);return out}
 const prFmt=d=>fmt(d,{hour:'numeric',minute:'2-digit'});

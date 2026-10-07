@@ -112,8 +112,8 @@ syncAccount=async function(a,quiet){
   try{const r=await window.desktop.api.list(a.platform,+(S.prefs.vidLimit||30));
     if(r.error){
       delete ui.vids.sync[a.id];
-      if(r.code==='auth'){toast(r.error);await loadApi();return}
-      if(a.platform==='x'){if(!quiet)toast('أرقام إكس تحتاج خطة مدفوعة، بجيبها بالطريقة العادية');return _syncAccount(a,quiet)}
+      if(r.code==='auth'){if(!quiet)toast(r.error);await loadApi();return}
+      if(a.platform==='x'){if(!quiet)toast('أرقام إكس تحتاج خطة مدفوعة، بجيبها بالطريقة العادية');return await _syncAccount(a,quiet)}
       if(!quiet)toast(r.error);return}
     let added=0;for(const v of r.items){added+=mergeVideo(v,a);const row=S.perf.find(x=>x.vid===v.vid&&x.platform===a.platform);if(row){for(const f of ['saves','reach','follows','watchMin','avgView'])if(v[f]!=null)row[f]=+v[f];row.api=true}}
     linkAccount(a.platform,r.profile);a.syncedAt=Date.now();put('accounts',a,true);saveLocal();
