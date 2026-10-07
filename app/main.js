@@ -454,6 +454,7 @@ ipcMain.handle('caps:download', async (e, key) => {
 ipcMain.handle('caps:cancelDownload', () => { captions.cancelDownload(); return true; });
 ipcMain.handle('caps:deleteModel', (_e, key) => { captions.deleteModel(key); return captions.status(); });
 require('./cuts').register({ ipcMain, app, BrowserWindow, shell, media, captions, userDir, isAllowed: p => typeof p === 'string' && allowed.has(path.resolve(p)), send: (wc, ch, ...a) => { if (!wc.isDestroyed()) wc.send(ch, ...a); } });
+require('./overlay').register({ ipcMain, app, BrowserWindow, shell, media, captions, userDir, send: (wc, ch, ...a) => { if (!wc.isDestroyed()) wc.send(ch, ...a); } });
 ipcMain.handle('caps:transcribe', async (e, jobId, file, start, end, opts) => {
   if (!allowed.has(path.resolve(file))) return { error: 'الملف غير مسموح' };
   try {
