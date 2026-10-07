@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.1",
-    "notes": "إصلاحات: الأرشيف ينتظر لين يخلص تسجيل OBS، وتقدر تطفي اختصار الالتقاط السريع",
+    "version": "2.9.2",
+    "notes": "شاشة «وش الجديد» بعد التحديث، والمزامنة اليومية صارت بهدوء",
     "minShell": "2.5.0",
     "files": [
       {
@@ -16,8 +16,8 @@
       },
       {
         "path": "api.js",
-        "sha256": "c6a9f8039af49e9a96a5c3bb0b7cc135139dac695763085a4b9e33a911ab4de6",
-        "size": 18741
+        "sha256": "e202a43fb1bea738cc5fba8ff0acf86a7be4f66b9758c67e2b0e18de83ec191d",
+        "size": 18796
       },
       {
         "path": "app.js",
@@ -226,8 +226,8 @@
       },
       {
         "path": "index.html",
-        "sha256": "437c2f21d42f68ffe7c5eb0d735abe0a0efcbe2833cfc2fa3a32aa8d727f6196",
-        "size": 2544
+        "sha256": "ef4366f2a6a887b271b0d5b034bfc7a6912b87e0db5248e68511f47e14e9c3a3",
+        "size": 2580
       },
       {
         "path": "insights.js",
@@ -236,8 +236,8 @@
       },
       {
         "path": "me.js",
-        "sha256": "fc194f0a5f8959dc6759e787dddeb8592cc14dde7b29ed974de579ddb5ec1e33",
-        "size": 3549
+        "sha256": "356168f17662685342d8b5e40791ffaa63460f00c1e25c4a2b1e27d06afa48aa",
+        "size": 3559
       },
       {
         "path": "overlay-ui.css",
@@ -296,8 +296,8 @@
       },
       {
         "path": "styles.css",
-        "sha256": "540ca477e1e7c797079794ad720423ea841ba590aef1441f1ab927abef89905e",
-        "size": 77258
+        "sha256": "0eb6dd09918037b10a41bea98d5b9225bf85866ce49011f0b081f55d5b5e2283",
+        "size": 77989
       },
       {
         "path": "today.js",
@@ -306,8 +306,13 @@
       },
       {
         "path": "videos.js",
-        "sha256": "1ed7880381a3e90e5d4865d1e8d5770ac58dd10ad9940a29f997b8538c519b43",
-        "size": 28380
+        "sha256": "ff07bfdb8e33259ea5924281a407c6795405f873615c5492d0b978f83d3c7b18",
+        "size": 28501
+      },
+      {
+        "path": "whatsnew.js",
+        "sha256": "2eaba91a181a16017a317d99ec232a640cdc01646456cfd294a1514ad4340dcf",
+        "size": 2771
       }
     ]
   },
