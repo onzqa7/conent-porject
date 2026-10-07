@@ -47,7 +47,7 @@ const SEASONS=[
     a:['وين تسافر داخل المملكة هالصيف؟','أنشطة الصيف للعيال والشباب','روتين الإجازة وتنظيم الوقت']},
   {id:'jeddah',n:'موسم جدة',c:'#22B5D3',i:'wave',approx:true,g:[6,1],end:[7,15],lead:30,
     a:['أماكن تزورها في جدة هالموسم','جولة سريعة بين الكورنيش والبلد','تجربتك في فعاليات موسم جدة']},
-  {id:'riyadh',n:'موسم الرياض',c:'#B36BFF',i:'spark',approx:true,g:[10,15],end:[3,15],lead:30,
+  {id:'riyadh',n:'موسم الرياض',c:'#B36BFF',i:'spark',approx:true,g:[10,15],known:{2026:[10,21]},end:[3,15],lead:30,
     a:['جولة في فعاليات موسم الرياض','ترتيب الفعاليات حسب ميزانيتك','تحدي: يوم كامل في الموسم بـ٢٠٠ ريال']},
   {id:'newyear',n:'السنة الجديدة',c:'#FF8A4C',i:'fire',g:[1,1],days:1,lead:14,
     a:['أهدافك للسنة الجديدة وكيف تحققها','ملخص سنتك بالأرقام','أكثر محتوى نجح عندك هالسنة']},
@@ -65,7 +65,7 @@ const seaOccC={};
 function seaYear(y){if(seaOccC[y])return seaOccC[y];const out=[];
   const days=[];for(let d=new Date(y,0,1,12);d.getFullYear()===y;d=addD(d,1))days.push(d);
   for(const s of SEASONS){let starts=[];
-    if(s.g)starts=[new Date(y,s.g[0]-1,s.g[1],12)];
+    if(s.g){const k=(s.known&&s.known[y])||s.g;starts=[new Date(y,k[0]-1,k[1],12)]}
     else if(s.calc)starts=[s.calc(y)];
     else if(s.h&&seaHF)starts=days.filter(d=>{const h=hparts(d);return h&&h.m===s.h[0]&&h.d===s.h[1]});
     for(const st0 of starts){const st=startDay(st0);let end;

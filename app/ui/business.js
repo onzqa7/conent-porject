@@ -21,7 +21,7 @@ const BZ_CUR={SAR:['ريال',1],USD:['دولار',3.75],AED:['درهم',1.02]};
 const BZ_TABS=[['deals','الشراكات','brief'],['money','الدخل والمصاريف','wallet'],['kit','ملف الإعلانات','idcard'],['lic','التراخيص','shield']];
 const SARF=new Intl.NumberFormat('ar-SA-u-nu-latn',{style:'currency',currency:'SAR',maximumFractionDigits:0});
 const sar=n=>SARF.format(Math.round(+n||0));
-const bzCur=(n,c)=>!c||c==='SAR'?sar(n):new Intl.NumberFormat('ar-SA-u-nu-latn',{style:'currency',currency:c,maximumFractionDigits:0}).format(+n||0);
+const bzCur=(n,c)=>!c||c==='SAR'||!BZ_CUR[c]?sar(n):nfull(Math.round(+n||0))+' '+BZ_CUR[c][0];
 const toSar=d=>(+d.fee||0)*((BZ_CUR[d.currency]||BZ_CUR.SAR)[1]);
 const bzP=()=>(S.prefs||{}).biz||{};
 function setBz(patch){S.prefs={...(S.prefs||{}),biz:{...bzP(),...patch}};saveLocal()}
@@ -119,7 +119,7 @@ function openDeal(id,preset){const src=id&&find('deals',id);
     <div class="f"><div class="ph"><span>التسليمات</span><button type="button" class="btn sm" data-xact="addDeliv">${I.plus} تسليم</button></div><div id="bzDelivs">${delivRows(d)}</div>
       <p class="bz-hint">${I.shield}<span>أي محتوى مدفوع لازم يكون فيه إفصاح واضح مثل <b>#إعلان</b> أو «إعلان» بأول المقطع، وتكون رخصة موثوق سارية.</span></p></div>
     <label class="f">البريف (وش يبي البراند)<textarea name="brief" rows="3" placeholder="الرسالة الأساسية، النقاط اللي لازم تنذكر، الممنوعات، الرابط أو الكود…">${esc(d.brief)}</textarea></label>
-    <div class="bz-aibox"><div class="row">${bzAiBtn('aiReply','اكتب رد على العرض')}${bzAiBtn('aiPrice','اقترح سعر')}</div>${!sample?noAiNote():''}<div id="bzAiOut">${d.reply?replyHtml(d.reply):''}</div></div>
+    <div class="bz-aibox"><div class="row">${bzAiBtn('aiReply','اكتب رد على العرض')}${bzAiBtn('aiPrice','اقترح سعر')}</div>${!sample?noAiNote():''}<div id="bzAiOut"><div id="bzPriceOut"></div><div id="bzReplyOut">${d.reply?replyHtml(d.reply):''}</div></div></div>
     <label class="f">ملاحظات<textarea name="notes" rows="2">${esc(d.notes)}</textarea></label>
   </div><footer><div class="row">${src?`<button type="button" class="btn danger" data-xact="delDeal" data-id="${src.id}">حذف</button>`:''}</div><div class="row"><button type="button" class="btn" data-act="closeModal">إلغاء</button><button class="btn primary" type="submit">حفظ</button></div></footer></form>`,true,()=>{BZ.ed=null})}
 const bzAiBtn=(a,l)=>`<button type="button" class="btn ai" data-xact="${a}" ${sample?'':`disabled title="${window.desktop?'أضف مفتاح Claude من الإعدادات':'المساعد الذكي غير متاح'}"`}>${l}</button>`;
@@ -158,7 +158,7 @@ function logIncome(f){const d=find('deals',f.dataset.id);if(!d)return closeModal
 function dealCtx(d){const acc=S.accounts.map(a=>`${PL(a.platform).n}: ${nfull(a.followers||0)} متابع، متوسط المشاهدات ${nfull(avgViews(a.platform))}`).join('\n')||'ما فيه حسابات مسجلة';
   return `البراند: ${d.brand||'-'}\nالمرحلة: ${BZ_SN[d.stage]||'-'}\nالمنصات المطلوبة: ${(d.platforms||[]).map(k=>PL(k).n).join('، ')||'غير محددة'}\nالتسليمات: ${(d.deliverables||[]).map(x=>`${x.type}${x.due?' بتاريخ '+x.due:''}`).join('، ')||'غير محددة'}\nالمبلغ المعروض: ${+d.fee?bzCur(d.fee,d.currency):'ما انذكر'}\nموعد الدفع: ${d.payDue||'غير محدد'}\nالبريف: ${d.brief||'-'}\n\nأرقامي:\n${acc}\nمتوسط المشاهدات العام: ${nfull(avgViews())}\nنسبة التفاعل: ${pct(engRate())}\nرقم رخصة موثوق: ${(bzP().lic||{}).no||'غير مضاف'}`}
 const replyHtml=t=>`<div class="bz-out"><div class="ph"><b class="small">${I.chat} الرد المقترح</b><button type="button" class="btn sm" data-xact="copyReply">${I.copy} انسخ</button></div><div class="bz-reply">${esc(t)}</div></div>`;
-async function bzAI(a,el){const d=readDeal();if(!d)return;const out=$('#bzAiOut');if(!sample){toast('المساعد يحتاج مفتاح Claude');return}busyBtn(el,true,a==='aiReply'?'يكتب…':'يحسب…');
+async function bzAI(a,el){const d=readDeal();if(!d)return;const out=$(a==='aiReply'?'#bzReplyOut':'#bzPriceOut');if(!sample){toast('المساعد يحتاج مفتاح Claude');return}busyBtn(el,true,a==='aiReply'?'يكتب…':'يحسب…');
   try{if(a==='aiReply'){out.innerHTML=replyHtml('');const box=$('.bz-reply',out);
       const t=await aiText(`اكتب رد على عرض تعاون إعلاني من براند، كرسالة جاهزة أرسلها واتساب أو إيميل بلهجة سعودية مهذبة واحترافية.
 الرد يكون: شكر واهتمام، ملخص أرقامي اللي تهم البراند (المتابعين ومتوسط المشاهدات) بدون مبالغة، تأكيد التسليمات والمواعيد، ${+d.fee?'تأكيد المبلغ أو التفاوض عليه بلطف إذا كان أقل من قيمة أرقامي':'عرض سعر واضح بالريال مبني على أرقامي'}، ذكر إن المحتوى بيكون فيه إفصاح #إعلان حسب الأنظمة، وطريقة الدفع (مثلاً ٥٠٪ مقدم). لا تخترع أرقام غير المذكورة. أرجع نص الرسالة فقط بدون مقدمة.
@@ -185,21 +185,21 @@ function bzMoney(){const n=new Date(),k=monthKey(n),lk=monthKey(new Date(n.getFu
   const st=bzStats();
   const kpis=`<div class="kpis">${[[I.down,'دخل هالشهر',sar(inc),delta(inc,li,true)],[I.up,'مصاريف هالشهر',sar(out),delta(out,lo,false)],[I.wallet,'الصافي',sar(net),lnet||net?`الشهر اللي فات ${sar(lnet)}`:'دخل ناقص مصاريف'],[I.coin,'ينتظر الدفع',sar(st.unpaid),`${S.deals.filter(d=>BZ_OPEN.includes(d.stage)).length} شراكة`]].map(([i,l,v,s],x)=>`<div class="kpi ${x===2?(net<0?'bz-neg':'bz-pos'):''}"><div class="l">${i}${l}</div><div class="v num">${v}</div><div class="s">${s}</div></div>`).join('')}</div>`;
   if(!S.money.length)return kpis+`<div class="empty bz-empty"><span class="bz-ic">${I.wallet}</span><b>سجّل دخلك ومصاريفك</b><span>إعلانات يوتيوب، هدايا اللايف، سناب ستارز، الشراكات… وكل اللي تصرفه على المعدات والاشتراكات. تشوف صافي شغلك كل شهر.</span><div class="row" style="justify-content:center"><button class="btn primary" data-xact="newMoney" data-type="in">${I.plus} سجّل دخل</button><button class="btn" data-xact="newMoney" data-type="out">${I.plus} مصروف</button></div></div>`;
-  return kpis+`<section class="panel"><div class="ph"><h2>${I.chart} آخر ١٢ شهر</h2><div class="bz-legend"><span><i class="in"></i>دخل</span><span><i class="out"></i>مصاريف</span></div></div>${moneyChart()}</section>
+  return kpis+`<section class="panel"><div class="ph"><h2>${I.chart} آخر ١٢ شهر</h2><div class="bz-legend"><span><i class="t-in"></i>دخل</span><span><i class="t-out"></i>مصاريف</span></div></div>${moneyChart()}</section>
   <div class="grid g2" style="margin-top:14px">${srcPanel('in')}${srcPanel('out')}</div>
   <section class="panel" style="margin-top:14px">${moneyTable()}</section>`}
 function moneyChart(){const n=new Date(),ms=[];for(let i=11;i>=0;i--){const d=new Date(n.getFullYear(),n.getMonth()-i,1),k=monthKey(d);ms.push({d,k,i:sumM('in',k),o:sumM('out',k)})}
   const mx=Math.max(1,...ms.map(m=>Math.max(m.i,m.o)));const h=v=>v?Math.max(2,v/mx*100):0;
   return `<div class="bz-chart" role="img" aria-label="الدخل والمصاريف لآخر ١٢ شهر"><div class="bz-grid"><span class="num">${sar(mx)}</span><span class="num">${sar(mx/2)}</span><span></span></div>
-  <div class="bz-cols">${ms.map((m,x)=>`<div class="bz-m ${x===11?'now':''}" tabindex="0"><div class="bz-bp"><i class="in" style="height:${h(m.i)}%"></i><i class="out" style="height:${h(m.o)}%"></i></div><span>${fmt(m.d,{month:'short'})}</span>
-    <div class="bz-tip"><b>${fmt(m.d,{month:'long',year:'numeric'})}</b><div><i class="in"></i>دخل<em class="num">${sar(m.i)}</em></div><div><i class="out"></i>مصاريف<em class="num">${sar(m.o)}</em></div><div class="net">الصافي<em class="num">${sar(m.i-m.o)}</em></div></div></div>`).join('')}</div></div>`}
+  <div class="bz-cols">${ms.map((m,x)=>`<div class="bz-m ${x===11?'now':''}" tabindex="0"><div class="bz-bp"><i class="t-in" style="height:${h(m.i)}%"></i><i class="t-out" style="height:${h(m.o)}%"></i></div><span>${fmt(m.d,{month:'short'})}</span>
+    <div class="bz-tip"><b>${fmt(m.d,{month:'long',year:'numeric'})}</b><div><i class="t-in"></i>دخل<em class="num">${sar(m.i)}</em></div><div><i class="t-out"></i>مصاريف<em class="num">${sar(m.o)}</em></div><div class="net">الصافي<em class="num">${sar(m.i-m.o)}</em></div></div></div>`).join('')}</div></div>`}
 function srcPanel(type){const n=new Date(),from=monthKey(new Date(n.getFullYear(),n.getMonth()-11,1));const rows=S.money.filter(m=>m.type===type&&mKey(m.date)>=from);
   const by={};rows.forEach(m=>by[m.source||'أخرى']=(by[m.source||'أخرى']||0)+(+m.amount||0));const a=Object.entries(by).sort((x,y)=>y[1]-x[1]),tot=a.reduce((s,x)=>s+x[1],0)||1,mx=a[0]?a[0][1]:1;
   return `<section class="panel"><div class="ph"><h2>${type==='in'?I.down:I.up} ${type==='in'?'مصادر الدخل':'وين تروح المصاريف'}</h2><span class="small muted">آخر ١٢ شهر</span></div>
-  ${a.length?`<div class="bars bz-src ${type}">${a.map(([s,v])=>`<div class="bar"><span>${esc(s)}</span><div class="track"><div class="fill" style="width:${v/mx*100}%"></div></div><b class="num">${sar(v)}<small>${Math.round(v/tot*100)}٪</small></b></div>`).join('')}</div>`:`<p class="muted small">${type==='in'?'ما فيه دخل مسجل':'ما فيه مصاريف مسجلة'}.</p>`}</section>`}
+  ${a.length?`<div class="bars bz-src t-${type}">${a.map(([s,v])=>`<div class="bar"><span>${esc(s)}</span><div class="track"><div class="fill" style="width:${v/mx*100}%"></div></div><b class="num">${sar(v)}<small>${Math.round(v/tot*100)}٪</small></b></div>`).join('')}</div>`:`<p class="muted small">${type==='in'?'ما فيه دخل مسجل':'ما فيه مصاريف مسجلة'}.</p>`}</section>`}
 function moneyTable(){const f=BZ.mf;let rows=S.money.filter(m=>f==='all'||m.type===f).sort((a,b)=>String(b.date).localeCompare(String(a.date))||(b.createdAt||0)-(a.createdAt||0));const tot=rows.length;if(!BZ.all)rows=rows.slice(0,25);
   return `<div class="ph"><h2>كل الحركات</h2><div class="row"><div class="seg">${[['all','الكل'],['in','دخل'],['out','مصاريف']].map(([k,l])=>`<button data-xact="mf" data-f="${k}" aria-pressed="${f===k}">${l}</button>`).join('')}</div><button class="btn sm" data-xact="csv">${I.dl} CSV</button></div></div>
-  ${rows.length?`<div class="tablewrap bz-table"><table><thead><tr><th>التاريخ</th><th>المصدر</th><th>ملاحظة</th><th>المبلغ</th></tr></thead><tbody>${rows.map(m=>{const d=m.dealId&&find('deals',m.dealId);return `<tr data-xact="editMoney" data-id="${m.id}" tabindex="0"><td class="num" style="white-space:nowrap">${dShort(m.date)} <span class="faint">${String(m.date||'').slice(0,4)}</span></td><td><span class="bz-src-t ${m.type}">${m.type==='in'?I.down:I.up}${esc(m.source||'أخرى')}</span></td><td class="muted">${esc(m.note||'')}${d?` <span class="chip">${I.brief}${esc(d.brand)}</span>`:''}</td><td class="num bz-amt ${m.type}">${m.type==='in'?'+':'−'}${sar(m.amount)}</td></tr>`}).join('')}</tbody></table></div>
+  ${rows.length?`<div class="tablewrap bz-table"><table><thead><tr><th>التاريخ</th><th>المصدر</th><th>ملاحظة</th><th>المبلغ</th></tr></thead><tbody>${rows.map(m=>{const d=m.dealId&&find('deals',m.dealId);return `<tr data-xact="editMoney" data-id="${m.id}" tabindex="0"><td class="num" style="white-space:nowrap">${dShort(m.date)} <span class="faint">${String(m.date||'').slice(0,4)}</span></td><td><span class="bz-src-t t-${m.type}">${m.type==='in'?I.down:I.up}${esc(m.source||'أخرى')}</span></td><td class="muted">${esc(m.note||'')}${d?` <span class="chip">${I.brief}${esc(d.brand)}</span>`:''}</td><td class="num bz-amt t-${m.type}">${m.type==='in'?'+':'−'}${sar(m.amount)}</td></tr>`}).join('')}</tbody></table></div>
   ${tot>rows.length?`<div style="text-align:center;margin-top:10px"><button class="btn sm ghost" data-xact="allRows">اعرض الكل (${tot})</button></div>`:''}`:'<p class="muted small">ما فيه حركات هنا.</p>'}`}
 function srcOpts(type,sel){return (type==='in'?BZ_IN:BZ_OUT).map(s=>`<option ${sel===s?'selected':''}>${s}</option>`).join('')}
 function openMoney(id,type){const src=id&&find('money',id);BZ.med=src?{...src}:{type:type||'in',amount:'',source:type==='out'?'معدات':'إعلانات يوتيوب',date:bzToday(),note:'',dealId:''};const m=BZ.med;
@@ -251,7 +251,7 @@ h1{font-size:34px;font-weight:800;line-height:1.2}.tag{color:var(--a);font-weigh
 .bio{margin-top:20px;color:#d5d8df;font-size:15px;max-width:62ch;white-space:pre-line}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--line)}
 .stats div{padding:22px 10px;text-align:center;border-inline-start:1px solid var(--line)}.stats div:first-child{border:0}
-.stats .n{display:block;font-size:28px;font-weight:800;direction:ltr}.stats small{color:var(--mut);font-size:12px}
+.stats .n{display:block;font-size:28px;font-weight:800}.stats small{color:var(--mut);font-size:12px}
 section{padding:26px 44px;border-bottom:1px solid var(--line)}section:last-of-type{border-bottom:0}
 h2{font-size:13px;font-weight:700;color:var(--mut);letter-spacing:.02em;margin-bottom:14px;display:flex;align-items:center;gap:8px}
 h2:before{content:"";width:16px;height:4px;border-radius:9px;background:var(--a)}
@@ -286,9 +286,10 @@ ${K.brands.length?`<section><h2>براندات اشتغلت معها</h2><div cl
 <footer class="foot"><b>للتعاون</b>${K.email?`<span>${E(K.email)}</span>`:''}${K.phone?`<span>${E(K.phone)}</span>`:''}<span class="sp"></span><small>تحدّث ${E(fmt(new Date(),{day:'numeric',month:'long',year:'numeric'}))}</small></footer>
 </div></body></html>`}
 let kitFontP=null;
-function kitFonts(){if(kitFontP)return kitFontP;kitFontP=(async()=>{const css=await (await fetch('fonts/fonts.css')).text();const blocks=css.match(/@font-face\s*{[^}]*}/g)||[];const keep=blocks.filter(b=>/font-family:\s*'(Alexandria|Readex Pro)'/.test(b));
+function kitFonts(){if(kitFontP)return kitFontP;kitFontP=(async()=>{const css=await (await fetch('fonts/fonts.css')).text();const blocks=css.match(/@font-face\s*{[^}]*}/g)||[];const keep=blocks.filter(b=>/font-family:\s*'(Alexandria|Readex Pro)'/.test(b)&&/U\+0600-06FF|U\+0000-00FF/.test(b));
   const cache={};const b64=async u=>{if(cache[u])return cache[u];const buf=new Uint8Array(await (await fetch('fonts/'+u)).arrayBuffer());let s='';for(let i=0;i<buf.length;i+=32768)s+=String.fromCharCode.apply(null,buf.subarray(i,i+32768));return cache[u]='data:font/woff2;base64,'+btoa(s)};
-  let out='';for(const b of keep){const m=b.match(/url\(([^)]+)\)/);if(!m)continue;out+=b.replace(m[0],`url(${await b64(m[1].replace(/['"]/g,''))})`)+'\n'}return out})().catch(()=>{kitFontP=null;return ''});return kitFontP}
+  const g={};for(const b of keep){const u=(b.match(/url\(([^)]+)\)/)||[])[1],fam=(b.match(/font-family:\s*'([^']+)'/)||[])[1],w=+((b.match(/font-weight:\s*(\d+)/)||[])[1]||400),r=(b.match(/unicode-range:([^;]+)/)||[])[1];if(!u||!fam)continue;const k=fam+'|'+u;g[k]=g[k]||{fam,u:u.replace(/['"]/g,''),r,lo:w,hi:w};g[k].lo=Math.min(g[k].lo,w);g[k].hi=Math.max(g[k].hi,w)}
+  let out='';for(const x of Object.values(g))out+=`@font-face{font-family:'${x.fam}';font-style:normal;font-weight:${x.lo} ${x.hi};font-display:swap;src:url(${await b64(x.u)}) format('woff2');${x.r?'unicode-range:'+x.r+';':''}}\n`;return out})().catch(()=>{kitFontP=null;return ''});return kitFontP}
 function bzKit(){const k=kitP(),K=kitData(),p=S.profile||{},L=bzP().lic||{};
   const inp=(f,l,v,ph,cls='')=>`<label class="f">${l}<input type="text" class="${cls}" data-kit="${f}" value="${esc(v)}" placeholder="${esc(ph||'')}"></label>`;
   return `<div class="bz-kit"><section class="panel bz-kitform"><div class="ph"><h2>${I.pen} بيانات الملف</h2><span class="small muted">الأرقام تنسحب لحالها</span></div><div class="form">
@@ -357,7 +358,7 @@ document.addEventListener('click',async e=>{const el=e.target.closest('[data-xac
 document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches?.('.bz-card,.bz-table tr')){e.preventDefault();e.target.click()}});
 document.addEventListener('change',e=>{const t=e.target;
   if(t.dataset.xact==='showLost'){setBz({showLost:t.checked});render(true);return}
-  if(t.dataset.xdone){const d=find('deals',t.dataset.xdone),x=d&&d.deliverables[+t.dataset.i];if(!x)return;x.done=t.checked;put('deals',d);toast(`تم: ${x.type} · ${d.brand}`);return}
+  if(t.dataset.xdone){const d=find('deals',t.dataset.xdone),x=d&&d.deliverables[+t.dataset.i];if(!x)return;x.done=t.checked;put('deals',d,true);render(true);toast(`تم: ${x.type} · ${d.brand}`);return}
   if(t.name==='mtype'&&t.closest('#moneyForm')){const s=$('#bzSrc');if(s){s.innerHTML=srcOpts(t.value);s.closest('label').firstChild.textContent=t.value==='in'?'المصدر':'البند'}return}
   if(t.dataset.kit==='showLic'){setKit({hideLic:!t.checked});kitRefresh();return}
   if(t.dataset.kit==='showBrands'){setKit({hideBrands:!t.checked});kitRefresh();return}});
