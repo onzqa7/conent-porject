@@ -7,6 +7,7 @@ const { Readable } = require('stream');
 const { spawn } = require('child_process');
 const Anthropic = require('@anthropic-ai/sdk');
 const media = require('./media');
+const social = require('./social');
 
 const MODEL = 'claude-opus-5-5';
 const CONFIG = (() => { try { return JSON.parse(fs.readFileSync(path.join(__dirname, 'config.json'), 'utf8')); } catch { return {}; } })();
@@ -21,6 +22,12 @@ const userDir = () => app.getPath('userData');
 const thumbsRoot = () => path.join(userDir(), 'thumbs');
 
 /* ---------- ffmpeg ---------- */
+function locateBin(name, envVar) {
+  const exe = process.platform === 'win32' ? name + '.exe' : name;
+  const packaged = path.join(process.resourcesPath || '', 'bin', exe);
+  if (fs.existsSync(packaged)) return packaged;
+  return process.env[envVar] || name;
+}
 function locateFfmpeg() {
   const exe = process.platform === 'win32' ? 'ffmpeg.exe' : 'ffmpeg';
   const packaged = path.join(process.resourcesPath || '', 'bin', exe);
@@ -264,6 +271,35 @@ ipcMain.handle('file:save', async (e, filename, data) => {
 ipcMain.handle('shell:showItem', (_e, p) => { if (p && fs.existsSync(p)) shell.showItemInFolder(p); });
 ipcMain.handle('shell:openPath', (_e, p) => { if (p && fs.existsSync(p)) return shell.openPath(p); });
 
+/* ---------- published videos (yt-dlp) ---------- */
+const socialErr = e => {
+  const m = String((e && e.message) || e);
+  if (e && e.cancelled) return { code: 'cancelled', error: 'انلغى' };
+  if (e && e.code === 'ENOENT') return { code: 'missing', error: 'أداة جلب الفيديوهات مو موجودة في البرنامج' };
+  if (/login|log in|cookies|private|authentication|Sign in|rate-limit|confirm you/i.test(m)) return { code: 'login', error: 'المنصة تطلب تسجيل دخول. اختر متصفحك المسجّل فيه من «إعدادات الجلب» تحت وجرّب مرة ثانية' };
+  if (/Unsupported URL|is not a valid URL/i.test(m)) return { code: 'unsupported', error: 'الرابط هذا ما أقدر أقرأه' };
+  if (/timeout/i.test(m)) return { code: 'timeout', error: 'المنصة ما ردت، جرّب بعد شوي' };
+  if (/Unable to|extract|HTTP Error/i.test(m)) return { code: 'blocked', error: 'المنصة غيّرت شي أو حجبت الطلب. جرّب «حدّث أداة الجلب» من إعدادات الجلب' };
+  return { code: 'failed', error: m.replace(/^ERROR:\s*/, '').slice(0, 200) };
+};
+ipcMain.handle('social:list', async (e, jobId, url, opts) => {
+  try { return await social.listVideos(url, opts || {}, p => { if (!e.sender.isDestroyed()) e.sender.send('social:progress', jobId, p); }); }
+  catch (err) { return socialErr(err); }
+});
+ipcMain.handle('social:info', async (_e, url, browser) => { try { return await social.videoInfo(url, browser); } catch (err) { return socialErr(err); } });
+ipcMain.handle('social:download', async (e, jobId, url, browser) => {
+  const dir = path.join(userDir(), 'downloads');
+  fs.mkdirSync(dir, { recursive: true });
+  try {
+    const file = await social.download(url, dir, browser, p => { if (!e.sender.isDestroyed()) e.sender.send('social:dlProgress', jobId, p); });
+    if (!file || !fs.existsSync(file)) return { code: 'failed', error: 'ما قدرت أنزّل الفيديو' };
+    allowVideo(file);
+    return { file };
+  } catch (err) { return socialErr(err); }
+});
+ipcMain.handle('social:cancel', () => { social.cancelAll(); return true; });
+ipcMain.handle('social:selfUpdate', async () => { try { const out = await social.selfUpdate(); return { ok: true, out: out.slice(-300) }; } catch (err) { return socialErr(err); } });
+
 /* ---------- video ---------- */
 const allowed = new Set();
 const allowVideo = p => { if (typeof p === 'string' && VIDEO_EXT.test(p) && fs.existsSync(p)) { allowed.add(path.resolve(p)); return true; } return false; };
@@ -404,9 +440,10 @@ function createWindow() {
 Menu.setApplicationMenu(null);
 app.whenReady().then(() => {
   media.setFfmpegPath(locateFfmpeg());
+  social.setPaths(locateBin('yt-dlp', 'YTDLP_PATH'), locateFfmpeg());
   uiInfo = currentUi();
   backupDaily();
   registerProtocols();
   createWindow();
 });
-app.on('window-all-closed', () => { media.cancelAll(); app.quit(); });
+app.on('window-all-closed', () => { media.cancelAll(); social.cancelAll(); app.quit(); });

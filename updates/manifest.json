@@ -1,13 +1,13 @@
 {
   "ui": {
-    "version": "2.1.0",
-    "notes": "قسم الدراسات والتحليلات",
-    "minShell": "2.1.0",
+    "version": "2.2.0",
+    "notes": "صفحة فيديوهاتي والنشر لكل المنصات",
+    "minShell": "2.2.0",
     "files": [
       {
         "path": "app.js",
-        "sha256": "e78c200bc20d95cd89621659438b16b9a908075db2dd2ac8ab09c44337d3ef4e",
-        "size": 108857
+        "sha256": "ce58e8009870082b6405ec1c94866ea4eadc347c6f006fcfd43157bb6a0b574b",
+        "size": 109251
       },
       {
         "path": "clips.js",
@@ -151,25 +151,30 @@
       },
       {
         "path": "index.html",
-        "sha256": "986eac31f89f8a387f0136a297a4a63610d20d2e2a2f9ed9936bb1c93f3dd536",
-        "size": 1396
+        "sha256": "e911e7c427410bc0251ffbde7caf9c1181d24fda568fe4c7e2d91337f82e4508",
+        "size": 1437
       },
       {
         "path": "studies.js",
-        "sha256": "1bd6b5715f6fbafc9cb56220ab5c4b827e16269b9073b2586e8d811b0e3c598b",
-        "size": 60508
+        "sha256": "3a7bb28932f5a57523e7f8e2cabbc193f253fcd3081c342bf72554b4fe619a3d",
+        "size": 60614
       },
       {
         "path": "styles.css",
-        "sha256": "acb3771941fa89016d6c6360b696f41d6704d0de7f08e4d296b266cc7956c0d3",
-        "size": 40160
+        "sha256": "3fafd83e07d8d7550cee48316735547d877cc7ab9e1b2a1fa2fccdc2a6d7325f",
+        "size": 43317
+      },
+      {
+        "path": "videos.js",
+        "sha256": "45c17a974ff23d645b85c1fcf330a70f46d0de3f693e0d54b183a92fe99af868",
+        "size": 27931
       }
     ]
   },
   "shell": {
-    "version": "2.1.0",
-    "url": "https://raw.githubusercontent.com/onzqa7/conent-porject/main/updates/shell/content-studio-2.1.0.zip",
-    "sha256": "89374cb47f61b46ba4cee68f2f23362a2f958ff43eaf516c77ebdf4fd1715abe",
-    "notes": "قسم الدراسات (يبحث في الإنترنت) وقسم التحليلات"
+    "version": "2.2.0",
+    "url": "https://raw.githubusercontent.com/onzqa7/conent-porject/main/updates/shell/content-studio-2.2.0.zip",
+    "sha256": "64680a785a3058e48f3e1279b018c8fc5f1d903c941fbcc6c04339c773481135",
+    "notes": "فيديوهاتي من كل المنصات، والنشر مرة وحدة لكل المنصات"
   }
 }

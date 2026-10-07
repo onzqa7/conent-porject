@@ -35,6 +35,15 @@ contextBridge.exposeInMainWorld('desktop', {
     onProgress: fn => on('clips:progress', fn),
     onExportProgress: fn => on('clips:exportProgress', fn),
   },
+  social: {
+    list: (jobId, url, opts) => ipcRenderer.invoke('social:list', jobId, url, opts),
+    info: (url, browser) => ipcRenderer.invoke('social:info', url, browser),
+    download: (jobId, url, browser) => ipcRenderer.invoke('social:download', jobId, url, browser),
+    cancel: () => ipcRenderer.invoke('social:cancel'),
+    selfUpdate: () => ipcRenderer.invoke('social:selfUpdate'),
+    onProgress: fn => on('social:progress', fn),
+    onDlProgress: fn => on('social:dlProgress', fn),
+  },
   updates: {
     state: () => ipcRenderer.invoke('update:state'),
     check: () => ipcRenderer.invoke('update:check'),
