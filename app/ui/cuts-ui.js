@@ -65,7 +65,7 @@ clipCard=function(p,c,i){const h=_clipCardU(p,c,i);
   let box;
   if(!c.clean)box=`<div class="cutrow"><button class="btn sm" data-uact="open" data-id="${c.id}">${I.cut} نظّف الصمت والحشو</button><span class="small faint">قص تلقائي للسكتات والكلمات الزايدة</span></div>`;
   else{const s=cutSummary(c.clean,c.start,c.end);
-    box=`<div class="cutrow on"><label class="tgl"><input type="checkbox" data-uact="apply" data-id="${c.id}" ${c.clean.on!==false?'checked':''}><span>${I.cut} نظّف قبل التصدير</span></label><span class="cutsave num">−${cutTc(s.saved)}</span><span class="small faint">${s.n} قصة</span><span class="sp"></span><button class="btn sm ghost" data-uact="open" data-id="${c.id}">عدّل</button></div>`}
+    box=`<div class="cutrow on"><label class="tgl"><input type="checkbox" data-uact="apply" data-id="${c.id}" ${c.clean.on!==false?'checked':''}><span>${I.cut} نظّف قبل التصدير</span></label><span class="cutsave num">−${cutTc(s.saved)}</span><span class="small faint">${s.n} قصة</span><span class="cutgrow"></span><button class="btn sm ghost" data-uact="open" data-id="${c.id}">عدّل</button></div>`}
   return h.replace(/<\/article>\s*$/,box+'</article>')};
 
 function vCutView(p){
@@ -114,7 +114,7 @@ function cutSliders(o){return `
   <label class="cutsl"><span>هامش حول الكلام <b class="num" id="cutv-pad">${o.pad} ms</b></span><input type="range" min="0" max="300" step="10" value="${o.pad}" data-ucfg="pad"><small>يخلي القص طبيعي وما يقطع أطراف الكلمات</small></label>`}
 
 function cutSettings(J){const o=cutOpts();
-  return `<details class="panel cutset" ${ui.cut.setOpen?'open':''}><summary><b>إعدادات القص</b><span class="small faint">${o.db} dB · ${o.minLen} ث · ${o.pad} ms</span>${ui.cut.silBusy?'<span class="spin"></span>':''}</summary>
+  return `<details class="panel cutset" ${ui.cut.setOpen?'open':''}><summary><b>إعدادات القص</b><span class="small faint"><bdi dir="ltr">${o.db} dB</bdi> · <bdi>${o.minLen} ث</bdi> · <bdi dir="ltr">${o.pad} ms</bdi></span>${ui.cut.silBusy?'<span class="spin"></span>':''}</summary>
    <div class="cutset-b">${cutSliders(o)}
     <div class="row cuttypes"><label class="tgl"><input type="checkbox" data-ucfg="sil" ${o.sil?'checked':''}><span>السكتات</span></label><label class="tgl"><input type="checkbox" data-ucfg="fill" ${o.fill?'checked':''} ${J.words?'':'disabled'}><span>كلمات الحشو</span></label><label class="tgl"><input type="checkbox" data-ucfg="rep" ${o.rep?'checked':''} ${J.words?'':'disabled'}><span>التكرار والبدايات المتقطعة</span></label></div>
     <div class="row"><button class="btn sm ghost" data-uact="fillers">عدّل كلمات الحشو (${cutFillers().length})</button><button class="btn sm ghost" data-uact="reset">رجّع كل القصات للوضع التلقائي</button></div></div></details>`}
@@ -191,7 +191,7 @@ async function runCut(){const {p,c,from,to}=cutTarget();if(!p||!hasCuts()||ui.cu
   off();if(!ui.cut)return;ui.cut.busy=null;
   if(r.error){render(true);if(r.error!=='cancelled')toast(r.error);else toast('انلغى التحليل');return}
   const prev=c?c.clean:p.clean;
-  const J={from:r.start,to:r.end,sil:r.silences,words:r.words,note:r.note,model:r.model,db:o.db,minLen:o.minLen,off:{},man:{},on:prev?prev.on:true,exports:prev&&prev.exports||[],at:Date.now()};
+  const J={from:r.start,to:r.end,sil:r.silences,words:r.words,note:r.note||(words?null:(st.whisper?'no_model':'no_whisper')),model:r.model,db:o.db,minLen:o.minLen,off:{},man:{},on:prev?prev.on:true,exports:prev&&prev.exports||[],at:Date.now()};
   if(c)c.clean=J;else p.clean=J;put('clips',p,true);ui.cut.seekIn=true;render(true);
   const s=computeCuts(J,from,to);toast(s.saved>0.3?`لقيت ${s.cuts.length} قصة · توفّر ${cutTc(s.saved)}`:'المقطع نظيف، ما لقيت شي كثير يتقص')}
 async function rerunSilences(){const {p,J}=cutTarget();if(!J||!hasCuts())return;const o=cutOpts();ui.cut.silBusy=true;ui.cut.setOpen=true;render(true);

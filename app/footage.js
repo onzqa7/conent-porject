@@ -35,7 +35,7 @@ function save(nowFlag) {
 const tPath = id => path.join(TDIR, id + '.json');
 const loadT = id => readJson(tPath(id));
 function saveT_(tr) { writeJson(tPath(tr.id), tr); cache.delete(tr.id); }
-function dropT(id) { try { fs.unlinkSync(tPath(id)); } catch {} try { fs.unlinkSync(path.join(THDIR, id + '.jpg')); } catch {} cache.delete(id); }
+function dropT(id, keepThumb) { try { fs.unlinkSync(tPath(id)); } catch {} if (!keepThumb) { try { fs.unlinkSync(path.join(THDIR, id + '.jpg')); } catch {} } cache.delete(id); }
 
 /* ---------- state for the UI ---------- */
 function capsReady() {
@@ -142,7 +142,8 @@ function toSentences(words) {
   const out = []; let cur = null;
   for (const w of words) {
     const prev = cur && cur.w[cur.w.length - 1];
-    if (cur && (w.s - prev[1] > 0.7 || /[.!?؟]$/.test(prev[2]) || cur.w.length >= 22)) { out.push(cur); cur = null; }
+    // whisper stretches word times over pauses, so a very long word usually hides a pause after it
+    if (cur && (w.s - prev[1] > 0.6 || /[.!?؟]$/.test(prev[2]) || prev[1] - prev[0] > 1.6 || cur.w.length >= 14 || w.e - cur.s > 8)) { out.push(cur); cur = null; }
     if (!cur) cur = { s: w.s, e: w.e, w: [] };
     cur.w.push([w.s, w.e, w.w]); cur.e = w.e;
   }
@@ -352,7 +353,7 @@ function register(ctx) {
   ipcMain.handle('ftg:queue', (_e, ids, fresh) => {
     for (const id of ids || []) {
       const f = idx.files[id]; if (!f || f.status === 'missing' || (worker && worker.id === id)) continue;
-      if (fresh) { dropT(id); f.done = 0; f.segs = 0; }
+      if (fresh) { dropT(id, true); f.done = 0; f.segs = 0; }
       f.status = 'queued'; f.error = null; f.probeFailed = false; f.mtime = Math.min(f.mtime, now() - SETTLE_MS - 1);
     }
     save(); emit(true); probeAll(); pump(); return publicState();

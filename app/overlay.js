@@ -24,7 +24,7 @@ const clients = new Set();
 
 /* ---------- state shown on the overlays ---------- */
 const st = {
-  style: { accent: '#FFB020', size: 'm', font: 'Readex Pro', card: 'dark', pos: { lower: 'bl', goal: 'tc', chat: 'br', alerts: 'tc', poll: 'tr' } },
+  style: { accent: '#FFB020', size: 'm', font: 'Readex Pro', card: 'dark', pos: { lower: 'bl', goal: 'tl', chat: 'br', alerts: 'tc', poll: 'tr' } },
   lower: { autoHide: 0, show: true },
   segment: null,
   countdown: { to: 0, title: '', msg: 'البث يبدأ بعد', when: '', handles: [], bg: 'dark' },
@@ -339,7 +339,7 @@ function handler(req, res) {
     res.write('retry: 2000\n\n');
     res.write(`event: state\ndata: ${JSON.stringify(pub())}\n\n`);
     if (c.kind === 'chat' || c.kind === 'all') { const fadeMs = st.chat.fade * 1000; for (const m of chat.recent.slice(-st.chat.max)) if (!fadeMs || Date.now() - m.ts < fadeMs) res.write(`event: chat\ndata: ${JSON.stringify({ ...m, old: true })}\n\n`); }
-    req.on('close', () => clients.delete(c));
+    req.on('close', () => { clients.delete(c); toApp('status', publicStatus()); });
     toApp('status', publicStatus());
     return;
   }
@@ -422,7 +422,7 @@ body{font-family:var(--font),"Readex Pro",Tahoma,sans-serif;direction:rtl;color:
 /* countdown */
 .cd{position:absolute;inset:0;display:grid;place-items:center;text-align:center;overflow:hidden}
 .cd.dark{background:#07080C}
-.cd .glow{position:absolute;width:1100px;height:1100px;border-radius:50%;filter:blur(120px);opacity:.38;background:var(--ac);animation:drift 16s ease-in-out infinite alternate}
+.cd .glow{position:absolute;width:1100px;height:1100px;border-radius:50%;filter:blur(120px);opacity:.3;background:var(--ac);animation:drift 16s ease-in-out infinite alternate}
 .cd .glow.b{width:800px;height:800px;opacity:.2;background:color-mix(in srgb,var(--ac) 40%,#5B6CFF);animation-duration:21s;animation-direction:alternate-reverse}
 .cd.clear .glow{display:none}
 .cd .grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:64px 64px;mask-image:radial-gradient(circle at center,#000 20%,transparent 75%)}
@@ -437,10 +437,10 @@ body{font-family:var(--font),"Readex Pro",Tahoma,sans-serif;direction:rtl;color:
 .cd .ti{font-size:60px;font-weight:700;max-width:1500px;line-height:1.3}
 .cd .wh{font-size:30px;color:rgba(255,255,255,.7)}
 .cd .hs{display:flex;gap:18px;margin-top:26px;flex-wrap:wrap;justify-content:center}
-.cd .hs span{display:inline-flex;align-items:center;gap:12px;font-size:28px;padding:10px 22px 10px 14px;border-radius:99px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);direction:ltr}
+.cd .hs>span{display:inline-flex;align-items:center;gap:12px;font-size:28px;padding:10px 22px 10px 14px;border-radius:99px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);direction:ltr}
 .cd .hs .pb{width:38px;height:38px;border-radius:50%}
 /* goal */
-.goal{width:720px;padding:22px 28px 24px;opacity:0;transform:translateY(-10px);transition:opacity .5s,transform .5s}
+.goal{width:580px;padding:22px 28px 24px;opacity:0;transform:translateY(-10px);transition:opacity .5s,transform .5s}
 .goal.in{opacity:1;transform:none}
 .goal .gh{display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-bottom:14px}
 .goal .gl{font-size:28px;font-weight:700}
@@ -454,7 +454,7 @@ body{font-family:var(--font),"Readex Pro",Tahoma,sans-serif;direction:rtl;color:
 @keyframes bump{40%{transform:scale(1.18);color:var(--ac)}}
 .goal.done .gp b{color:var(--ac)}
 /* chat */
-.chat .list{width:560px;height:680px;display:flex;flex-direction:column;justify-content:flex-end;gap:10px;overflow:hidden;-webkit-mask-image:linear-gradient(to bottom,transparent,#000 14%);mask-image:linear-gradient(to bottom,transparent,#000 14%)}
+.chat .list{width:560px;height:540px;display:flex;flex-direction:column;justify-content:flex-end;gap:10px;overflow:hidden;-webkit-mask-image:linear-gradient(to bottom,transparent,#000 14%);mask-image:linear-gradient(to bottom,transparent,#000 14%)}
 .msg{padding:12px 18px 14px;border-radius:20px;animation:msgin .45s cubic-bezier(.2,.8,.2,1) both;transition:opacity .6s,transform .6s;flex:none}
 .msg.gone{opacity:0;transform:translateX(30px)}
 @keyframes msgin{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:none}}
@@ -655,7 +655,7 @@ function pageMain(KIND, PREV, ICONS) {
 const W = {
   lower: '<div class="w" id="w-lower" data-pos="bl"><div class="lt card" id="lt"><div class="lt-bar"></div><div class="lt-body"><div class="lt-top"><span class="lt-type" id="lt-type"></span><span id="lt-idx" class="num"></span></div><div class="lt-title" id="lt-title"></div></div></div></div>',
   countdown: '<div class="cd dark" id="cd"><div class="glow"></div><div class="glow b"></div><div class="grid"></div><div class="in"><div class="eb" id="cd-eb"></div><div class="t num" id="cd-t"></div><div class="ti" id="cd-ti"></div><div class="wh" id="cd-wh"></div><div class="hs" id="cd-hs"></div></div></div>',
-  goal: '<div class="w" id="w-goal" data-pos="tc"><div class="goal card" id="goal"><div class="gh"><span class="gl" id="g-l"></span><span class="gn num" id="g-n"></span></div><div class="bar"><div class="fill" id="g-f"></div></div><div class="gp"><span id="g-r"></span><b class="num" id="g-p"></b></div></div></div>',
+  goal: '<div class="w" id="w-goal" data-pos="tl"><div class="goal card" id="goal"><div class="gh"><span class="gl" id="g-l"></span><span class="gn num" id="g-n"></span></div><div class="bar"><div class="fill" id="g-f"></div></div><div class="gp"><span id="g-r"></span><b class="num" id="g-p"></b></div></div></div>',
   chat: '<div class="w chat" id="w-chat" data-pos="br"><div class="list" id="chat"></div></div>',
   alerts: '<div class="w" id="w-alerts" data-pos="tc"><div class="al card" id="al"><div class="ic" id="al-ic"></div><div class="at" id="al-t"></div><div class="an" id="al-n"></div><div class="ax" id="al-x"></div></div></div>',
   poll: '<div class="w" id="w-poll" data-pos="tr"><div class="poll card" id="poll"><div class="ph"><span class="tag" id="p-tag"></span><span id="p-hint"></span></div><div class="q" id="p-q"></div><div id="p-ops"></div><div class="ft num" id="p-ft"></div></div></div>',
