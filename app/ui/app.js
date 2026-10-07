@@ -721,6 +721,7 @@ async function boot(){
     const files=S.clips.map(c=>c.file).filter(Boolean);if(files.length)window.desktop.clips.allow(files).catch(()=>{});
   }
   render(true);
+  if(typeof afterBoot==='function')afterBoot();
 }
 // clips.js loads after this file, so wait for every script before the first render
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
