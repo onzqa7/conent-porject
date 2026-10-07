@@ -353,7 +353,7 @@ document.addEventListener('click',async e=>{const el=e.target.closest('[data-xac
   case 'csv':moneyCsv();break;
   case 'kitExport':kitExport();break;
   case 'kitPrint':{const f=$('#bzKitFrame');if(f&&f.contentWindow)f.contentWindow.print();break}
-  case 'kitBio':{if(!sample)break;const ta=$('[data-kit="bio"]');busyBtn(el,true,'يكتب…');try{const K=kitData();await aiText(`اكتب نبذة قصيرة (٢-٣ أسطر) لملف إعلاني يقدمني للبراندات. تكون واثقة ومو مبالغة، تذكر مجالي وجمهوري ونوع المحتوى اللي أقدمه. أرقامي: ${nfull(K.total)} متابع، متوسط المشاهدات ${nfull(K.avg)}، نسبة التفاعل ${pct(K.eng)}. أرجع النبذة فقط.`,u=>{if(ta)ta.value=u.text},'quick');if(ta){ta.value=ta.value.trim();setKit({bio:ta.value});kitRefresh()}}catch(err){aiErr(err)}busyBtn(el,false);break}
+  case 'kitBio':{if(!sample)break;const ta=$('[data-kit="bio"]');busyBtn(el,true,'يكتب…');try{const K=kitData();const bt=await aiText(`اكتب نبذة قصيرة (٢-٣ أسطر) لملف إعلاني يقدمني للبراندات. تكون واثقة ومو مبالغة، تذكر مجالي وجمهوري ونوع المحتوى اللي أقدمه. أرقامي: ${nfull(K.total)} متابع، متوسط المشاهدات ${nfull(K.avg)}، نسبة التفاعل ${pct(K.eng)}. أرجع النبذة فقط.`,u=>{if(ta)ta.value=u.text},'quick');if(ta){ta.value=String(bt||ta.value).trim();setKit({bio:ta.value});kitRefresh()}}catch(err){aiErr(err)}busyBtn(el,false);break}
   }});
 document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches?.('.bz-card,.bz-table tr')){e.preventDefault();e.target.click()}});
 document.addEventListener('change',e=>{const t=e.target;
