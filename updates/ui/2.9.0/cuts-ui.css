@@ -1,0 +1,109 @@
+/* تنظيف المقطع (cuts-ui.js) */
+:root{--cut-sil:#8A93A6;--cut-fill:#FF5C7A;--cut-rep:#A585FF;--cut-man:#3FB6E8}
+:root[data-theme="light"]{--cut-sil:#7A8396;--cut-fill:#D93A5B;--cut-rep:#7B55E0;--cut-man:#1E8FC0}
+
+/* clip card row */
+.cutrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-top:1px dashed var(--line);padding-top:10px;margin-top:2px}
+.cutrow .btn svg,.cutrow .tgl svg{width:15px;height:15px}
+.cutrow .cutgrow{flex:1}
+.cutsave{font-family:var(--f-display);font-weight:700;font-size:.86rem;color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,transparent);border-radius:7px;padding:1px 8px}
+
+/* intro */
+.cutintro{max-width:640px;margin:10px auto 0;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px;padding:32px 28px}
+.cutintro h2{margin:0}
+.cutintro>p{margin:0;max-width:52ch}
+.cutintro-ic{width:52px;height:52px;border-radius:15px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent-text);border:1px solid var(--accent-line)}
+.cutintro-ic svg{width:24px;height:24px}
+.cutintro-opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;width:100%;margin:8px 0 6px;text-align:start}
+.cutintro .btn.lg svg{width:18px;height:18px}
+
+/* sliders */
+.cutsl{display:flex;flex-direction:column;gap:6px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:11px 12px;min-width:0}
+.cutsl>span{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:.86rem;font-weight:600}
+.cutsl b{color:var(--accent-text);font-weight:700;direction:ltr;unicode-bidi:isolate;white-space:nowrap}
+.cutsl small{font-size:.74rem;color:var(--faint);line-height:1.4}
+.cutsl input[type=range]{width:100%;accent-color:var(--accent);direction:ltr;margin:2px 0}
+
+.cutnote{display:flex;align-items:center;gap:12px;text-align:start;width:100%;border-radius:12px}
+.cutnote>div{flex:1;min-width:0}
+.cutnote svg{width:18px;height:18px;flex:none;color:var(--accent-text)}
+.cutwarn{color:var(--warn)}
+
+/* studio layout */
+.cutstudio{grid-template-columns:minmax(0,1.25fr) minmax(340px,1fr)}
+.cutstudio .capov{display:none}
+.cutside{display:flex;flex-direction:column;gap:14px;min-width:0}
+.cutstrip{position:relative;height:64px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;overflow:hidden;cursor:pointer;direction:ltr}
+.cutstrip svg{position:absolute;inset:0;width:100%;height:100%;opacity:.9}
+.cutstrip .cs{position:absolute;top:6px;bottom:6px;border:0;padding:0;border-radius:4px;cursor:pointer;min-width:3px;transition:filter .12s,opacity .12s}
+.cutstrip .cs:hover{filter:brightness(1.15)}
+.cutstrip .cs-sil{background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--cut-sil) 55%,transparent) 0 4px,color-mix(in srgb,var(--cut-sil) 30%,transparent) 4px 8px)}
+.cutstrip .cs-fill{background:color-mix(in srgb,var(--cut-fill) 75%,transparent)}
+.cutstrip .cs-rep{background:color-mix(in srgb,var(--cut-rep) 75%,transparent)}
+.cutstrip .cs-man{background:color-mix(in srgb,var(--cut-man) 75%,transparent)}
+.cutstrip .cs.off{background:transparent;box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--fg) 30%,transparent);opacity:.75}
+.cutstrip .ph2{position:absolute;top:0;bottom:0;width:2px;background:var(--fg);pointer-events:none;box-shadow:0 0 0 1px color-mix(in srgb,var(--bg) 60%,transparent)}
+.cutscale{display:flex;justify-content:space-between;font-size:.72rem;color:var(--faint);direction:ltr;margin-top:-6px;padding-inline:2px}
+
+.cutctl{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.cutctl .sp{flex:1}
+.cutctl .btn svg{width:15px;height:15px}
+.cutlegend{display:inline-flex;align-items:center;gap:6px;font-size:.76rem;color:var(--muted)}
+.cutlegend i{width:10px;height:10px;border-radius:3px;display:inline-block;margin-inline-start:6px}
+.lg-sil{background:var(--cut-sil)}.lg-fill{background:var(--cut-fill)}.lg-rep{background:var(--cut-rep)}.lg-man{background:var(--cut-man)}
+
+/* saved time */
+.cutkpi{display:flex;flex-direction:column;gap:14px}
+.cutkpi .big{font-family:var(--f-display);font-weight:800;font-size:1.9rem;line-height:1.15;color:var(--fg);letter-spacing:-.01em}
+.cutkpi .big span{font-size:1rem;font-weight:600;color:var(--muted)}
+.cutbar{height:8px;border-radius:99px;margin:10px 0 8px;overflow:hidden;background:color-mix(in srgb,var(--ok) 22%,var(--raised))}
+.cutbar div{height:100%;background:var(--accent);border-radius:99px;transition:width .25s}
+.cutcounts{display:flex;gap:8px;flex-wrap:wrap}
+.cutcounts .cc{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;color:var(--muted);background:var(--bg2);border:1px solid var(--line);border-radius:99px;padding:4px 11px 4px 9px}
+.cutcounts .cc b{font-family:var(--f-display);color:var(--fg)}
+.cutcounts .cc::before{content:"";width:8px;height:8px;border-radius:50%}
+.cc-sil::before{background:var(--cut-sil)}.cc-fill::before{background:var(--cut-fill)}.cc-rep::before{background:var(--cut-rep)}.cc-man::before{background:var(--cut-man)}
+
+/* settings */
+.cutset{padding:0}
+.cutset summary{list-style:none;display:flex;align-items:center;gap:10px;padding:14px 18px;cursor:pointer}
+.cutset summary::-webkit-details-marker{display:none}
+.cutset summary b{font-family:var(--f-display)}
+.cutset summary .small{margin-inline-start:auto}
+.cutset summary::after{content:"";width:8px;height:8px;border-inline-start:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(-45deg);transition:transform .15s;margin-inline-start:4px}
+.cutset[open] summary::after{transform:rotate(135deg)}
+.cutset-b{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;padding:0 18px 16px}
+.cutset-b .cutsl{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);align-items:center;gap:4px 14px;padding:9px 12px}
+.cutset-b .cutsl small{grid-column:1/-1}
+.cutset-b .row{grid-column:1/-1;gap:8px 14px;flex-wrap:wrap}
+
+/* transcript */
+.cuttr .ph{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.cuttr .seg button{display:inline-flex;align-items:center;gap:5px}
+.cuttr .seg svg{width:13px;height:13px}
+.cuttext{margin:0;line-height:2.15;font-size:1.02rem;max-height:46vh;overflow:auto;padding:4px 2px 4px 8px;overscroll-behavior:contain}
+.cw{cursor:pointer;border-radius:5px;padding:1px 3px;transition:background .1s,color .1s}
+.cw:hover{background:var(--hover)}
+.cw.now{background:var(--accent-soft);box-shadow:inset 0 -2px 0 var(--accent)}
+.cw.cut{text-decoration:line-through;text-decoration-thickness:2px;color:var(--faint)}
+.cw.cut.k-fill{text-decoration-color:var(--cut-fill);background:color-mix(in srgb,var(--cut-fill) 10%,transparent)}
+.cw.cut.k-rep{text-decoration-color:var(--cut-rep);background:color-mix(in srgb,var(--cut-rep) 10%,transparent)}
+.cw.cut.k-man{text-decoration-color:var(--cut-man);background:color-mix(in srgb,var(--cut-man) 10%,transparent)}
+.cw.kept{box-shadow:inset 0 -1.5px 0 color-mix(in srgb,var(--fg) 25%,transparent)}
+.cutpill{display:inline-flex;align-items:center;gap:4px;vertical-align:1px;margin:0 3px;border:1px solid var(--line2);background:var(--bg2);color:var(--muted);border-radius:99px;padding:0 8px;font-size:.72rem;line-height:1.7;cursor:pointer;font-variant-numeric:tabular-nums}
+.cutpill svg{width:12px;height:12px;color:var(--cut-sil)}
+.cutpill:not(.off){text-decoration:line-through;text-decoration-color:var(--cut-sil);background:color-mix(in srgb,var(--cut-sil) 12%,transparent)}
+.cutpill.off{border-style:dashed;color:var(--fg)}
+.cutpill:hover{border-color:var(--accent-line);color:var(--fg)}
+.cutsils{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.cutsils .cutpill{margin:0;font-size:.8rem;padding:2px 10px}
+
+/* export */
+.cutexp .tgl svg{width:15px;height:15px}
+.cutexp .small svg{width:14px;height:14px;vertical-align:-2px}
+.cutprog{width:160px;height:6px}
+
+@media (max-width:1180px){.cutstudio{grid-template-columns:minmax(0,1fr)}.cuttext{max-height:none}}
+@media (max-width:900px){.cutintro-opts,.cutset-b{grid-template-columns:minmax(0,1fr)}.cutlegend{display:none}}
+.cutsils .cutpill:not(.off){text-decoration:none;color:var(--fg)}
+.cutsils .cutpill:not(.off)::before{content:"";width:7px;height:7px;border-radius:2px;background:var(--cut-sil);margin-inline-end:4px}

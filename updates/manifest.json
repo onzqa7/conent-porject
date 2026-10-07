@@ -1,18 +1,18 @@
 {
   "ui": {
-    "version": "2.8.2",
-    "notes": "يومك بالرئيسية، التقاط سريع، تنبيهات، وصفة النجاح بالتحليلات، محرر المنشور الجانبي، وإصلاح التحليلات والوكيل",
+    "version": "2.9.0",
+    "notes": "أوفرلاي OBS وشات تويتش وكيك، تنظيف المقطع من الصمت والحشو، أرشيف تسجيلاتي والبحث داخل كلامك، مخطط سناب، صفحة روابطي، والتقاط سريع من أي مكان",
     "minShell": "2.5.0",
     "files": [
       {
         "path": "agent.js",
-        "sha256": "0c99c85ff1770b16e6cb98a02d9dd813f81ae215bb09a71c131d7b251d59d866",
-        "size": 24493
+        "sha256": "207008a85f797526bd2e3dd011229f696cc041499ba61e4d7908ab361082227c",
+        "size": 24499
       },
       {
         "path": "agent2.js",
-        "sha256": "f3e77d8687b025ff1e7e4e8185193202c3eec12f3bd7489562ed283b1bcef173",
-        "size": 4085
+        "sha256": "4578fe57a7ab0369e2623e12fce546f2d9f4cc642d3904da4ad01b1ff803c62a",
+        "size": 6330
       },
       {
         "path": "api.js",
@@ -23,6 +23,16 @@
         "path": "app.js",
         "sha256": "93afcef296f2f1e99434c436a506bc8e45a30d2eac3fa948940e4f47cf97567f",
         "size": 111668
+      },
+      {
+        "path": "bio.css",
+        "sha256": "9a68fac14bccb259bc3570b44dc89d512e968544b621f88e90543f088e56fc23",
+        "size": 8374
+      },
+      {
+        "path": "bio.js",
+        "sha256": "cc68fcebe3f286b168843bf8e97b013972eea8ef616a7df750892e6be7bc8c8f",
+        "size": 32849
       },
       {
         "path": "business.css",
@@ -55,9 +65,14 @@
         "size": 45510
       },
       {
+        "path": "cuts-ui.css",
+        "sha256": "5e718e500d551c53298ab07fb691b2dd5447530ed72eba301a53fe0da4209300",
+        "size": 8239
+      },
+      {
         "path": "cuts-ui.js",
-        "sha256": "7f999e7014c2c645322f97f64883c149229bbe63e1ff7d4646322757a1c47612",
-        "size": 31302
+        "sha256": "881bdc51c0665aad81f13861c5446f60e4d2ccab2f6311fc8b459f9513e5d716",
+        "size": 31411
       },
       {
         "path": "fonts/f0.woff2",
@@ -195,14 +210,24 @@
         "size": 31801
       },
       {
+        "path": "footage-ui.css",
+        "sha256": "d2ed9fbea4c0ed8a7aa4e5562db97efa20516415a48813663d9941add4353a5e",
+        "size": 9750
+      },
+      {
+        "path": "footage-ui.js",
+        "sha256": "273ba660869bb60efc4b5dafe1294a48d1f51c1035f2046b2472d33747344d34",
+        "size": 37042
+      },
+      {
         "path": "growth.js",
         "sha256": "601b7fd5cf24a1317ab6089bae0389d1553920a77a9fc7ff559f963d75ecddb1",
         "size": 53850
       },
       {
         "path": "index.html",
-        "sha256": "8d1447b6c947d5250ad0cee0052d39c44878adb713a7f98d0e56779be12de506",
-        "size": 2126
+        "sha256": "437c2f21d42f68ffe7c5eb0d735abe0a0efcbe2833cfc2fa3a32aa8d727f6196",
+        "size": 2544
       },
       {
         "path": "insights.js",
@@ -213,6 +238,16 @@
         "path": "me.js",
         "sha256": "fc194f0a5f8959dc6759e787dddeb8592cc14dde7b29ed974de579ddb5ec1e33",
         "size": 3549
+      },
+      {
+        "path": "overlay-ui.css",
+        "sha256": "2442b40d4ca31018cf818015f952ecccf3b7d5ce7b51db1b355d32c3983925d1",
+        "size": 11438
+      },
+      {
+        "path": "overlay-ui.js",
+        "sha256": "4cac4ae761386141b134eaabea406ea116c74210508e5251cc5110ba26d1e47e",
+        "size": 38431
       },
       {
         "path": "polish.js",
@@ -246,13 +281,13 @@
       },
       {
         "path": "snap.css",
-        "sha256": "67666aa9ce5ab8dfd159c015428947c0858541c2cacbd3c677c3abab577cd2f0",
-        "size": 20425
+        "sha256": "47dd0f5636fee5d5a15ac2a129b7ce872fde505ca17c2946b2526c43d7b01347",
+        "size": 20571
       },
       {
         "path": "snap.js",
-        "sha256": "a3febf997118cc50e112c4c52bd92f20d7be8853790fc8bb401e7047c7dff507",
-        "size": 40028
+        "sha256": "3efaadfeeba54c52201596c3432491f9651026188397aa6322cd4a83101f184f",
+        "size": 39986
       },
       {
         "path": "studies.js",
@@ -277,9 +312,9 @@
     ]
   },
   "shell": {
-    "version": "2.8.1",
-    "url": "https://raw.githubusercontent.com/onzqa7/conent-porject/main/updates/shell/content-studio-2.8.1.zip",
-    "sha256": "47a1dc7fde90114b70b8b4c8bf0b80f5f04fc9a4b73229e7b863299561bd5221",
-    "notes": "يقرأ وصف فيديوهاتك عشان يلقى حساباتك الثانية"
+    "version": "2.9.0",
+    "url": "https://raw.githubusercontent.com/onzqa7/conent-porject/main/updates/shell/content-studio-2.9.0.zip",
+    "sha256": "2ab6d7d474c698e87e337d69ae3689cbe099032b86cd90c126acf8334c080410",
+    "notes": "أوفرلاي البث والشات، تنظيف المقطع، أرشيف تسجيلاتي، والتقاط سريع بـ Ctrl+Shift+Space"
   }
 }
