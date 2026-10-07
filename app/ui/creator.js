@@ -100,8 +100,8 @@ const CR_PWn=CR_PW.map(w=>[w,normAr(w)]),CR_CQn=CR_CQ.map(normAr);
 function titleCheck(t){t=String(t||'').trim();const len=[...t].length,n=normAr(t);const em=(t.match(/\p{Extended_Pictographic}/gu)||[]).length;
   const hasNum=/[0-9٠-٩]/.test(t),q=/[؟?]/.test(t)||CR_CQn.some(w=>n.includes(w)),pw=CR_PWn.filter(([,w])=>n.includes(w)).map(x=>x[0]);
   const C=[
-   {k:'len',ok:len>=25&&len<=60,pts:len>=25&&len<=60?30:(len>=15&&len<=70)?15:5,l:`الطول ${len} حرف`,tip:len>60?'يتقص بالجوال بعد ٦٠ حرف تقريبًا، قدّم الكلمة المهمة':len<25?'قصير، زيد تفصيلة توضح وش بيستفيد':'طول مناسب ويبان كامل بالجوال'},
-   {k:'num',ok:hasNum,pts:hasNum?15:0,l:'فيه رقم',tip:hasNum?'':'الأرقام توضح الوعد: «٥ أخطاء»، «بـ ١٠ ريال»، «٢٤ ساعة»'},
+   {k:'len',ok:len>=25&&len<=60,pts:len>=25&&len<=60?30:(len>=15&&len<=70)?15:5,l:`الطول ${len} حرف`,tip:len>60?'يتقص بالجوال بعد 60 حرف تقريبًا، قدّم الكلمة المهمة':len<25?'قصير، زيد تفصيلة توضح وش بيستفيد':'طول مناسب ويبان كامل بالجوال'},
+   {k:'num',ok:hasNum,pts:hasNum?15:0,l:'فيه رقم',tip:hasNum?'':'الأرقام توضح الوعد: «5 أخطاء»، «بـ 10 ريال»، «24 ساعة»'},
    {k:'q',ok:q,pts:q?20:0,l:'سؤال أو فضول',tip:q?'':'افتح فجوة فضول: «وش صار لما…»، «ليش محد…»'},
    {k:'pw',ok:pw.length>0,pts:pw.length?20:0,l:pw.length?`كلمات قوية: ${pw.slice(0,3).join('، ')}`:'كلمات قوية',tip:pw.length?'':'أضف كلمة تشد: أسرع، أغرب، مستحيل، جربت، لأول مرة'},
    {k:'em',ok:em<=1,pts:em<=1?15:em===2?7:0,l:em?`إيموجي: ${em}`:'بدون إيموجي',tip:em>1?'إيموجي وحدة تكفي، الكثير يقلل الثقة':''}];
@@ -122,8 +122,8 @@ function chapLocal(txt){const L=[];for(const line of String(txt||'').split('\n')
   const long=span>=3600;return out.map(c=>{let t=c.t.replace(/\s+/g,' ');const st=t.split(/[.،!؟?]\s/)[0];if([...st].length>=8)t=st;return `${crTs(c.s,long)} ${[...t].length>70?[...t].slice(0,68).join('')+'…':t}`}).join('\n')}
 function chapCheck(txt){const L=String(txt||'').split('\n').map(l=>l.trim()).filter(Boolean);if(!L.length)return '';const P=L.map(l=>l.match(CR_TS));
   if(P.some(m=>!m))return 'كل سطر لازم يبدأ بتوقيت مثل 02:15';const s=P.map(m=>crSec(m[1]));
-  if(s[0]!==0)return 'أول فصل لازم يبدأ من 00:00 عشان يوتيوب يعرضها';if(s.length<3)return 'يوتيوب يحتاج ٣ فصول على الأقل';
-  for(let i=1;i<s.length;i++){if(s[i]<=s[i-1])return 'التوقيتات لازم تكون مرتبة تصاعديًا';if(s[i]-s[i-1]<10)return 'كل فصل لازم يكون ١٠ ثواني أو أكثر'}return 'ok'}
+  if(s[0]!==0)return 'أول فصل لازم يبدأ من 00:00 عشان يوتيوب يعرضها';if(s.length<3)return 'يوتيوب يحتاج 3 فصول على الأقل';
+  for(let i=1;i<s.length;i++){if(s[i]<=s[i-1])return 'التوقيتات لازم تكون مرتبة تصاعديًا';if(s[i]-s[i-1]<10)return 'كل فصل لازم يكون 10 ثواني أو أكثر'}return 'ok'}
 
 function pkSrcOpts(){const P=ui.pk;const o=(v,t)=>`<option value="${v}" ${P.src===v?'selected':''}>${esc(t.slice(0,70))}</option>`;
   const ids=S.ideas.filter(i=>i.status!=='done').sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0)).slice(0,30);
@@ -136,7 +136,7 @@ function pkFromSrc(v){const P=ui.pk;P.src=v;const [k,id]=v.split(':');if(!id)ret
   else if(k==='script'){const s=find('scripts',id);if(s){P.notes=s.body||'';if(!P.topic.trim())P.topic=s.topic||s.title||''}}}
 
 function vPack(){const P=ui.pk,R=P.res;
-  return `<div class="head"><div><h1>تجهيز الفيديو</h1><p class="sub">قبل ما ترفع على يوتيوب: ٣ عناوين و٣ صور مصغّرة لاختبار Test & Compare، ووصف وتاقات وفصول جاهزة للنسخ.</p></div>${R||P.id?`<button class="btn" data-cx="pkNew">${I.plus} باكج جديد</button>`:''}</div>
+  return `<div class="head"><div><h1>تجهيز الفيديو</h1><p class="sub">قبل ما ترفع على يوتيوب: 3 عناوين و3 صور مصغّرة لاختبار <bdi>Test &amp; Compare</bdi>، ووصف وتاقات وفصول جاهزة للنسخ.</p></div><div class="row">${R||P.id?`<button class="btn" data-cx="pkNew">${I.plus} باكج جديد</button>`:''}${R?`<button class="btn primary" data-cx="pkSave">${I.check} ${P.id?'حدّث الباكج':'احفظ الباكج'}</button>`:''}</div></div>
   <div class="split cr-pack">
    <div class="grid" style="align-content:start">
     <section class="panel"><form id="pkForm" class="form">
@@ -155,8 +155,8 @@ function vPack(){const P=ui.pk,R=P.res;
   </div>
   ${pkSaved()}`}
 function pkEmpty(){return `<section class="panel cr-pempty"><div class="cr-pe-ic">${I.pack}</div><h2>باكج الفيديو يطلع هنا</h2><p class="muted small">اكتب فكرة الفيديو واضغط «جهّز الباكج». تقدر تطلع الفصول من التوقيتات بدون ذكاء اصطناعي.</p>
-  <div class="cr-pe-list">${[['٣ عناوين','زوايا مختلفة للاختبار'],['٣ صور مصغّرة','نص قصير وفكرة المشهد'],['وصف SEO','أول سطرين يشدون'],['تاقات وفصول','جاهزة للصق']].map(([a,b])=>`<div><b>${a}</b><span>${b}</span></div>`).join('')}</div>${pkNote()}</section>`}
-const pkNote=()=>`<p class="note cr-abnote">${I.ext||''}<span>يوتيوب يختبر لين ٣ نسخ عنوان وصورة مصغّرة ويختار الأقوى. رفع النسخ <b>يدوي</b> من YouTube Studio: افتح الفيديو ← «Test & Compare» (A/B Testing) ← حط الثلاث.</span></p>`;
+  <div class="cr-pe-list">${[['3 عناوين','زوايا مختلفة للاختبار'],['3 صور مصغّرة','نص قصير وفكرة المشهد'],['وصف SEO','أول سطرين يشدون'],['تاقات وفصول','جاهزة للصق']].map(([a,b])=>`<div><b>${a}</b><span>${b}</span></div>`).join('')}</div>${pkNote()}</section>`}
+const pkNote=()=>`<p class="note cr-abnote">${I.ext||''}<span>يوتيوب يختبر لين 3 نسخ عنوان وصورة مصغّرة ويختار الأقوى. رفع النسخ <b>يدوي</b> من <bdi dir="ltr">YouTube Studio</bdi>: افتح الفيديو، بعدها <bdi dir="ltr">Test &amp; Compare</bdi>، وحط الثلاث.</span></p>`;
 function pkResults(R){const ch=chapCheck(R.chapters),tagLen=[...R.tags.replace(/،/g,',').split(',').map(s=>s.trim()).filter(Boolean).join(',')].length;
   return `<section class="panel"><div class="ph"><h2>العناوين للاختبار</h2>${R.titles.length?`<button class="btn sm" data-cx="copy" data-k="titles">${I.copy} انسخ الثلاث</button>`:''}</div>
    ${R.titles.length?`<div class="cr-vars">${R.titles.map((x,i)=>{const n=[...x.t].length;return `<div class="cr-var"><span class="cr-ab">${CR_AB[i]}</span><div class="cr-vb"><div class="cr-vrow"><input type="text" value="${esc(x.t)}" data-pkf="titles.${i}.t" aria-label="العنوان ${CR_AB[i]}"><span data-pksc="${i}">${crScore(x.t)}</span><button class="iconbtn" data-cx="copy" data-k="title.${i}" aria-label="انسخ العنوان">${I.copy}</button></div><div class="cr-vmeta"><span class="num ${n>60?'cr-over':''}" data-pkn="t${i}">${n}/60</span>${x.why?`<span>${esc(x.why)}</span>`:''}</div></div></div>`}).join('')}</div>`:`<p class="small muted">العناوين تطلع لما تجهّز الباكج بالذكاء الاصطناعي.</p>`}
@@ -165,7 +165,7 @@ function pkResults(R){const ch=chapCheck(R.chapters),tagLen=[...R.tags.replace(/
   ${pkNote()}
   <section class="panel"><div class="ph"><h2>الوصف</h2><div class="row"><span class="small faint num" data-pkn="desc">${[...R.description].length}/5000</span><button class="btn sm" data-cx="copy" data-k="description">${I.copy} انسخ</button></div></div><textarea rows="9" data-pkf="description" aria-label="الوصف" placeholder="وصف الفيديو">${esc(R.description)}</textarea></section>
   <div class="grid g2">
-   <section class="panel"><div class="ph"><h2>التاقات</h2><div class="row"><span class="small num ${tagLen>500?'cr-over':'faint'}" data-pkn="tags">${tagLen}/500</span><button class="btn sm" data-cx="copy" data-k="tags">${I.copy} انسخ</button></div></div><textarea rows="5" data-pkf="tags" aria-label="التاقات" placeholder="تاق، تاق، تاق">${esc(R.tags)}</textarea><p class="small faint" style="margin-top:8px">افصل بينها بفاصلة. يوتيوب يقبل لين ٥٠٠ حرف.</p></section>
+   <section class="panel"><div class="ph"><h2>التاقات</h2><div class="row"><span class="small num ${tagLen>500?'cr-over':'faint'}" data-pkn="tags">${tagLen}/500</span><button class="btn sm" data-cx="copy" data-k="tags">${I.copy} انسخ</button></div></div><textarea rows="5" data-pkf="tags" aria-label="التاقات" placeholder="تاق، تاق، تاق">${esc(R.tags)}</textarea><p class="small faint" style="margin-top:8px">افصل بينها بفاصلة. يوتيوب يقبل لين 500 حرف.</p></section>
    <section class="panel"><div class="ph"><h2>الفصول</h2><div class="row"><button class="btn sm ghost" data-cx="pkChap" title="من التوقيتات في ملاحظاتك">${I.refresh}</button><button class="btn sm" data-cx="copy" data-k="chapters">${I.copy} انسخ</button></div></div><textarea rows="5" class="cr-mono" data-pkf="chapters" aria-label="الفصول" placeholder="00:00 المقدمة">${esc(R.chapters)}</textarea><p class="small cr-chk ${ch==='ok'?'ok':ch?'bad':'faint'}" id="pkChk" style="margin-top:8px">${ch==='ok'?`${I.check} جاهزة، الصقها بالوصف`:ch||'كل سطر: توقيت ثم عنوان الفصل. أول واحد 00:00'}</p></section>
   </div>
   <div class="cr-savebar"><span class="small muted">${ui.pk.id?'هذا باكج محفوظ، التعديلات تنحفظ لما تضغط حدّث':'احفظه عشان ترجع له وقت الرفع'}</span><span class="sp"></span><button class="btn" data-cx="copy" data-k="all">${I.copy} انسخ الكل</button><button class="btn primary" data-cx="pkSave">${I.check} ${ui.pk.id?'حدّث الباكج':'احفظ الباكج'}</button></div>`}
@@ -214,10 +214,10 @@ document.addEventListener('input',e=>{const t=e.target;const P=ui.pk;
    3) الأهلية للربح (monetization progress)
    ===================================================================== */
 const CR_MON=[
- {k:'youtube',pf:'youtube',n:'برنامج شركاء يوتيوب',s:'YouTube Partner Program',req:[[{m:'subs',l:'مشترك',d:1000,auto:'fol'}],[{m:'watchH',l:'ساعة مشاهدة · آخر ١٢ شهر',d:4000,auto:'ytWatch'},{m:'shorts',l:'مشاهدة شورتس · آخر ٩٠ يوم',d:10000000,auto:'ytShorts'}]]},
- {k:'tiktok',pf:'tiktok',n:'مكافآت المبدعين',s:'TikTok Creator Rewards',req:[[{m:'fol',l:'متابع',d:10000,auto:'fol'}],[{m:'views',l:'مشاهدة · آخر ٣٠ يوم',d:100000,auto:'views30'}]]},
- {k:'snapchat',pf:'snapchat',n:'الربح في سناب',s:'Snap Stars',req:[[{m:'fol',l:'متابع',d:50000,auto:'fol'}],[{m:'posts',l:'منشور بالشهر',d:25,auto:'posts30'}],[{m:'days',l:'يوم نشر من آخر ٢٨ يوم',d:10,auto:'days28'}]]},
- {k:'twitch',pf:'twitch',n:'أفلييت تويتش',s:'Twitch Affiliate',req:[[{m:'fol',l:'متابع',d:50,auto:'fol'}],[{m:'mins',l:'دقيقة بث · آخر ٣٠ يوم',d:500,auto:'streamMin'}],[{m:'days',l:'يوم بث مختلف · آخر ٣٠ يوم',d:7,auto:'streamDays'}],[{m:'avgv',l:'متوسط المشاهدين',d:3}]]},
+ {k:'youtube',pf:'youtube',n:'برنامج شركاء يوتيوب',s:'YouTube Partner Program',req:[[{m:'subs',l:'مشترك',d:1000,auto:'fol'}],[{m:'watchH',l:'ساعة مشاهدة (آخر 12 شهر)',d:4000,auto:'ytWatch'},{m:'shorts',l:'مشاهدة شورتس (آخر 90 يوم)',d:10000000,auto:'ytShorts'}]]},
+ {k:'tiktok',pf:'tiktok',n:'مكافآت المبدعين',s:'TikTok Creator Rewards',req:[[{m:'fol',l:'متابع',d:10000,auto:'fol'}],[{m:'views',l:'مشاهدة (آخر 30 يوم)',d:100000,auto:'views30'}]]},
+ {k:'snapchat',pf:'snapchat',n:'الربح في سناب',s:'Snap Stars',req:[[{m:'fol',l:'متابع',d:50000,auto:'fol'}],[{m:'posts',l:'منشور بالشهر',d:25,auto:'posts30'}],[{m:'days',l:'يوم نشرت فيه (من آخر 28)',d:10,auto:'days28'}]]},
+ {k:'twitch',pf:'twitch',n:'أفلييت تويتش',s:'Twitch Affiliate',req:[[{m:'fol',l:'متابع',d:50,auto:'fol'}],[{m:'mins',l:'دقيقة بث (آخر 30 يوم)',d:500,auto:'streamMin'}],[{m:'days',l:'يوم بث مختلف (آخر 30 يوم)',d:7,auto:'streamDays'}],[{m:'avgv',l:'متوسط المشاهدين',d:3}]]},
 ];
 const monP=()=>{const m=(S.prefs||{}).monet||{};return {th:m.th||{},vals:m.vals||{},hide:m.hide||{}}};
 function monSave(m){S.prefs={...(S.prefs||{}),monet:{...monP(),...m}};saveLocal()}
@@ -242,7 +242,7 @@ function monCalc(P){const G=P.req.map(g=>{const ms=g.map(r=>monMetric(P,r));retu
 function monRow(P,m){const left=Math.max(0,m.th-m.v);
   return `<div class="cr-req ${m.p>=1?'ok':''}"><div class="cr-rl"><span>${esc(m.l)}</span><span class="num"><b>${nfull(m.v)}</b><span class="faint"> / ${nf(m.th)}</span></span></div>
    <div class="prog"><div style="width:${(m.p*100).toFixed(1)}%"></div></div>
-   <div class="cr-rf">${m.lock?`<span class="cr-src">${I.users} ${m.src}</span>`:`<input type="number" min="0" inputmode="numeric" data-mon="${P.k}.${m.m}" value="${m.manual?esc((monP().vals[P.k]||{})[m.m]):''}" placeholder="${m.auto!=null?'تلقائي: '+m.auto:'اكتب رقمك'}" aria-label="${esc(P.n+': '+m.l)}">${m.src?`<span class="cr-src ${m.manual?'man':''}">${m.src}</span>`:''}`}<span class="sp"></span><span class="small ${m.p>=1?'cr-okt':'faint'}">${m.p>=1?'تحقق ✓':'باقي <span class="num">'+nfull(Math.ceil(left))+'</span>'}</span></div></div>`}
+   <div class="cr-rf">${m.lock?`<span class="cr-src">${I.users} ${m.src}</span>`:`<input type="number" min="0" inputmode="numeric" data-mon="${P.k}.${m.m}" value="${m.manual?esc((monP().vals[P.k]||{})[m.m]):''}" placeholder="${m.auto!=null?'تلقائي: '+m.auto:'اكتب رقمك'}" aria-label="${esc(P.n+': '+m.l)}">${m.src?`<span class="cr-src ${m.manual?'man':''}">${m.src}</span>`:''}`}<span class="sp"></span><span class="small ${m.p>=1?'cr-okt':'faint'}">${m.p>=1?'تحقق ✓':'باقي <span class="num">'+(left>=1e5?nf(left):nfull(Math.ceil(left)))+'</span>'}</span></div></div>`}
 function monCard(P){const c=monCalc(P),a=S.accounts.find(x=>x.platform===P.pf);
   return `<article class="cr-mc ${c.elig?'done':''}"><header><div class="cr-av" style="background:${PL(P.pf).c};${P.pf==='snapchat'?'color:#111':''}">${esc(PL(P.pf).a)}</div><div style="min-width:0;flex:1"><h3>${esc(P.n)}</h3><div class="small faint ltr" style="text-align:end">${esc(P.s)}</div></div><div class="cr-pc ${c.elig?'ok':''}"><b class="num">${c.pct}%</b><span>${c.elig?'مؤهل':a?'من الشروط':'ما أضفت حساب'}</span></div></header>
    <div class="cr-reqs">${c.G.map(g=>g.ms.length>1?`<div class="cr-or"><span class="cr-orh">واحد منهم يكفي</span>${g.ms.map(m=>monRow(P,m)).join('<div class="cr-orl"><span>أو</span></div>')}</div>`:monRow(P,g.ms[0])).join('')}</div></article>`}
@@ -268,7 +268,7 @@ function monDash(){const H=monP().hide,vals=monP().vals;const L=CR_MON.filter(p=
   const open=L.filter(x=>!x.elig).sort((a,b)=>b.pct-a.pct);const won=L.filter(x=>x.elig);const x=open[0];
   if(!x)return `<section class="cr-dmon done" data-act="go" data-v="accounts"><div class="cr-av" style="background:var(--ok)">${I.check}</div><div><span class="eyebrow">الأهلية للربح</span><b>مؤهل في ${won.map(w=>esc(w.P.n)).join('، ')}</b></div><span class="btn sm ghost">التفاصيل ${I.next}</span></section>`;
   const l=x.lag;return `<section class="cr-dmon" data-act="go" data-v="accounts" aria-label="الأهلية للربح"><div class="cr-av" style="background:${PL(x.P.pf).c};${x.P.pf==='snapchat'?'color:#111':''}">${esc(PL(x.P.pf).a)}</div>
-   <div class="cr-dm-b"><div class="cr-dm-t"><span class="eyebrow">أقرب برنامج ربح</span><b>${esc(x.P.n)}</b>${won.length?`<span class="pill" style="color:var(--ok)">مؤهل في ${won.length}</span>`:''}</div><div class="prog"><div style="width:${x.pct}%"></div></div>${l?`<span class="small muted">أكبر شي باقي: <b class="num" style="color:var(--fg)">${nfull(Math.ceil(l.th-l.v))}</b> ${esc(l.l)}</span>`:''}</div>
+   <div class="cr-dm-b"><div class="cr-dm-t"><span class="eyebrow">أقرب برنامج ربح</span><b>${esc(x.P.n)}</b>${won.length?`<span class="pill" style="color:var(--ok)">${I.check} مؤهل في ${won.map(w=>esc(PL(w.P.pf).n)).join('، ')}</span>`:''}</div><div class="prog"><div style="width:${x.pct}%"></div></div>${l?`<span class="small muted">أكبر شي باقي: <b class="num" style="color:var(--fg)">${(l.th-l.v)>=1e5?nf(l.th-l.v):nfull(Math.ceil(l.th-l.v))}</b> ${esc(l.l)}</span>`:''}</div>
    <div class="cr-dm-p"><b class="num">${x.pct}%</b></div></section>`}
 {const _vd=vDash;vDash=function(){const h=_vd();const c=monDash();if(!c)return h;const i=h.lastIndexOf('<div class="grid g2" style="margin-top:16px">');return i>0?h.slice(0,i)+c+h.slice(i):h+c}}
 
