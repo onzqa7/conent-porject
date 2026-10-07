@@ -79,6 +79,7 @@ contextBridge.exposeInMainWorld('desktop', {
     get: () => ipcRenderer.invoke('bg:get'),
     set: p => ipcRenderer.invoke('bg:set', p),
   },
+  cuts: { status: () => ipcRenderer.invoke('cut:status'), analyze: (jobId, file, start, end, opts) => ipcRenderer.invoke('cut:analyze', jobId, file, start, end, opts), silences: (jobId, file, start, end, opts) => ipcRenderer.invoke('cut:silences', jobId, file, start, end, opts), export: (jobId, file, job) => ipcRenderer.invoke('cut:export', jobId, file, job), cancel: () => ipcRenderer.invoke('cut:cancel'), onProgress: fn => on('cut:progress', fn), onExportProgress: fn => on('cut:exportProgress', fn) },
   notify: (title, body) => ipcRenderer.invoke('app:notify', title, body),
   onNotifyClick: fn => on('app:notifyClick', fn),
   onQuick: fn => on('app:quick', fn),
