@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.11",
-    "notes": "الوكيل يكتب جدول البثوث + إصلاحات صورة الجدول والتقرير",
+    "version": "2.9.12",
+    "notes": "تذكير بنشر جدول البثوث",
     "minShell": "2.5.0",
     "files": [
       {
@@ -296,8 +296,8 @@
       },
       {
         "path": "schedpost.js",
-        "sha256": "7e13c2a608461595c3385ca558a1bab7b9aeabe8e9138753532d9cbc5a664440",
-        "size": 7346
+        "sha256": "59eadb05d43c3558da87ff28f643f57e18f5b0fab6dd8fb431ba10b23c184fa8",
+        "size": 7907
       },
       {
         "path": "seasons.css",
@@ -346,8 +346,8 @@
       },
       {
         "path": "whatsnew.js",
-        "sha256": "cd5ef722079435a8b4d8f538023ea5b6b7dd7e1333a1883057de91a15cb3c3cf",
-        "size": 5417
+        "sha256": "502f7afd73c203b23d8c07375d66eaff5cc71dd1c3f1374f3f7356b89db1d5ac",
+        "size": 5659
       }
     ]
   },
