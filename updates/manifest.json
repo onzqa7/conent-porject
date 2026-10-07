@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.10",
-    "notes": "صورة جدول البثوث للستوري",
+    "version": "2.9.11",
+    "notes": "الوكيل يكتب جدول البثوث + إصلاحات صورة الجدول والتقرير",
     "minShell": "2.5.0",
     "files": [
       {
@@ -291,13 +291,13 @@
       },
       {
         "path": "report2.js",
-        "sha256": "b4f84f77903baffb54b48f0f8a62ba1aee824238c7a1866857d0dcfefb11ddb4",
-        "size": 2335
+        "sha256": "1983d98e9149065dfbcd7c78096e999d61f5e4877cc5e41a4a889e5d490fc4ee",
+        "size": 2402
       },
       {
         "path": "schedpost.js",
-        "sha256": "f402421b70e8a086b4fd5146a87ca412c17e4ca3826264e791964ac38c1bc9a7",
-        "size": 5300
+        "sha256": "7e13c2a608461595c3385ca558a1bab7b9aeabe8e9138753532d9cbc5a664440",
+        "size": 7346
       },
       {
         "path": "seasons.css",
@@ -346,8 +346,8 @@
       },
       {
         "path": "whatsnew.js",
-        "sha256": "3b2a273acd2f0fdf78f98701dcbdf3e786b6b47dabb5d13aece5224f566ceeaa",
-        "size": 5222
+        "sha256": "cd5ef722079435a8b4d8f538023ea5b6b7dd7e1333a1883057de91a15cb3c3cf",
+        "size": 5417
       }
     ]
   },
