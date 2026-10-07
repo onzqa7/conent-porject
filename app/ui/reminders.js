@@ -11,7 +11,7 @@ function remCheck(){
       (dl.deliverables||[]).forEach(x=>{if(!x.done&&x.due===k)fire('dv:'+dl.id+':'+(x.id||x.type)+':'+k,'تسليم شراكة اليوم',`${x.type||'تسليم'} لـ ${dl.brand}${x.disclose!==false?'، لا تنسى #إعلان':''}`)});
       if(dl.stage==='await'&&dl.payDue&&dl.payDue<k)fire('pay:'+dl.id+':'+k.slice(0,7)+(n.getDate()>15?'b':'a'),'دفعة متأخرة',`${dl.brand} ما دفعوا من ${dl.payDue}. تبي أكتب لك رسالة تذكير؟`)}
     if(typeof seaUpcoming==='function')for(const o of seaUpcoming(60,8)){const dt=seaDaysTo(o);if(dt>0&&dt===o.s.lead)fire('sea:'+o.key,`وقت التجهيز لـ${o.s.n}`,`باقي ${dt} يوم. جهّز أفكارك من بنك الأفكار.`)}
-    const L=(S.prefs.biz||{}).lic||{};if(L.exp){const left=Math.round((pd(L.exp+'T12:00')-n)/DAY);if([30,7,1].includes(left))fire('lic:'+L.exp+':'+left,'رخصة موثوق',`تنتهي ${left===1?"بكرة":"بعد "+left+" أيام"}. جدّدها قبل أي إعلان.`)}
+    const L=(S.prefs.biz||{}).lic||{};if(L.exp){const left=Math.round((pd(L.exp+'T12:00')-n)/DAY);if([30,7,1].includes(left))fire('lic:'+L.exp+':'+left,'رخصة موثوق',`تنتهي ${left===1?"بكرة":"بعد "+left+(left<=10?" أيام":" يوم")}. جدّدها قبل أي إعلان.`)}
   }
   if(!out.length)return;
   // keep the log small: drop entries older than 60 days
