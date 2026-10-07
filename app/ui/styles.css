@@ -830,3 +830,12 @@ input[dir="ltr"]::placeholder,input.ltr::placeholder{direction:rtl;text-align:ri
 .livemode .obslive i{width:8px;height:8px;border-radius:50%;background:#56635D}.livemode .obslive i.rec{background:#E5484D}
 .livemode .lmark{background:#1C2522;color:#fff;border-color:#33403B}
 .livemode .top .rec{margin-inline-end:auto}.livemode .obslive:empty{display:none}
+/* v2.8 advisor layout: chat fills the page, composer sits at the bottom */
+.chat{min-height:calc(100vh - 300px)}
+.chat>.empty{margin-block:auto;max-width:760px;margin-inline:auto;width:100%;text-align:center!important;align-items:center!important;padding:34px 28px}
+.chat>.empty .suggest{justify-content:center}
+.chat>.empty .advico{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent-text);border:1px solid var(--accent-line)}
+.chat>.empty .advico svg{width:24px;height:24px}
+.advhint{font-size:.8rem;color:var(--muted)}.advhint button{font:inherit;background:none;border:0;color:var(--accent-text);cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px}
+.composer{bottom:0}
+.chat>.empty .advhint{margin-bottom:8px}

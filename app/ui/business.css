@@ -23,7 +23,7 @@
 
 /* board */
 .bz-bar{margin-bottom:10px}
-.bz-board{display:grid;grid-template-columns:repeat(var(--n),minmax(196px,1fr));gap:10px;overflow-x:auto;padding-bottom:8px;align-items:start;scrollbar-width:thin}
+.bz-board{display:grid;grid-template-columns:repeat(var(--n),minmax(158px,1fr));gap:10px;overflow-x:auto;padding-bottom:8px;align-items:start;scrollbar-width:thin}
 .bz-col{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);padding:8px;display:flex;flex-direction:column;gap:8px;min-height:240px;transition:outline-color .12s,background .12s}
 .bz-col.over{outline:2px dashed var(--accent);outline-offset:-2px;background:color-mix(in srgb,var(--accent) 5%,var(--bg2))}
 .bz-col h3{display:flex;justify-content:space-between;align-items:center;font-size:.84rem;padding:4px 6px 0}

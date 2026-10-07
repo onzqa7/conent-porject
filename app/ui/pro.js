@@ -107,3 +107,6 @@ document.addEventListener('click',async e=>{
   else if(a==='mark'){addMark('علامة');toast('انحفظت علامة عند '+mmss(liveEl()));drawLive()}
   else if(a==='copyChapters'){const s=curStream();const m=(s.marks||[]).slice().sort((x,y)=>x.t-y.t);if(m.length&&m[0].t>0)m.unshift({t:0,title:'البداية'});navigator.clipboard.writeText(m.map(x=>mmss(x.t).replace(/^(\d):/,'0$1:')+' '+x.title).join('\n'));toast('انسخت الفصول، الصقها بوصف الفيديو')}
 });
+
+/* advisor: friendlier empty state, and a pointer to the agent for doing things */
+{const _va=vAdvisor;vAdvisor=function(){return _va().replace('<b>جرّب تسأل:</b>',`<span class="advico">${I.chat||I.msg||''}</span><b>وش تبي تعرف اليوم؟</b><span class="advhint">المستشار يعطيك رأي ونصيحة. تبي أحد ينفّذ عنك (يجدول ويضيف أفكار)؟ <button type="button" data-act="go" data-v="agent">جرّب الوكيل</button></span>`)}}

@@ -153,7 +153,7 @@ VIEW_FNS.report=()=>vReport();
 ui.rep={sel:null,busy:false,live:''};
 function repRange(sel){const t=startDay(new Date());
   if(sel==='r'||sel==null){const a=addD(t,-6);return {a,b:addD(t,1),key:'r'+ymd(a),label:'آخر ٧ أيام'}}
-  const n=+sel,a=addD(startWeek(t),-7*n);return {a,b:addD(a,7),key:'w'+ymd(a),label:n===1?'الأسبوع الماضي':`قبل ${n} أسابيع`}}
+  const n=+sel,a=addD(startWeek(t),-7*n);return {a,b:addD(a,7),key:'w'+ymd(a),label:n===1?'الأسبوع الماضي':n===2?'قبل أسبوعين':`قبل ${n} ${n<=10?'أسابيع':'أسبوع'}`}}
 const inR=(d,a,b)=>d&&d>=a&&d<b;
 const pubIn=(a,b)=>S.posts.filter(p=>p.status==='published'&&inR(pd(p.date),a,b)&&pd(p.date)<=new Date());
 function folAt(acc,d){const h=(acc.history||[]).filter(x=>x&&x.d).sort((x,y)=>x.d<y.d?-1:1);let v=null;for(const x of h){if(pd(x.d+'T23:59')<d)v=+x.n;else break}return v}
@@ -267,7 +267,8 @@ function seaGoalsPanel(){const n=new Date(),wk=startWeek(n),wkE=addD(wk,7),ps=pu
   :!gs.length?`<p class="small muted">حدد هدف نشر أسبوعي لحساباتك عشان نتابع معك.</p><button class="btn sm" data-act="go" data-v="accounts">حدد الأهداف</button>`
   :`<div class="sea-rings">${gs.map(a=>seaRing(a.platform,ps.filter(p=>(p.platforms||[]).includes(a.platform)).length,sch.filter(p=>(p.platforms||[]).includes(a.platform)).length,+a.weekly)).join('')}</div>
    <div class="small muted" style="margin-top:6px">${left?`باقي ${left} ${plDays(left)} على نهاية الأسبوع`:'آخر يوم في الأسبوع'} · اللون الفاتح للمجدول</div>`}
-  <div class="sea-streaks"><div>${I.flame}<b class="num">${st.day}</b><span>${plDays(st.day)} ورا بعض فيها نشر${st.day&&!st.today?' · انشر اليوم عشان ما تنقطع':''}</span></div><div>${I.check}<b class="num">${st.week}</b><span>${plWeeks(st.week)} حققت فيها كل أهدافك</span></div></div>
+  <div class="sea-streaks"><div title="${st.day&&!st.today?'انشر اليوم عشان ما تنقطع السلسلة':'أيام ورا بعض فيها منشور واحد على الأقل'}">${I.flame}<b class="num">${st.day}</b><span>${plDays(st.day)} نشر متواصل</span></div><div title="أسابيع ورا بعض حققت فيها هدف كل حساب">${I.check}<b class="num">${st.week}</b><span>${plWeeks(st.week)} حققت أهدافك</span></div></div>
+  ${st.day&&!st.today?'<div class="small faint" style="margin-top:6px">ما نشرت اليوم للحين، منشور واحد يكمّل سلسلتك.</div>':''}
   ${burn?`<div class="note sea-rest">${I.heart||I.star}<span><b>خذ راحة.</b> ${burn}</span></div>`:''}</section>`}
 {const _vd=vDash;vDash=function(){let h=_vd();
   const g=seaGoalsPanel(),i=h.indexOf('<h2>أهداف النشر الأسبوعية</h2>');
