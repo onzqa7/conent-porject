@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.4",
-    "notes": "أوقات الصلاة بيومك وتنبيه لو المنشور على وقت أذان، والوكيل يرتّب ستوري سناب",
+    "version": "2.9.5",
+    "notes": "جهّز فيديو البث لليوتيوب من صفحة البث",
     "minShell": "2.5.0",
     "files": [
       {
@@ -226,8 +226,8 @@
       },
       {
         "path": "index.html",
-        "sha256": "729249cb6d3a6c645edd1ce2a694fc7a0be129938a470b0ffbadee294c739cb8",
-        "size": 2614
+        "sha256": "c5a5151a17a98f1f7fa021f928758602c7e5debd9d7bd5ecb532359481ffb55a",
+        "size": 2651
       },
       {
         "path": "insights.js",
@@ -295,6 +295,11 @@
         "size": 39986
       },
       {
+        "path": "streamvod.js",
+        "sha256": "938fa258221630f3a1f8621699253f119a04f044f50840b2975584cd7215fbc4",
+        "size": 1912
+      },
+      {
         "path": "studies.js",
         "sha256": "91b21956408738c94e71b3c5f885beb5ed8fac93ad5a7ce06bef016d5e39a430",
         "size": 61574
@@ -316,8 +321,8 @@
       },
       {
         "path": "whatsnew.js",
-        "sha256": "dbcd6c0b6ea1da2e572eb5af3d377f34153e3572e90354d6c9306b84357ef16c",
-        "size": 3129
+        "sha256": "24e5bcab274ba859f4ab45e52db0e5d7659fb259a2d5ab2d0a9b7c23f6cfdf5a",
+        "size": 3394
       }
     ]
   },
