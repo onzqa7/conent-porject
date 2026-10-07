@@ -1,9 +1,14 @@
 {
   "ui": {
-    "version": "2.6.0",
-    "notes": "شاشة ترحيب، خطواتك الأولى، إصلاحات كثيرة وتحسينات بالتصميم",
+    "version": "2.7.0",
+    "notes": "الوكيل: مساعد توجهه بأوامرك ويشتغل بأي نموذج حتى على جهازك",
     "minShell": "2.5.0",
     "files": [
+      {
+        "path": "agent.js",
+        "sha256": "0c99c85ff1770b16e6cb98a02d9dd813f81ae215bb09a71c131d7b251d59d866",
+        "size": 24493
+      },
       {
         "path": "api.js",
         "sha256": "c6a9f8039af49e9a96a5c3bb0b7cc135139dac695763085a4b9e33a911ab4de6",
@@ -11,8 +16,8 @@
       },
       {
         "path": "app.js",
-        "sha256": "9357a1eba679469b6fa8ffe787631244f551bdf7a16b27cc174cb6934e7f88d2",
-        "size": 111467
+        "sha256": "8ed10d76cfe67a642e6906cbc9d9e526c59ed722871faca9deb910bc4874f98c",
+        "size": 111512
       },
       {
         "path": "capui.js",
@@ -161,13 +166,13 @@
       },
       {
         "path": "growth.js",
-        "sha256": "942dcebf4659c13ebc89a66199dfb29802bfe159655ab6a6af0b4178878e26e1",
-        "size": 53844
+        "sha256": "601b7fd5cf24a1317ab6089bae0389d1553920a77a9fc7ff559f963d75ecddb1",
+        "size": 53850
       },
       {
         "path": "index.html",
-        "sha256": "9a04d52466be80eabc017eba812ad42924087718d23c3266817ef79cbf5e4f65",
-        "size": 1569
+        "sha256": "b0f4c1bf409023ea900d3666a86e6edbff6630a640c7233a541fa94201edc480",
+        "size": 1602
       },
       {
         "path": "polish.js",
@@ -181,8 +186,8 @@
       },
       {
         "path": "styles.css",
-        "sha256": "eee0774d508b7959403c0e31c7fabaa1826b0ec1af204b40ea03cc6ef84dfa58",
-        "size": 63906
+        "sha256": "78861a3aec8c20815af4fc332f2f946b635838c4d02a0cb9ec1c590b38109268",
+        "size": 67377
       },
       {
         "path": "videos.js",
@@ -192,9 +197,9 @@
     ]
   },
   "shell": {
-    "version": "2.6.0",
-    "url": "https://raw.githubusercontent.com/onzqa7/conent-porject/main/updates/shell/content-studio-2.6.0.zip",
-    "sha256": "08b8bad14b4ee768194233c786f1004535a5bfff12a004131ff81659a5349a94",
-    "notes": "تحسين دقة الترجمة المتحركة وصيغة التاريخ"
+    "version": "2.7.0",
+    "url": "https://raw.githubusercontent.com/onzqa7/conent-porject/main/updates/shell/content-studio-2.7.0.zip",
+    "sha256": "0571d61bbf8f8fa32b6aeeed813cca18faefd00e0681e520ad032a0852074508",
+    "notes": "الوكيل: مساعد توجهه ويشتغل بأي نموذج، حتى على جهازك بدون Claude"
   }
 }
