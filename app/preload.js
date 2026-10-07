@@ -44,6 +44,17 @@ contextBridge.exposeInMainWorld('desktop', {
     onProgress: fn => on('social:progress', fn),
     onDlProgress: fn => on('social:dlProgress', fn),
   },
+  api: {
+    status: () => ipcRenderer.invoke('api:status'),
+    connect: (pf, creds) => ipcRenderer.invoke('api:connect', pf, creds),
+    cancelAuth: () => ipcRenderer.invoke('api:cancelAuth'),
+    disconnect: pf => ipcRenderer.invoke('api:disconnect', pf),
+    profile: pf => ipcRenderer.invoke('api:profile', pf),
+    list: (pf, limit) => ipcRenderer.invoke('api:list', pf, limit),
+    publish: (jobId, pf, post) => ipcRenderer.invoke('api:publish', jobId, pf, post),
+    pickVideo: () => ipcRenderer.invoke('api:pickVideo'),
+    onProgress: fn => on('api:progress', fn),
+  },
   updates: {
     state: () => ipcRenderer.invoke('update:state'),
     check: () => ipcRenderer.invoke('update:check'),

@@ -1,9 +1,14 @@
 {
   "ui": {
-    "version": "2.2.0",
-    "notes": "صفحة فيديوهاتي والنشر لكل المنصات",
+    "version": "2.3.0",
+    "notes": "الربط الرسمي بالـ API: انشر مباشرة على يوتيوب وتيك توك وإنستقرام وإكس، والأرقام تجي من المنصة نفسها",
     "minShell": "2.2.0",
     "files": [
+      {
+        "path": "api.js",
+        "sha256": "c6a9f8039af49e9a96a5c3bb0b7cc135139dac695763085a4b9e33a911ab4de6",
+        "size": 18741
+      },
       {
         "path": "app.js",
         "sha256": "ce58e8009870082b6405ec1c94866ea4eadc347c6f006fcfd43157bb6a0b574b",
@@ -151,8 +156,8 @@
       },
       {
         "path": "index.html",
-        "sha256": "e911e7c427410bc0251ffbde7caf9c1181d24fda568fe4c7e2d91337f82e4508",
-        "size": 1437
+        "sha256": "90b19dbc9ac30b5eb17eb7e9cb93a759d27afdd39a6106b5066f2897c415e1fa",
+        "size": 1468
       },
       {
         "path": "studies.js",
@@ -161,20 +166,20 @@
       },
       {
         "path": "styles.css",
-        "sha256": "3fafd83e07d8d7550cee48316735547d877cc7ab9e1b2a1fa2fccdc2a6d7325f",
-        "size": 43317
+        "sha256": "260c5fbbd04d1ee98391b92e0b5686b7703d4dacabc9985531a4c08188885c5b",
+        "size": 44736
       },
       {
         "path": "videos.js",
-        "sha256": "45c17a974ff23d645b85c1fcf330a70f46d0de3f693e0d54b183a92fe99af868",
-        "size": 27931
+        "sha256": "27856a1fb401cf79512d39d38a2fb618789c26247027fbd1b226d58e2b486470",
+        "size": 28383
       }
     ]
   },
   "shell": {
-    "version": "2.2.0",
-    "url": "https://raw.githubusercontent.com/onzqa7/conent-porject/main/updates/shell/content-studio-2.2.0.zip",
-    "sha256": "64680a785a3058e48f3e1279b018c8fc5f1d903c941fbcc6c04339c773481135",
-    "notes": "فيديوهاتي من كل المنصات، والنشر مرة وحدة لكل المنصات"
+    "version": "2.3.0",
+    "url": "https://raw.githubusercontent.com/onzqa7/conent-porject/main/updates/shell/content-studio-2.3.0.zip",
+    "sha256": "b59d01859ec7e533ab967a10afdbd6478b49bf6d26a12c47d0432ff00b3bee17",
+    "notes": "تحديث أساسي: الربط الرسمي بالـ API والنشر المباشر"
   }
 }

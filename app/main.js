@@ -8,6 +8,7 @@ const { spawn } = require('child_process');
 const Anthropic = require('@anthropic-ai/sdk');
 const media = require('./media');
 const social = require('./social');
+const connect = require('./connect');
 
 const MODEL = 'claude-opus-5-5';
 const CONFIG = (() => { try { return JSON.parse(fs.readFileSync(path.join(__dirname, 'config.json'), 'utf8')); } catch { return {}; } })();
@@ -297,6 +298,41 @@ ipcMain.handle('social:download', async (e, jobId, url, browser) => {
     return { file };
   } catch (err) { return socialErr(err); }
 });
+/* ---------- official API connections ---------- */
+const apiErr = e => {
+  const m = String((e && e.message) || e);
+  if (e && e.status === 401) return { code: 'auth', error: 'انتهت صلاحية الربط، اربط الحساب من جديد' };
+  if (e && e.status === 403) return { code: 'forbidden', error: 'المنصة رفضت الطلب: ' + m.slice(0, 200) };
+  if (e && e.status === 429) return { code: 'limit', error: 'وصلت حد المنصة، جرّب بعدين' };
+  return { code: 'failed', error: m.slice(0, 300) };
+};
+ipcMain.handle('api:status', () => ({ ...connect.status(), redirect: connect.REDIRECT }));
+ipcMain.handle('api:connect', async (_e, pf, creds) => {
+  try {
+    const a = connect.ADAPTERS[pf]; if (!a) throw new Error('منصة غير مدعومة');
+    const c = { ...connect.appKeys(pf), ...Object.fromEntries(Object.entries(creds || {}).filter(([, v]) => v)) };
+    return { profile: await a.connect(c) };
+  }
+  catch (err) { return apiErr(err); }
+});
+ipcMain.handle('api:cancelAuth', () => { connect.cancelAuth(); return true; });
+ipcMain.handle('api:disconnect', (_e, pf) => { connect.disconnect(pf); return true; });
+ipcMain.handle('api:profile', async (_e, pf) => { try { return { profile: await connect.ADAPTERS[pf].profile() }; } catch (err) { return apiErr(err); } });
+ipcMain.handle('api:list', async (_e, pf, limit) => {
+  try { const a = connect.ADAPTERS[pf]; const profile = await a.profile(); return { channel: { name: profile.name, followers: profile.followers }, profile, items: await a.list(limit || 50) }; }
+  catch (err) { return apiErr(err); }
+});
+ipcMain.handle('api:publish', async (e, jobId, pf, post) => {
+  try {
+    if (post.file && !fs.existsSync(post.file)) return { code: 'file', error: 'ملف الفيديو مو موجود' };
+    if (pf !== 'x' && !post.file) return { code: 'file', error: 'هالمنصة تحتاج ملف فيديو' };
+    return await connect.ADAPTERS[pf].publish(post, p => { if (!e.sender.isDestroyed()) e.sender.send('api:progress', jobId, pf, p); });
+  } catch (err) { return apiErr(err); }
+});
+ipcMain.handle('api:pickVideo', async () => {
+  const r = await dialog.showOpenDialog(BrowserWindow.getFocusedWindow(), { properties: ['openFile'], filters: [{ name: 'فيديو', extensions: ['mp4', 'mov', 'm4v', 'webm'] }] });
+  return r.canceled ? null : r.filePaths[0];
+});
 ipcMain.handle('social:cancel', () => { social.cancelAll(); return true; });
 ipcMain.handle('social:selfUpdate', async () => { try { const out = await social.selfUpdate(); return { ok: true, out: out.slice(-300) }; } catch (err) { return socialErr(err); } });
 
@@ -441,6 +477,7 @@ Menu.setApplicationMenu(null);
 app.whenReady().then(() => {
   media.setFfmpegPath(locateFfmpeg());
   social.setPaths(locateBin('yt-dlp', 'YTDLP_PATH'), locateFfmpeg());
+  connect.init({ net, shell, safeStorage, storeFile: path.join(userDir(), 'connections.bin') });
   uiInfo = currentUi();
   backupDaily();
   registerProtocols();
