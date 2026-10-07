@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.7.0",
-    "notes": "الوكيل: مساعد توجهه بأوامرك ويشتغل بأي نموذج حتى على جهازك",
+    "version": "2.8.0",
+    "notes": "شراكات ودخل وملف إعلانات ورخصة موثوق، مواسم سعودية بالهجري، تقرير أسبوعي واستمرارية، ملقّن، تجهيز فيديو يوتيوب، الأهلية للربح، ربط OBS، فحص الإعلان ومعاينة المنشور، وتصميم أرتب",
     "minShell": "2.5.0",
     "files": [
       {
@@ -16,8 +16,18 @@
       },
       {
         "path": "app.js",
-        "sha256": "8ed10d76cfe67a642e6906cbc9d9e526c59ed722871faca9deb910bc4874f98c",
-        "size": 111512
+        "sha256": "93afcef296f2f1e99434c436a506bc8e45a30d2eac3fa948940e4f47cf97567f",
+        "size": 111668
+      },
+      {
+        "path": "business.css",
+        "sha256": "5ed67cdb2b98ba9763cf3c943281732c73d2f4cb8e73ab603a2ac1c8459c568d",
+        "size": 15089
+      },
+      {
+        "path": "business.js",
+        "sha256": "5b370f66432bc4a222a1e0ac8819893ec4bffe9233f2f56d1465099fa9f66e13",
+        "size": 58616
       },
       {
         "path": "capui.js",
@@ -28,6 +38,16 @@
         "path": "clips.js",
         "sha256": "7246971f198c928b3f390543c98c04eb40e25f61ef4fdf59494db4080b4eed0e",
         "size": 24280
+      },
+      {
+        "path": "creator.css",
+        "sha256": "96ba3328446803311b8b4119fce1a1d1e4d7b701b006f4f8f0358f2554d84080",
+        "size": 15112
+      },
+      {
+        "path": "creator.js",
+        "sha256": "c2be864a0fab7715755c44e0d8fad87eec8d4c77c90a94411499382e8842cfc9",
+        "size": 45510
       },
       {
         "path": "fonts/f0.woff2",
@@ -171,13 +191,28 @@
       },
       {
         "path": "index.html",
-        "sha256": "b0f4c1bf409023ea900d3666a86e6edbff6630a640c7233a541fa94201edc480",
-        "size": 1602
+        "sha256": "24824e10ea493b2f8b1ddd1a366f2c321f319f92af0902c6de0b3770a72b28eb",
+        "size": 1923
       },
       {
         "path": "polish.js",
-        "sha256": "5f94972a7ff7d75854b473ab36a289d17b3f88a0c2e0c83e1d54312191a2cfc9",
-        "size": 17944
+        "sha256": "d5fb38ddc272c10d964e6d7e764139650962784738a0ac8be6619e48fa841d13",
+        "size": 18483
+      },
+      {
+        "path": "pro.js",
+        "sha256": "ec4381af1f3e04c9489ee0fc1f68206fc89b7e382ace082f3c3d574b99a34407",
+        "size": 16395
+      },
+      {
+        "path": "seasons.css",
+        "sha256": "83e388eb009267dad1189e00614955ebfd27bf463639f92e263782990f72af29",
+        "size": 10585
+      },
+      {
+        "path": "seasons.js",
+        "sha256": "9cbdeeed64ada3440a1e2a44e6e4dd8e86bba8c748e366bb68d5f8ece17c7eb9",
+        "size": 43866
       },
       {
         "path": "studies.js",
@@ -186,8 +221,8 @@
       },
       {
         "path": "styles.css",
-        "sha256": "78861a3aec8c20815af4fc332f2f946b635838c4d02a0cb9ec1c590b38109268",
-        "size": 67377
+        "sha256": "15bb6d7f4ec599614eff86395cc582966d42f858830c19c04fde302882e4f183",
+        "size": 73701
       },
       {
         "path": "videos.js",
