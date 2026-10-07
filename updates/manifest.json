@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.7",
-    "notes": "اختصارات الكيبورد، الوكيل يدير واجهات البث، والتقرير الأسبوعي يشمل سناب والدخل",
+    "version": "2.9.8",
+    "notes": "املأ الأيام الفاضية من بنك الأفكار",
     "minShell": "2.5.0",
     "files": [
       {
@@ -78,6 +78,11 @@
         "path": "cuts-ui.js",
         "sha256": "881bdc51c0665aad81f13861c5446f60e4d2ccab2f6311fc8b459f9513e5d716",
         "size": 31411
+      },
+      {
+        "path": "fill.js",
+        "sha256": "438c4712a88fbfa8695b6042601c1b8caed48631d59af962296f44b8fc502239",
+        "size": 4441
       },
       {
         "path": "fonts/f0.woff2",
@@ -231,8 +236,8 @@
       },
       {
         "path": "index.html",
-        "sha256": "bc3e8005205c3ced65f4d2c9ca85e31a7f5787043113beaa99d36ebfcc245495",
-        "size": 2752
+        "sha256": "c2f72e77c7d8790d6eb26ad12a2172990ad58c25a2ee459b83c37f361ad3af60",
+        "size": 2784
       },
       {
         "path": "insights.js",
@@ -321,8 +326,8 @@
       },
       {
         "path": "styles.css",
-        "sha256": "7ce683d5874867b9b1879531d1f32de8d77b3f9d7aeaed2aaf9ed5f57280b48d",
-        "size": 79492
+        "sha256": "c5e8548022665a0eef4451d3537ffdf942f241c37c8bf57fbf6ab4d5fde8bba6",
+        "size": 80584
       },
       {
         "path": "today.js",
@@ -336,8 +341,8 @@
       },
       {
         "path": "whatsnew.js",
-        "sha256": "96a139c6e05b0f2d4396e9094f87f00ece949b85581c0f2606ac93caa32b71cd",
-        "size": 4435
+        "sha256": "e8a1ac8f76d0592b471d09d16233f5208287a4b53c5b7bd4a4f58ad353d8e828",
+        "size": 4747
       }
     ]
   },
