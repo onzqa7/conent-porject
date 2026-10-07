@@ -9,7 +9,7 @@ const VIDEO_EXT = /\.(mp4|mov|mkv|webm|avi|m4v|flv|ts|wmv)$/i;
 const CHUNK = Math.max(10, +process.env.CS_FOOTAGE_CHUNK || 300); // seconds of audio per whisper run, so pause/restart loses little
 const SETTLE_MS = +process.env.CS_FOOTAGE_SETTLE || 90e3; // a file touched this recently is probably still being recorded
 const MAX_FILES = 5000;
-const HALLUCINATIONS = /^(ترجمة نانسي قنقر|نانسي قنقر|اشتركوا في القناة|شكرا للمشاهدة|موسيقى|music)[.!؟]?$/i;
+const HALLUCINATIONS = /^(ترجمة نانسي قنقر|نانسي قنقر|اشتركوا في القناة.{0,20}|شكرا للمشاهدة|موسيقى|music)[.!؟]?$/i;
 
 let quitting = false;
 const dialog = { showSaveDialog: (...a) => require('electron').dialog.showSaveDialog(...a), showOpenDialog: (...a) => require('electron').dialog.showOpenDialog(...a) };
@@ -111,6 +111,7 @@ function scan() {
     for (const p of list) { upsert(p, s.path); seen.add(fid(p)); }
   }
   for (const f of Object.values(idx.files)) {
+    if (f.thumb && !fs.existsSync(f.thumb)) { f.thumb = null; f.needThumb = true; }
     if (!seen.has(f.id) || !fs.existsSync(f.path)) { if (f.status !== 'missing') { f.prev = f.status; f.status = 'missing'; } }
   }
   save(); emit(true);
@@ -129,8 +130,9 @@ async function probeAll() {
   if (probing) return; probing = true;
   try {
     for (;;) {
-      const f = Object.values(idx.files).find(x => x.duration == null && x.status !== 'missing' && x.status !== 'error' && !x.probeFailed);
+      const f = Object.values(idx.files).find(x => (x.duration == null || x.needThumb) && x.status !== 'missing' && x.status !== 'error' && !x.probeFailed);
       if (!f) break;
+      f.needThumb = false;
       try { await probeFile(f); } catch (e) { f.probeFailed = true; if (f.status === 'queued') { f.status = 'error'; f.error = 'ما قدرت أقرأ الملف'; } }
       emit();
     }
@@ -180,7 +182,8 @@ async function pump() {
       if (worker.stop) { const e = new Error('cancelled'); e.cancelled = true; throw e; }
       const a = tr.upto, b = Math.min(f.duration, a + CHUNK);
       const r = await C.captions.transcribe({ file: f.path, start: a, end: b, model: idx.model, language: idx.lang, extractWav: C.media.extractWav },
-        p => { worker.p = (a + (b - a) * Math.min(1, p)) / f.duration; emit(); });
+        p => { if (worker.stop) C.captions.cancelAll(); worker.p = (a + (b - a) * Math.min(1, p)) / f.duration; emit(); }); // a stop that landed during audio extraction kills whisper as soon as it starts
+      if (worker.stop) { const e = new Error('cancelled'); e.cancelled = true; throw e; }
       tr.segs.push(...toSentences(r.words || []));
       tr.upto = b; tr.model = r.model; tr.lang = r.lang;
       saveT_(tr);
@@ -192,7 +195,7 @@ async function pump() {
     const why = worker && worker.stop;
     if (e.cancelled) {
       // our own pause/skip, or another part of the app stopped all transcriptions: keep the file in the queue
-      f.status = why === 'skip' ? 'skipped' : 'queued';
+      f.status = why === 'skip' && !(worker && worker.requeue) ? 'skipped' : 'queued';
       if (!why && !quitting) { clearTimeout(retryT); retryT = setTimeout(pump, 5000); }
     } else if (e.code === 'no_model') f.status = 'queued';
     else { f.status = 'error'; f.error = String(e.message || e).slice(0, 200); }
@@ -352,7 +355,8 @@ function register(ctx) {
   });
   ipcMain.handle('ftg:queue', (_e, ids, fresh) => {
     for (const id of ids || []) {
-      const f = idx.files[id]; if (!f || f.status === 'missing' || (worker && worker.id === id)) continue;
+      const f = idx.files[id]; if (!f || f.status === 'missing') continue;
+      if (worker && worker.id === id) { if (worker.stop) worker.requeue = true; continue; } // a skip still winding down: queue it again once it stops
       if (fresh) { dropT(id, true); f.done = 0; f.segs = 0; }
       f.status = 'queued'; f.error = null; f.probeFailed = false; f.mtime = Math.min(f.mtime, now() - SETTLE_MS - 1);
     }

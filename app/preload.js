@@ -81,6 +81,7 @@ contextBridge.exposeInMainWorld('desktop', {
   },
   cuts: { status: () => ipcRenderer.invoke('cut:status'), analyze: (jobId, file, start, end, opts) => ipcRenderer.invoke('cut:analyze', jobId, file, start, end, opts), silences: (jobId, file, start, end, opts) => ipcRenderer.invoke('cut:silences', jobId, file, start, end, opts), export: (jobId, file, job) => ipcRenderer.invoke('cut:export', jobId, file, job), cancel: () => ipcRenderer.invoke('cut:cancel'), onProgress: fn => on('cut:progress', fn), onExportProgress: fn => on('cut:exportProgress', fn) },
   overlay: { start: () => ipcRenderer.invoke('ovl:start'), stop: () => ipcRenderer.invoke('ovl:stop'), status: () => ipcRenderer.invoke('ovl:status'), config: c => ipcRenderer.invoke('ovl:config', c), segment: s => ipcRenderer.invoke('ovl:segment', s), chat: o => ipcRenderer.invoke('ovl:chat', o), chatStop: () => ipcRenderer.invoke('ovl:chatStop'), alert: a => ipcRenderer.invoke('ovl:alert', a), poll: a => ipcRenderer.invoke('ovl:poll', a), test: k => ipcRenderer.invoke('ovl:test', k), onEvent: fn => on('ovl:event', fn) },
+  footage: { call: (m, ...a) => ipcRenderer.invoke('ftg:' + m, ...a), onEvent: fn => on('ftg:event', fn) },
   notify: (title, body) => ipcRenderer.invoke('app:notify', title, body),
   onNotifyClick: fn => on('app:notifyClick', fn),
   onQuick: fn => on('app:quick', fn),
