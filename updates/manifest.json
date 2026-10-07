@@ -1,13 +1,13 @@
 {
   "ui": {
-    "version": "2.9.8",
-    "notes": "املأ الأيام الفاضية من بنك الأفكار",
+    "version": "2.9.9",
+    "notes": "انشر جدول بثوثك + إصلاحات الوكيل وواجهات البث والتقرير",
     "minShell": "2.5.0",
     "files": [
       {
         "path": "agent.js",
-        "sha256": "741f8512cd0c9d36e9b08f9625d58d7512dd42e84fbc09da60b0eed95b4ecf80",
-        "size": 24505
+        "sha256": "7fd0b48104086b3425f9d1bf2cf5aa4c7036b0f22423253e90c415df17d4fe4b",
+        "size": 24627
       },
       {
         "path": "agent2.js",
@@ -16,8 +16,8 @@
       },
       {
         "path": "agent3.js",
-        "sha256": "31058b61c7206af9844bd198b03524aa228d2de28a26aec51ac26fde1285b4b0",
-        "size": 4702
+        "sha256": "cafe4dcd05ea00c822a343e333b6335afc1ad5ca0f727be3d45cfad61f774133",
+        "size": 5056
       },
       {
         "path": "api.js",
@@ -236,8 +236,8 @@
       },
       {
         "path": "index.html",
-        "sha256": "c2f72e77c7d8790d6eb26ad12a2172990ad58c25a2ee459b83c37f361ad3af60",
-        "size": 2784
+        "sha256": "eeb793f67e701a5f9ae44daff10d3898ee054b3927b798302cf236be18410b5c",
+        "size": 2821
       },
       {
         "path": "insights.js",
@@ -291,8 +291,13 @@
       },
       {
         "path": "report2.js",
-        "sha256": "fd4a48686c50871db4893d5e5b80e27b95ac75e570077b7277dc36845b12d55a",
-        "size": 1963
+        "sha256": "b4f84f77903baffb54b48f0f8a62ba1aee824238c7a1866857d0dcfefb11ddb4",
+        "size": 2335
+      },
+      {
+        "path": "schedpost.js",
+        "sha256": "d8edf871d541bd86cad59bf03c9eba456b3b5d2d7b253f239c3cd99117e79321",
+        "size": 2218
       },
       {
         "path": "seasons.css",
@@ -341,8 +346,8 @@
       },
       {
         "path": "whatsnew.js",
-        "sha256": "e8a1ac8f76d0592b471d09d16233f5208287a4b53c5b7bd4a4f58ad353d8e828",
-        "size": 4747
+        "sha256": "f0e479d076f221a060024df3f68dcdda20707fb9de9c2decebce2faec479272c",
+        "size": 4991
       }
     ]
   },
