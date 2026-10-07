@@ -83,7 +83,7 @@ async function agSend(text){text=(text||'').trim();if(!text||AG.busy)return;if(!
       for(const c of calls){let args={};try{args=JSON.parse(c.function.arguments||'{}')}catch(e){}
         let out;const name=c.function.name;
         if(AG_CONFIRM[name]){const q=AG_CONFIRM[name](args);if(!q)out={error:'ما لقيت المنشور'};else{AG.stream='';const yes=await agAsk(q);out=yes?agRunConfirmed(name,args):{declined:true,note:'المستخدم رفض هالخطوة'}}}
-        else{try{out=agRun(name,args)}catch(e){out={error:String(e&&e.message||e)}}}
+        else{try{out=await agRun(name,args)}catch(e){out={error:String(e&&e.message||e)}}}
         if(out&&out._ui)acts.push(out._ui);if(out&&out.declined)acts.push({t:'ما نفذتها لأنك رفضت',skip:1});
         const {_ui,...clean}=out||{};convo.push({role:'tool',tool_call_id:c.id,content:JSON.stringify(clean).slice(0,12000)})}
       AG.stream='';agDrawStream(acts);

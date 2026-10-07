@@ -6,6 +6,7 @@ AG_TOOLS.push(...[
  ['add_money','يسجل دخل أو مصروف.',P({type:str('in للدخل، out للمصروف'),amount:num('المبلغ بالريال'),source:str('المصدر أو البند'),date:str('YYYY-MM-DD، الافتراضي اليوم'),note:str('')},['type','amount'])],
  ['get_today','وش عند المستخدم اليوم: المنشورات المجدولة والمتأخرة، البث، تسليمات الشراكات، تجهيز المواسم، مهامه الشخصية، وسنابات اليوم.',P({})],
  ['add_todo','يضيف مهمة لقائمة مهام اليوم.',P({text:str('المهمة')},['text'])],
+ ['search_footage','يبحث داخل كلام المستخدم في تسجيلاته وبثوثه القديمة (أرشيف تسجيلاتي) ويرجع الفيديو والدقيقة والجملة. استخدمه لما يسأل «وين قلت…» أو يبي مقطع قال فيه شي.',P({query:str('الكلمة أو الجملة'),limit:num('عدد الفيديوهات، الافتراضي 6')},['query'])],
  ['get_money_summary','ملخص الدخل والمصاريف لهالشهر واللي قبله، والمبالغ اللي ما وصلت من الشراكات.',P({})],
 ].map(([name,description,parameters])=>({type:'function',function:{name,description,parameters}})));
 {const _r=agRun;agRun=function(name,a){a=a||{};
@@ -22,4 +23,7 @@ AG_TOOLS.push(...[
   if(name==='get_today'){if(typeof tdItems!=='function')return {error:'غير متوفر'};const o={today:ymd(new Date()),items:tdItems().map(x=>({kind:x.kind,title:x.t,detail:x.sub,late:!!x.late})),todos:tdTodos().map(t=>({text:t.t,done:!!t.done})),hints:tdHints().map(h=>h.replace(/<[^>]+>/g,'').trim())};
     const sn=(S.snaps||[]).find(x=>x.date===o.today);if(sn)o.snaps={title:sn.title,total:(sn.frames||[]).length,done:(sn.frames||[]).filter(f=>f.done).length};return o}
   if(name==='add_todo'){const v=String(a.text||'').trim().slice(0,200);if(!v)return {error:'المهمة فاضية'};const all={...(S.prefs.todos||{})},k=ymd(new Date());all[k]=[...(all[k]||[]),{t:v,done:false}];S.prefs.todos=all;saveLocal();render(true);return {ok:true,_ui:{t:'أضفت مهمة «'+v+'»',go:'go:dash'}}}
+  if(name==='search_footage'){if(typeof footageSearch!=='function')return {error:'الأرشيف مو متوفر'};const q=String(a.query||'').trim();if(!q)return {error:'اكتب وش تدور'};
+    return footageSearch(q,Math.min(+a.limit||6,10)).then(r=>{if(r==null)return {error:'الأرشيف يحتاج تحديث البرنامج أو ما فيه تسجيلات مفهرسة'};
+      return {query:q,videos:r.map(v=>({name:v.name,date:v.date,matches:v.count,hits:(v.hits||[]).slice(0,4).map(h=>({at:h.at,text:h.text}))})),_ui:{t:r.length?'لقيت «'+q+'» في '+r.length+' فيديو':'ما لقيت «'+q+'» بتسجيلاتك',go:'go:footage'}}})}
   return _r(name,a)}}
