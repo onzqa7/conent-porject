@@ -112,6 +112,7 @@ async function installShellUpdate(win) {
   const script = path.join(work, 'update.cmd');
   fs.writeFileSync(script, [
     '@echo off',
+    'chcp 65001 >nul',
     ':wait',
     `tasklist /FI "PID eq ${process.pid}" | find "${process.pid}" >nul && (timeout /t 1 /nobreak >nul & goto wait)`,
     `powershell -NoProfile -ExecutionPolicy Bypass -Command "Expand-Archive -LiteralPath '${zip}' -DestinationPath '${path.join(work, 'x')}' -Force"`,
@@ -189,6 +190,47 @@ async function ask(e, id, messages, effort) {
     return errInfo(err);
   }
 }
+// Research with live web search. Server tools may pause a long turn, so continue until it ends.
+const WEB_TOOLS = [{ type: 'web_search_20260209', name: 'web_search', max_uses: 12 }, { type: 'web_fetch_20260209', name: 'web_fetch', max_uses: 6 }];
+async function runResearch(c, messages, effort, onText, withFallback) {
+  const convo = [...messages];
+  const sources = new Map();
+  let finalText = '', shown = '';
+  for (let round = 0; round < 6; round++) {
+    const params = { model: MODEL, max_tokens: 64000, thinking: { type: 'adaptive' }, output_config: { effort }, tools: WEB_TOOLS, messages: convo };
+    const stream = withFallback
+      ? c.beta.messages.stream({ ...params, betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default' })
+      : c.messages.stream(params);
+    for await (const event of stream) {
+      if (event.type === 'content_block_start' && event.content_block.type === 'server_tool_use') onText(shown + '\n[بحث]');
+      if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') { shown += event.delta.text; onText(shown); }
+    }
+    const final = await stream.finalMessage();
+    if (final.stop_reason === 'refusal') return { code: 'refused', error: 'اعتذر المساعد عن الطلب' };
+    // Only text after the last tool result is the answer; earlier text is narration between searches.
+    let tail = '';
+    for (const b of final.content) {
+      if (b.type === 'web_search_tool_result' && Array.isArray(b.content)) { for (const r of b.content) if (r.url && !sources.has(r.url)) sources.set(r.url, { url: r.url, title: r.title || r.url }); tail = ''; }
+      else if (b.type === 'web_fetch_tool_result') tail = '';
+      else if (b.type === 'text') { tail += b.text; for (const ci of b.citations || []) if (ci.url && !sources.has(ci.url)) sources.set(ci.url, { url: ci.url, title: ci.title || ci.url }); }
+    }
+    finalText += tail;
+    if (final.stop_reason !== 'pause_turn') return { text: finalText, sources: [...sources.values()].slice(0, 40), truncated: final.stop_reason === 'max_tokens' };
+    convo.push({ role: 'assistant', content: final.content });
+  }
+  return { text: finalText, sources: [...sources.values()].slice(0, 40) };
+}
+async function research(e, id, messages, effort) {
+  const c = getClient();
+  if (!c) return { code: 'not_granted', error: 'أضف مفتاح Claude من الإعدادات' };
+  const send = t => { if (!e.sender.isDestroyed()) e.sender.send('ai:text', id, t); };
+  try { return await runResearch(c, messages, effort, send, true); }
+  catch (err) {
+    if (err instanceof Anthropic.BadRequestError) { try { return await runResearch(c, messages, effort, send, false); } catch (err2) { return errInfo(err2); } }
+    return errInfo(err);
+  }
+}
+ipcMain.handle('ai:research', (e, id, messages, effort) => research(e, id, messages, effort));
 ipcMain.handle('key:has', () => !!readKey());
 ipcMain.handle('key:clear', () => { try { fs.unlinkSync(keyFile()); } catch {} client = null; return true; });
 ipcMain.handle('key:set', async (_e, k) => {
@@ -209,9 +251,12 @@ ipcMain.handle('ai:vision', (e, id, prompt, imagePaths, effort) => {
 });
 
 /* ---------- files ---------- */
+const SAVE_TYPES = { json: 'JSON', html: 'صفحة ويب', md: 'Markdown', csv: 'CSV', txt: 'نص' };
 ipcMain.handle('file:save', async (e, filename, data) => {
   const win = BrowserWindow.fromWebContents(e.sender);
-  const r = await dialog.showSaveDialog(win, { defaultPath: filename, filters: [{ name: 'JSON', extensions: ['json'] }] });
+  const ext = (/\.([a-z0-9]+)$/i.exec(filename || '') || [])[1]?.toLowerCase();
+  const filters = [{ name: SAVE_TYPES[ext] || 'JSON', extensions: [SAVE_TYPES[ext] ? ext : 'json'] }];
+  const r = await dialog.showSaveDialog(win, { defaultPath: filename, filters });
   if (r.canceled || !r.filePath) return { ok: false };
   fs.writeFileSync(r.filePath, data, 'utf8');
   return { ok: true };

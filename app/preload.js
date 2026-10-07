@@ -18,6 +18,7 @@ contextBridge.exposeInMainWorld('desktop', {
   clearKey: () => ipcRenderer.invoke('key:clear'),
   save: (filename, data) => ipcRenderer.invoke('file:save', filename, data),
   ask: (messages, effort, onText) => withText('ai:ask', [messages, effort], onText),
+  research: (messages, effort, onText) => withText('ai:research', [messages, effort], onText),
   vision: (prompt, images, effort, onText) => withText('ai:vision', [prompt, images, effort], onText),
   showItem: p => ipcRenderer.invoke('shell:showItem', p),
   openPath: p => ipcRenderer.invoke('shell:openPath', p),

@@ -19,3 +19,9 @@ cd app && npm i --omit=dev && cd ..
 npx @electron/packager app "Content Studio" --platform=win32 --arch=x64 --electron-version=44.6.0 --icon=app/icon.ico --asar --extra-resource=res/bin
 ```
 `res/bin/ffmpeg.exe` من حزمة `ffmpeg-static` (بـ `npm_config_platform=win32`).
+
+## نشر تحديث للمحرك (main.js / preload.js)
+البرنامج يقدر يحدّث `resources/app.asar` لحاله بدون تحميل نسخة كاملة:
+1. ارفع الرقم في `app/package.json` وشغّل `node tools/publish-ui.js <نفس الرقم> "وش تغير" <نفس الرقم>`.
+2. ابنِ نسخة ويندوز (الأمر فوق)، وحط `resources/app.asar` داخل مجلد `content-studio-<ver>/resources/` واضغطه إلى `updates/shell/content-studio-<ver>.zip`.
+3. حدّث `shell` في `updates/manifest.json` (version و url و sha256) وادفع.

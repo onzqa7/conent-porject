@@ -1,3 +1,175 @@
 {
-  "ui": { "version": "2.0.0", "notes": "", "minShell": null, "files": [] }
+  "ui": {
+    "version": "2.1.0",
+    "notes": "قسم الدراسات والتحليلات",
+    "minShell": "2.1.0",
+    "files": [
+      {
+        "path": "app.js",
+        "sha256": "e78c200bc20d95cd89621659438b16b9a908075db2dd2ac8ab09c44337d3ef4e",
+        "size": 108857
+      },
+      {
+        "path": "clips.js",
+        "sha256": "afe9074ab23aaf740c25f21df1ef6c80deb417f25b43ec6b69fce9843843fd7b",
+        "size": 24202
+      },
+      {
+        "path": "fonts/f0.woff2",
+        "sha256": "e8d8ca61d4da1a1a38b9454dbae92be589185efc7af0af6046f6a11c60476e99",
+        "size": 31348
+      },
+      {
+        "path": "fonts/f1.woff2",
+        "sha256": "98ccec0bc3c456332f8fd0fcaf81d26a4e010b7fc093f9781938f976df9ffbc4",
+        "size": 30140
+      },
+      {
+        "path": "fonts/f10.woff2",
+        "sha256": "04c730b4292731ccedadd5bd80756124364ae4923895145d9cd7b1f28e443de1",
+        "size": 44280
+      },
+      {
+        "path": "fonts/f11.woff2",
+        "sha256": "ae2d59f91ecf9f7ed279e4a1fc1a9da8170fb0ce5b9152917a8f759033f5777c",
+        "size": 19504
+      },
+      {
+        "path": "fonts/f12.woff2",
+        "sha256": "661cc9e7a8587ed75167fb58907ee8a016b9c95fedf9a78d0fa94f6250116af7",
+        "size": 52128
+      },
+      {
+        "path": "fonts/f13.woff2",
+        "sha256": "226ae39f5275dcfee3c298317d16bdd20dbc81186b9935151c782ee6e354b6ae",
+        "size": 16572
+      },
+      {
+        "path": "fonts/f14.woff2",
+        "sha256": "01290c72f7179c551d8eef0b5e190615b082a5876e3abacca88e341e0e1fafe9",
+        "size": 123688
+      },
+      {
+        "path": "fonts/f15.woff2",
+        "sha256": "61b046636e1d155cb7b48d924fad2299e0099efaca67a50b4d3cc3b7a07e9b86",
+        "size": 30724
+      },
+      {
+        "path": "fonts/f16.woff2",
+        "sha256": "b5815b71c48e513b5e65eb281dd53e5d6a556d6dac511a5d2cd00d628850d5c4",
+        "size": 22864
+      },
+      {
+        "path": "fonts/f17.woff2",
+        "sha256": "7074eeb987a25349069ed5c784e204904b928f4c878e9c3c88d636c01081ae52",
+        "size": 31428
+      },
+      {
+        "path": "fonts/f18.woff2",
+        "sha256": "6c9081fd00db08800850fa7d214593aa94992be5159e97557aa60197252cb95a",
+        "size": 8932
+      },
+      {
+        "path": "fonts/f19.woff2",
+        "sha256": "b081f7bf790678b56a2c0502651d6873cbabc09e78fe40655df15f918b1e369b",
+        "size": 10256
+      },
+      {
+        "path": "fonts/f2.woff2",
+        "sha256": "748022f50c427456ad66031e855349be3448ee1f05a5f1eb59574ebe0c686749",
+        "size": 30896
+      },
+      {
+        "path": "fonts/f20.woff2",
+        "sha256": "4255019c1cd986f7cda7869df69baf72730d61304ae14baba4acfeb13085da54",
+        "size": 8940
+      },
+      {
+        "path": "fonts/f21.woff2",
+        "sha256": "9986de5db80ec050300f1cea25d651a5779ae62b91a39b5667ac23d0c7668cbb",
+        "size": 9900
+      },
+      {
+        "path": "fonts/f22.woff2",
+        "sha256": "fa5e72326681abee3a4952be582e1c2c2abb27932ef262610c078ce89541f919",
+        "size": 9024
+      },
+      {
+        "path": "fonts/f23.woff2",
+        "sha256": "de8f431c146ab1feb612cb7ced0842ae5c4e2f12067d13db0badeca73977200b",
+        "size": 9996
+      },
+      {
+        "path": "fonts/f24.woff2",
+        "sha256": "5fa525682b4805d95c59943bc4405b993dc9e028fd93cb96f4b50911f3b428b7",
+        "size": 9448
+      },
+      {
+        "path": "fonts/f25.woff2",
+        "sha256": "00241262004f96088a827ad4c5d423dbbc0648224e1cd990e5e5ff8e912157c9",
+        "size": 10584
+      },
+      {
+        "path": "fonts/f3.woff2",
+        "sha256": "82c13cbd1352d76e97c3d335caa912ae68fecdc3949a43cf8d149eb892384c1b",
+        "size": 33820
+      },
+      {
+        "path": "fonts/f4.woff2",
+        "sha256": "6010e7fd0dce5d527583951750728cbe3c895efbd16aa0f809ab8c824878c9d8",
+        "size": 42848
+      },
+      {
+        "path": "fonts/f5.woff2",
+        "sha256": "9ed8dcb02e6c7246de4c120295fafa39a7bb73085f4951a4524a07dc911069f2",
+        "size": 19164
+      },
+      {
+        "path": "fonts/f6.woff2",
+        "sha256": "90aef64fea9794f232332e907d45810ab268d1a11721340025eba2a2cdb36d5c",
+        "size": 45296
+      },
+      {
+        "path": "fonts/f7.woff2",
+        "sha256": "be6a3b2e37f3ad67aa822a55ce356d28c416331c97530a1ec076c2118240ca2d",
+        "size": 20088
+      },
+      {
+        "path": "fonts/f8.woff2",
+        "sha256": "16734a5adb27b0f363e566cbbeacec480da0dc0baa19c8f0053251c2e2bc0eac",
+        "size": 45688
+      },
+      {
+        "path": "fonts/f9.woff2",
+        "sha256": "63f4757271e403f7baec0862f284ffaa4560ea6096ba9fe8bc6e585ca656e724",
+        "size": 20500
+      },
+      {
+        "path": "fonts/fonts.css",
+        "sha256": "e9fad27918c4e90a04c977de53935baba4dce05c6534ee459063831da8d4c880",
+        "size": 31801
+      },
+      {
+        "path": "index.html",
+        "sha256": "986eac31f89f8a387f0136a297a4a63610d20d2e2a2f9ed9936bb1c93f3dd536",
+        "size": 1396
+      },
+      {
+        "path": "studies.js",
+        "sha256": "1bd6b5715f6fbafc9cb56220ab5c4b827e16269b9073b2586e8d811b0e3c598b",
+        "size": 60508
+      },
+      {
+        "path": "styles.css",
+        "sha256": "acb3771941fa89016d6c6360b696f41d6704d0de7f08e4d296b266cc7956c0d3",
+        "size": 40160
+      }
+    ]
+  },
+  "shell": {
+    "version": "2.1.0",
+    "url": "https://raw.githubusercontent.com/onzqa7/conent-porject/main/updates/shell/content-studio-2.1.0.zip",
+    "sha256": "89374cb47f61b46ba4cee68f2f23362a2f958ff43eaf516c77ebdf4fd1715abe",
+    "notes": "قسم الدراسات (يبحث في الإنترنت) وقسم التحليلات"
+  }
 }
