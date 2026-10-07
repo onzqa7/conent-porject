@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog, shell, safeStorage, Menu, protocol, net } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, shell, safeStorage, Menu, protocol, net, Tray, Notification, nativeImage } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const os = require('os');
@@ -329,6 +329,14 @@ ipcMain.handle('api:publish', async (e, jobId, pf, post) => {
     return await connect.ADAPTERS[pf].publish(post, p => { if (!e.sender.isDestroyed()) e.sender.send('api:progress', jobId, pf, p); });
   } catch (err) { return apiErr(err); }
 });
+ipcMain.handle('api:comments', async (_e, pf, limit) => {
+  try { const a = connect.ADAPTERS[pf]; if (!a.comments) return { code: 'unsupported', error: 'المنصة ما تسمح بقراءة التعليقات' }; return { items: await a.comments(limit || 100) }; }
+  catch (err) { const r = apiErr(err); if (err && err.status === 403 && /scope|permission|insufficient/i.test(err.message)) r.code = 'scope'; return r; }
+});
+ipcMain.handle('api:reply', async (_e, pf, cid, text) => {
+  try { return await connect.ADAPTERS[pf].reply(cid, text); }
+  catch (err) { const r = apiErr(err); if (err && err.status === 403 && /scope|permission|insufficient/i.test(err.message)) r.code = 'scope'; return r; }
+});
 ipcMain.handle('api:pickVideo', async () => {
   const r = await dialog.showOpenDialog(BrowserWindow.getFocusedWindow(), { properties: ['openFile'], filters: [{ name: 'فيديو', extensions: ['mp4', 'mov', 'm4v', 'webm'] }] });
   return r.canceled ? null : r.filePaths[0];
@@ -457,16 +465,53 @@ function registerProtocols() {
   });
 }
 
+/* ---------- background mode: tray, start with Windows, notifications ---------- */
+let mainWin = null, tray = null, quitting = false;
+const bgFile = () => path.join(userDir(), 'background.json');
+function bgPrefs() { try { return { background: false, login: false, ...JSON.parse(fs.readFileSync(bgFile(), 'utf8')) }; } catch { return { background: false, login: false }; } }
+function showMain() { if (!mainWin) return; if (mainWin.isMinimized()) mainWin.restore(); mainWin.show(); mainWin.focus(); }
+function setupTray() {
+  const p = bgPrefs();
+  if (!p.background) { if (tray) { tray.destroy(); tray = null; } return; }
+  if (tray) return;
+  tray = new Tray(nativeImage.createFromPath(path.join(__dirname, 'icon.png')).resize({ width: 16, height: 16 }));
+  tray.setToolTip('استوديو المحتوى · النشر المجدول شغّال');
+  tray.setContextMenu(Menu.buildFromTemplate([{ label: 'افتح استوديو المحتوى', click: showMain }, { type: 'separator' }, { label: 'اقفل البرنامج نهائياً', click: () => { quitting = true; app.quit(); } }]));
+  tray.on('click', showMain);
+}
+ipcMain.handle('bg:get', () => bgPrefs());
+ipcMain.handle('bg:set', (_e, p) => {
+  const next = { ...bgPrefs(), ...p };
+  fs.writeFileSync(bgFile(), JSON.stringify(next));
+  if (app.isPackaged) app.setLoginItemSettings({ openAtLogin: !!next.login, args: ['--hidden'] });
+  setupTray();
+  return next;
+});
+ipcMain.handle('app:notify', (_e, title, body) => {
+  if (!Notification.isSupported()) return false;
+  const n = new Notification({ title, body, icon: path.join(__dirname, 'icon.png') });
+  n.on('click', () => { showMain(); if (mainWin) mainWin.webContents.send('app:notifyClick'); });
+  n.show(); return true;
+});
+app.on('before-quit', () => { quitting = true; });
+const gotLock = app.requestSingleInstanceLock();
+if (!gotLock) app.quit();
+else app.on('second-instance', showMain);
+
 function createWindow() {
   const win = new BrowserWindow({
     width: 1440, height: 900, minWidth: 1024, minHeight: 680,
     title: 'استوديو المحتوى', icon: path.join(__dirname, 'icon.png'),
     backgroundColor: '#0B0D12', autoHideMenuBar: true, show: false,
-    webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true, nodeIntegration: false, sandbox: true },
+    webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true, nodeIntegration: false, sandbox: true, backgroundThrottling: false },
   });
   win.webContents.setWindowOpenHandler(({ url }) => { if (/^https?:\/\//.test(url)) shell.openExternal(url); return { action: 'deny' }; });
   win.webContents.on('will-navigate', (ev, url) => { if (!url.startsWith('app://')) { ev.preventDefault(); if (/^https?:\/\//.test(url)) shell.openExternal(url); } });
-  win.once('ready-to-show', () => { win.maximize(); win.show(); });
+  const hidden = process.argv.includes('--hidden') && bgPrefs().background;
+  win.once('ready-to-show', () => { win.maximize(); if (!hidden) win.show(); });
+  // With background mode on, closing the window keeps the scheduler running in the tray.
+  win.on('close', ev => { if (!quitting && bgPrefs().background) { ev.preventDefault(); win.hide(); if (tray && !win.trayHinted) { win.trayHinted = true; tray.displayBalloon?.({ title: 'استوديو المحتوى', content: 'البرنامج شغّال تحت عشان ينشر المجدول. تلقاه جنب الساعة.' }); } } });
+  mainWin = win;
   win.loadURL('app://studio/index.html');
   win.webContents.once('did-finish-load', () => setTimeout(() => checkUpdates(win), 4000));
   setInterval(() => checkUpdates(win), 6 * 3600 * 1000);
@@ -475,6 +520,7 @@ function createWindow() {
 
 Menu.setApplicationMenu(null);
 app.whenReady().then(() => {
+  if (!gotLock) return;
   media.setFfmpegPath(locateFfmpeg());
   social.setPaths(locateBin('yt-dlp', 'YTDLP_PATH'), locateFfmpeg());
   connect.init({ net, shell, safeStorage, storeFile: path.join(userDir(), 'connections.bin') });
@@ -482,5 +528,6 @@ app.whenReady().then(() => {
   backupDaily();
   registerProtocols();
   createWindow();
+  setupTray();
 });
 app.on('window-all-closed', () => { media.cancelAll(); social.cancelAll(); app.quit(); });

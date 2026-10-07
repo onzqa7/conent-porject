@@ -1,8 +1,8 @@
 {
   "ui": {
-    "version": "2.3.0",
-    "notes": "الربط الرسمي بالـ API: انشر مباشرة على يوتيوب وتيك توك وإنستقرام وإكس، والأرقام تجي من المنصة نفسها",
-    "minShell": "2.2.0",
+    "version": "2.4.0",
+    "notes": "أكبر تحديث: الجدولة والنشر التلقائي، صندوق التعليقات، تتبع المنافسين، أسلوبك بالكتابة، وتحويل فكرة وحدة لمحتوى كثير",
+    "minShell": "2.4.0",
     "files": [
       {
         "path": "api.js",
@@ -11,8 +11,8 @@
       },
       {
         "path": "app.js",
-        "sha256": "ce58e8009870082b6405ec1c94866ea4eadc347c6f006fcfd43157bb6a0b574b",
-        "size": 109251
+        "sha256": "db5dffba5cf33174742e5b8de0ba28270e37e1e1ceaf2d79c1facee81f8e46b1",
+        "size": 109685
       },
       {
         "path": "clips.js",
@@ -155,9 +155,14 @@
         "size": 31801
       },
       {
+        "path": "growth.js",
+        "sha256": "a779c32d7833f2c1f63da77f95dc27b959de41ec2f52701c410237de3dc39463",
+        "size": 53537
+      },
+      {
         "path": "index.html",
-        "sha256": "90b19dbc9ac30b5eb17eb7e9cb93a759d27afdd39a6106b5066f2897c415e1fa",
-        "size": 1468
+        "sha256": "076cde1265e729a00d7779ac9ca7fa1f6be33840b4d8e2c7bc3ae844ebaa9e67",
+        "size": 1502
       },
       {
         "path": "studies.js",
@@ -166,8 +171,8 @@
       },
       {
         "path": "styles.css",
-        "sha256": "260c5fbbd04d1ee98391b92e0b5686b7703d4dacabc9985531a4c08188885c5b",
-        "size": 44736
+        "sha256": "8db79188197d283258333509417561203859177c4a231cd364285177b26c690c",
+        "size": 48595
       },
       {
         "path": "videos.js",
@@ -177,9 +182,9 @@
     ]
   },
   "shell": {
-    "version": "2.3.0",
-    "url": "https://raw.githubusercontent.com/onzqa7/conent-porject/main/updates/shell/content-studio-2.3.0.zip",
-    "sha256": "b59d01859ec7e533ab967a10afdbd6478b49bf6d26a12c47d0432ff00b3bee17",
-    "notes": "تحديث أساسي: الربط الرسمي بالـ API والنشر المباشر"
+    "version": "2.4.0",
+    "url": "https://raw.githubusercontent.com/onzqa7/conent-porject/main/updates/shell/content-studio-2.4.0.zip",
+    "sha256": "a049948b0cec9266309ce1250325f39dbab771d67e70726e8f78e524b17c8866",
+    "notes": "أكبر تحديث: النشر المجدول التلقائي، التعليقات، المنافسين، أسلوبك، وإعادة التدوير"
   }
 }

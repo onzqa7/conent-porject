@@ -53,8 +53,16 @@ contextBridge.exposeInMainWorld('desktop', {
     list: (pf, limit) => ipcRenderer.invoke('api:list', pf, limit),
     publish: (jobId, pf, post) => ipcRenderer.invoke('api:publish', jobId, pf, post),
     pickVideo: () => ipcRenderer.invoke('api:pickVideo'),
+    comments: (pf, limit) => ipcRenderer.invoke('api:comments', pf, limit),
+    reply: (pf, cid, text) => ipcRenderer.invoke('api:reply', pf, cid, text),
     onProgress: fn => on('api:progress', fn),
   },
+  bg: {
+    get: () => ipcRenderer.invoke('bg:get'),
+    set: p => ipcRenderer.invoke('bg:set', p),
+  },
+  notify: (title, body) => ipcRenderer.invoke('app:notify', title, body),
+  onNotifyClick: fn => on('app:notifyClick', fn),
   updates: {
     state: () => ipcRenderer.invoke('update:state'),
     check: () => ipcRenderer.invoke('update:check'),

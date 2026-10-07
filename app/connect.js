@@ -85,7 +85,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 /* ---------- YouTube ---------- */
 const youtube = {
-  scopes: 'https://www.googleapis.com/auth/youtube.upload https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/yt-analytics.readonly',
+  scopes: 'https://www.googleapis.com/auth/youtube.upload https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/yt-analytics.readonly https://www.googleapis.com/auth/youtube.force-ssl',
   async connect({ clientId, clientSecret }) {
     const st = b64url(crypto.randomBytes(16)), p = pkce();
     const url = 'https://accounts.google.com/o/oauth2/v2/auth?' + new URLSearchParams({ client_id: clientId, redirect_uri: REDIRECT, response_type: 'code', scope: this.scopes, access_type: 'offline', prompt: 'consent', state: st, code_challenge: p.challenge, code_challenge_method: 'S256' });
@@ -134,6 +134,25 @@ const youtube = {
       for (const row of a.rows || []) { const v = out.find(x => x.vid === row[idx.video]); if (v) { v.follows = row[idx.subscribersGained]; v.shares = row[idx.shares]; v.avgView = row[idx.averageViewDuration]; v.watchMin = row[idx.estimatedMinutesWatched]; } }
     } catch {}
     return out;
+  },
+  // Latest comments across the channel. Replying needs the youtube.force-ssl scope (added in 2.4).
+  async comments(limit = 100) {
+    const id = getConn('youtube').profile?.id || (await this.profile()).id;
+    const out = []; let page = '';
+    while (out.length < limit) {
+      const d = await this.get(`https://www.googleapis.com/youtube/v3/commentThreads?part=snippet,replies&allThreadsRelatedToChannelId=${id}&maxResults=100&order=time&textFormat=plainText${page ? '&pageToken=' + page : ''}`);
+      for (const t of d.items || []) {
+        const c = t.snippet.topLevelComment.snippet;
+        const mine = (t.replies?.comments || []).some(r => r.snippet.authorChannelId?.value === id);
+        out.push({ cid: t.snippet.topLevelComment.id, platform: 'youtube', mediaId: t.snippet.videoId, url: `https://www.youtube.com/watch?v=${t.snippet.videoId}&lc=${t.snippet.topLevelComment.id}`, author: c.authorDisplayName, avatar: c.authorProfileImageUrl || '', text: c.textOriginal || c.textDisplay || '', likes: c.likeCount || 0, date: c.publishedAt, replies: t.snippet.totalReplyCount || 0, answered: mine, canReply: t.snippet.canReply !== false });
+      }
+      if (!d.nextPageToken) break; page = d.nextPageToken;
+    }
+    return out.slice(0, limit);
+  },
+  async reply(cid, text) {
+    const r = await req('https://www.googleapis.com/youtube/v3/comments?part=snippet', { method: 'POST', headers: { Authorization: 'Bearer ' + await this.token() }, json: { snippet: { parentId: cid, textOriginal: text } } });
+    return { id: r.id };
   },
   async publish({ file, title, description, tags, privacy = 'public' }, onProgress) {
     const size = fs.statSync(file).size;
@@ -193,6 +212,23 @@ const instagram = {
       } catch {}
     }));
     return out.slice(0, limit);
+  },
+  // Comments on the latest posts. Needs instagram_business_manage_comments on the token.
+  async comments(limit = 100) {
+    const me = getConn('instagram').profile?.handle || (await this.profile()).handle;
+    const media = (await this.get('me/media?fields=id,permalink,caption,comments_count&limit=20')).data || [];
+    const out = [];
+    for (const m of media.filter(x => x.comments_count > 0)) {
+      if (out.length >= limit) break;
+      const d = await this.get(`${m.id}/comments?fields=id,text,timestamp,username,like_count,replies{username}&limit=50`);
+      for (const c of d.data || []) out.push({ cid: c.id, platform: 'instagram', mediaId: m.id, mediaTitle: (m.caption || '').slice(0, 80), url: m.permalink, author: c.username || '', avatar: '', text: c.text || '', likes: c.like_count || 0, date: c.timestamp, replies: (c.replies?.data || []).length, answered: (c.replies?.data || []).some(r => r.username === me), canReply: true });
+    }
+    return out.slice(0, limit);
+  },
+  async reply(cid, text) {
+    const t = await this.token();
+    const r = await req(`${IG}/${cid}/replies`, { method: 'POST', form: { message: text, access_token: t } });
+    return { id: r.id };
   },
   async publish({ file, caption }, onProgress) {
     const t = await this.token();
