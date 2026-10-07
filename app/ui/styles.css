@@ -737,7 +737,7 @@ input[dir="ltr"]::placeholder,input.ltr::placeholder{direction:rtl;text-align:ri
 .board{scrollbar-width:thin}.board::-webkit-scrollbar-thumb{background-color:var(--line2)}
 [data-act]:not(button):not(a):not(input):not(select):not(textarea):focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
 .voicep .f+.row{margin-top:12px}.voicep{display:flex;flex-direction:column;gap:10px}
-.fontpick b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fontpick b{font-size:.95rem!important;line-height:1.4}
 @media (max-width:1100px){.app{grid-template-columns:200px minmax(0,1fr)}.brand span{display:none}.ev .tm,.ev time{display:none}}
 .pick span{display:inline-flex;align-items:center;gap:6px}.pick span svg{width:15px;height:15px;flex:none}
 
@@ -769,3 +769,12 @@ input[dir="ltr"]::placeholder,input.ltr::placeholder{direction:rtl;text-align:ri
 .agin textarea{flex:1;resize:none;min-height:42px;max-height:180px;border-radius:12px}
 @media (max-width:1100px){.agpv{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .agact.skip{border-color:var(--line2);background:var(--raised);color:var(--muted)}.agact.skip>svg:first-child{color:var(--faint)}
+
+/* ===== v2.8 nav groups ===== */
+.navg button.gl{display:flex;align-items:center;justify-content:space-between;width:100%;border:0;background:none;cursor:pointer;color:var(--faint);font:inherit;font-size:.66rem;font-weight:600;padding:8px 10px 2px;border-radius:6px;position:static}
+.navg button.gl:hover{color:var(--muted);background:none}
+.navg button.gl svg{width:12px;height:12px;transform:rotate(-90deg);transition:transform .15s;opacity:.7}
+.navg.closed button.gl svg{transform:rotate(0deg)}
+.head h1{display:flex;align-items:center;gap:12px}
+.hico{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;flex:none;background:linear-gradient(145deg,var(--accent-soft),transparent);border:1px solid var(--accent-line);color:var(--accent-text)}
+.hico svg{width:19px;height:19px}

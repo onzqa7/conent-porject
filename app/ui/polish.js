@@ -114,3 +114,9 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Tab'){const root=ob?$('#ob-root'):$('#modal-root').innerHTML?$('#modal-root'):null;if(!root)return;
     const f=$$('button:not([disabled]),[href],input:not([type=hidden]):not([disabled]),select,textarea,[tabindex]:not([tabindex="-1"])',root).filter(x=>x.offsetParent!==null);if(!f.length)return;
     const a=f[0],z=f[f.length-1];if(!root.contains(document.activeElement)){e.preventDefault();a.focus()}else if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus()}}});
+
+/* collapsible sidebar groups */
+document.addEventListener('click',e=>{const b=e.target.closest('[data-navg]');if(!b)return;const k=b.dataset.navg;const cl={...(S.prefs.navClosed||{})};cl[k]=!cl[k];S.prefs={...S.prefs,navClosed:cl};saveLocal();render(true)});
+
+/* page title icon tile */
+{const _dr=doRender;doRender=function(){_dr();const h=$('#view .head h1');const v=VIEWS[ui.view];if(h&&v&&I[v.i]&&!h.querySelector('.hico')&&!ui.streamId){h.insertAdjacentHTML('afterbegin',`<span class="hico" aria-hidden="true">${I[v.i]}</span>`)}}}
