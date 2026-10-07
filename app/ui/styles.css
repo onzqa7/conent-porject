@@ -860,3 +860,9 @@ input[dir="ltr"]::placeholder,input.ltr::placeholder{direction:rtl;text-align:ri
 .td-it.todo .iconbtn{opacity:0}.td-it.todo:hover .iconbtn{opacity:1}
 .td-add{display:flex;gap:8px;margin-top:10px}.td-add input{flex:1}
 .qk-seg{align-self:start}.qk-seg svg{width:15px;height:15px;margin-inline-end:5px;vertical-align:-3px}
+/* v2.9 drawer editor */
+.scrim.drawer{padding:0;justify-content:flex-end;align-items:stretch;background:rgba(3,5,8,.38);backdrop-filter:none;overflow:hidden}
+.modal.drawer{width:min(660px,100%);height:100vh;border-radius:0;border:0;border-inline-start:1px solid var(--line2);overflow:auto;animation:drawerIn .22s cubic-bezier(.2,.9,.3,1)}
+.modal.drawer header{top:0;border-radius:0}.modal.drawer footer{bottom:0;border-radius:0;margin-top:auto}
+@keyframes drawerIn{from{transform:translateX(-40px);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.modal.drawer{animation:none}}

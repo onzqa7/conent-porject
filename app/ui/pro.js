@@ -110,3 +110,6 @@ document.addEventListener('click',async e=>{
 
 /* advisor: friendlier empty state, and a pointer to the agent for doing things */
 {const _va=vAdvisor;vAdvisor=function(){return _va().replace('<b>جرّب تسأل:</b>',`<span class="advico">${I.chat||I.msg||''}</span><b>وش تبي تعرف اليوم؟</b><span class="advhint">المستشار يعطيك رأي ونصيحة. تبي أحد ينفّذ عنك (يجدول ويضيف أفكار)؟ <button type="button" data-act="go" data-v="agent">جرّب الوكيل</button></span>`)}}
+
+/* post editor opens as a side drawer, so the calendar stays in view while editing */
+{const _op2=openPost;openPost=function(id,preset){_op2(id,preset);const sc=$('#modal-root .scrim'),m=$('#modal-root .modal');if(sc&&m&&$('#postForm')){sc.classList.add('drawer');m.classList.add('drawer')}}}
