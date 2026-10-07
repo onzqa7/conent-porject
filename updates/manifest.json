@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.8.0",
-    "notes": "شراكات ودخل وملف إعلانات ورخصة موثوق، مواسم سعودية بالهجري، تقرير أسبوعي واستمرارية، ملقّن، تجهيز فيديو يوتيوب، الأهلية للربح، ربط OBS، فحص الإعلان ومعاينة المنشور، وتصميم أرتب",
+    "version": "2.8.1",
+    "notes": "البرنامج صار خاص فيك: حساباتك مثبتة فيه، ويلقى باقي حساباتك من وصف فيديوهاتك ويسحب أرقامك كل يوم لحاله",
     "minShell": "2.5.0",
     "files": [
       {
@@ -191,8 +191,13 @@
       },
       {
         "path": "index.html",
-        "sha256": "24824e10ea493b2f8b1ddd1a366f2c321f319f92af0902c6de0b3770a72b28eb",
-        "size": 1923
+        "sha256": "a45ccec29ed365423e26bb9e85e29396b7ac3be4a126a70c271b183563053946",
+        "size": 1953
+      },
+      {
+        "path": "me.js",
+        "sha256": "0df0b3fa02f26da84df5c666b22c74ff2383f154c7ffc3317f5b4b7dcfff2b8b",
+        "size": 3431
       },
       {
         "path": "polish.js",
@@ -232,9 +237,9 @@
     ]
   },
   "shell": {
-    "version": "2.7.0",
-    "url": "https://raw.githubusercontent.com/onzqa7/conent-porject/main/updates/shell/content-studio-2.7.0.zip",
-    "sha256": "0571d61bbf8f8fa32b6aeeed813cca18faefd00e0681e520ad032a0852074508",
-    "notes": "الوكيل: مساعد توجهه ويشتغل بأي نموذج، حتى على جهازك بدون Claude"
+    "version": "2.8.1",
+    "url": "https://raw.githubusercontent.com/onzqa7/conent-porject/main/updates/shell/content-studio-2.8.1.zip",
+    "sha256": "47a1dc7fde90114b70b8b4c8bf0b80f5f04fc9a4b73229e7b863299561bd5221",
+    "notes": "يقرأ وصف فيديوهاتك عشان يلقى حساباتك الثانية"
   }
 }

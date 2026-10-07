@@ -71,6 +71,7 @@ function normalize(v, fallbackUrl) {
     thumb: pickThumb(v),
     channel: v.channel || v.uploader || v.uploader_id || '',
     followers: v.channel_follower_count ?? null,
+    desc: String(v.description || '').slice(0, 5000),
   };
 }
 const cookieArgs = browser => (browser ? ['--cookies-from-browser', browser] : []);
