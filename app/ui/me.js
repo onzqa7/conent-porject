@@ -12,7 +12,7 @@ function needsOnboarding(){return false}
 function applyMe(){
   let changed=false;
   // demo rows from older versions have no place in a personal app
-  for(const c of COLS){const n=(S[c]||[]).length;S[c]=(S[c]||[]).filter(x=>!x.example);if(S[c].length!==n)changed=true}
+  for(const c of COLS){const n=(S[c]||[]).length;S[c]=(S[c]||[]).filter(x=>!(x.example&&(!x.updatedAt||x.updatedAt===x.createdAt)));if(S[c].length!==n)changed=true}
   if(!S.prefs.gsHide){S.prefs.gsHide=1;S.prefs.onboarded=1;changed=true}
   if(ME.name&&!S.profile.name){S.profile={...S.profile,name:ME.name};changed=true}
   if(ME.niche&&!S.profile.niche){S.profile={...S.profile,niche:ME.niche};changed=true}
@@ -24,12 +24,12 @@ function applyMe(){
 async function autoSync(){
   if(!window.desktop||typeof syncAccount!=='function')return;
   const last=+S.prefs.meSync||0;if(Date.now()-last<20*3600e3)return;
-  const accs=S.accounts.filter(a=>a.handle||a.url);if(!accs.length)return;
+  const accs=S.accounts.filter(a=>typeof accountUrls!=='function'||accountUrls(a).length);if(!accs.length)return;
   S.prefs.meSync=Date.now();saveLocal();
   for(const a of accs){try{await syncAccount(a)}catch(e){}}
 }
 // Other accounts are linked in the YouTube video descriptions: read a few recent videos and add what they point to.
-const ME_LINKS=[['tiktok',/tiktok\.com\/@([\w.]+)/i],['instagram',/instagram\.com\/([\w.]+)/i],['snapchat',/snapchat\.com\/(?:add\/|@)([\w.-]+)/i],['x',/(?:twitter|x)\.com\/(\w{1,15})/i],['twitch',/twitch\.tv\/(\w+)/i],['kick',/kick\.com\/([\w-]+)/i],['threads',/threads\.(?:net|com)\/@([\w.]+)/i],['facebook',/facebook\.com\/([\w.]+)/i]];
+const ME_LINKS=[['tiktok',/tiktok\.com\/@([\w.]+)/i],['instagram',/instagram\.com\/([\w.]+)/i],['snapchat',/snapchat\.com\/(?:add\/|@)([\w.-]+)/i],['x',/(?:^|[^\w.-])(?:(?:www|mobile)\.)?(?:twitter|x)\.com\/(\w{1,15})/i],['twitch',/twitch\.tv\/(\w+)/i],['kick',/kick\.com\/([\w-]+)/i],['threads',/threads\.(?:net|com)\/@([\w.]+)/i],['facebook',/facebook\.com\/([\w.]+)/i]];
 const ME_SKIP=/^(p|reel|reels|explore|watch|share|intent|home|hashtag|i|tv|stories|videos?)$/i;
 async function discoverAccounts(){
   if(!window.desktop?.social?.info||S.prefs.meFound)return;

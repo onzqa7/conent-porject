@@ -125,7 +125,7 @@ function openDeal(id,preset){const src=id&&find('deals',id);
 const bzAiBtn=(a,l)=>`<button type="button" class="btn ai" data-xact="${a}" ${sample?'':`disabled title="${window.desktop?'أضف مفتاح Claude من الإعدادات':'المساعد الذكي غير متاح'}"`}>${l}</button>`;
 function delivRows(d){const ds=d.deliverables||[];if(!ds.length)return '<p class="small faint bz-none">ما فيه تسليمات. أضف وش بتنشر للبراند (ريل، ستوري، سناب…).</p>';
   return `<div class="bz-drows">${ds.map((x,i)=>{const p=x.postId&&find('posts',x.postId),late=delivOver(d,x);return `<div class="bz-drow ${late?'late':''}" data-drow="${i}">
-    <select name="dtype" aria-label="النوع">${Object.keys(BZ_DT).map(t=>`<option ${x.type===t?'selected':''}>${t}</option>`).join('')}</select>
+    <select name="dtype" aria-label="النوع">${(x.type&&!BZ_DT[x.type]?[x.type,...Object.keys(BZ_DT)]:Object.keys(BZ_DT)).map(t=>`<option ${x.type===t?'selected':''}>${esc(t)}</option>`).join('')}</select>
     <input type="date" name="ddue" value="${esc(x.due||'')}" aria-label="موعد التسليم" title="موعد التسليم">
     <label class="pick" title="يحتاج إفصاح إعلان"><input type="checkbox" name="ddisc" ${x.disclose!==false?'checked':''}><span>يحتاج إفصاح #إعلان</span></label>
     <label class="pick"><input type="checkbox" name="ddone" ${x.done?'checked':''}><span>${I.check}تم</span></label>
@@ -201,7 +201,7 @@ function moneyTable(){const f=BZ.mf;let rows=S.money.filter(m=>f==='all'||m.type
   return `<div class="ph"><h2>كل الحركات</h2><div class="row"><div class="seg">${[['all','الكل'],['in','دخل'],['out','مصاريف']].map(([k,l])=>`<button data-xact="mf" data-f="${k}" aria-pressed="${f===k}">${l}</button>`).join('')}</div><button class="btn sm" data-xact="csv">${I.dl} CSV</button></div></div>
   ${rows.length?`<div class="tablewrap bz-table"><table><thead><tr><th>التاريخ</th><th>المصدر</th><th>ملاحظة</th><th>المبلغ</th></tr></thead><tbody>${rows.map(m=>{const d=m.dealId&&find('deals',m.dealId);return `<tr data-xact="editMoney" data-id="${m.id}" tabindex="0"><td class="num" style="white-space:nowrap">${dShort(m.date)} <span class="faint">${String(m.date||'').slice(0,4)}</span></td><td><span class="bz-src-t t-${m.type}">${m.type==='in'?I.down:I.up}${esc(m.source||'أخرى')}</span></td><td class="muted">${esc(m.note||'')}${d?` <span class="chip">${I.brief}${esc(d.brand)}</span>`:''}</td><td class="num bz-amt t-${m.type}">${m.type==='in'?'+':'−'}${sar(m.amount)}</td></tr>`}).join('')}</tbody></table></div>
   ${tot>rows.length?`<div style="text-align:center;margin-top:10px"><button class="btn sm ghost" data-xact="allRows">اعرض الكل (${tot})</button></div>`:''}`:'<p class="muted small">ما فيه حركات هنا.</p>'}`}
-function srcOpts(type,sel){return (type==='in'?BZ_IN:BZ_OUT).map(s=>`<option ${sel===s?'selected':''}>${s}</option>`).join('')}
+function srcOpts(type,sel){const L=type==='in'?BZ_IN:BZ_OUT;return (sel&&!L.includes(sel)?[sel,...L]:L).map(s=>`<option ${sel===s?'selected':''}>${esc(s)}</option>`).join('')}
 function openMoney(id,type){const src=id&&find('money',id);BZ.med=src?{...src}:{type:type||'in',amount:'',source:type==='out'?'معدات':'إعلانات يوتيوب',date:bzToday(),note:'',dealId:''};const m=BZ.med;
   const deals=S.deals.filter(d=>d.stage!=='lost'||d.id===m.dealId);
   openModal(`${mhead(src?'تعديل حركة':m.type==='in'?'دخل جديد':'مصروف جديد')}<form id="moneyForm"><div class="body form">

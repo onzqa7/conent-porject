@@ -24,7 +24,7 @@ function pvHtml(){
   const hint=k==='youtube'?(title&&[...title].length>60?'العنوان طويل، الجوال يقصّه بعد ٦٠ حرف تقريبًا':'أول ٦٠ حرف من العنوان هي اللي تبان بالجوال'):c.more?`يبان أول ${cut} حرف بس قبل "المزيد"، خل الهوك فيها`:'النص كامل يبان بدون "المزيد"';
   return `<div class="pvtabs">${pls.map(x=>`<button type="button" data-pv="${x}" aria-pressed="${x===k}">${PL(x).n}</button>`).join('')}</div><div class="pvstage">${card}</div><div class="pvhint">${hint}</div>`;
 }
-function mawthooq(){const b=S.prefs.biz||{},m=b.lic||b.mawthooq||b.license||{};const num=typeof m==='string'?m:(m.number||m.no||b.mawthooqNo||'');const exp=m.expiry||m.exp||b.mawthooqExp||'';return {num,exp:exp?pd(exp):null}}
+function mawthooq(){const b=S.prefs.biz||{},m=b.lic||b.mawthooq||b.license||{};const num=typeof m==='string'?m:(m.number||m.no||b.mawthooqNo||'');const exp=m.expiry||m.exp||b.mawthooqExp||'';return {num,exp:exp?pd(String(exp).slice(0,10)+'T23:59:59'):null}}
 function adHtml(){
   const f=$('#postForm');if(!f)return '';const fd=new FormData(f);if(!fd.get('sponsored'))return '';
   const txt=(fd.get('caption')||'')+' '+(fd.get('hashtags')||'')+' '+(fd.get('title')||''),lab=AD_RX.test(txt),m=mawthooq(),expired=m.exp&&m.exp<new Date();
@@ -100,7 +100,7 @@ document.addEventListener('click',async e=>{
   const b=e.target.closest('[data-pro]');if(!b)return;const a=b.dataset.pro;
   if(a==='pvToggle'){S.prefs.pvOpen=!S.prefs.pvOpen;saveLocal();b.setAttribute('aria-pressed',!!S.prefs.pvOpen);const p=$('#pvBox');if(p){p.hidden=!S.prefs.pvOpen;drawPostExtras()}}
   else if(a==='addAdTag'){const i=$('#postForm [name=hashtags]');if(i){i.value=('#إعلان '+i.value).trim();i.dispatchEvent(new Event('input',{bubbles:true}))}}
-  else if(a==='goBiz'){closeModal();S.prefs.biz={...(S.prefs.biz||{}),tab:'lic'};go('business')}
+  else if(a==='goBiz'){if(modalDirty&&!armEsc('modal','عندك تعديلات ما انحفظت. اضغط مرة ثانية عشان تروح بدون حفظ'))return;closeModal();S.prefs.biz={...(S.prefs.biz||{}),tab:'lic'};go('business')}
   else if(a==='obsConnect'){const u=($('#obsUrl')?.value||'').trim()||'ws://127.0.0.1:4455';S.prefs.obs={...obsCfg(),url:/^wss?:\/\//.test(u)?u:'ws://'+u,pass:$('#obsPass')?.value||''};saveLocal();obsConnect()}
   else if(a==='obsOff')obsOff();
   else if(a==='obsRec'){try{await obsReq(OBS.rec?'StopRecord':'StartRecord');OBS.rec=!OBS.rec;obsRedraw()}catch(err){toast(err.message)}}
