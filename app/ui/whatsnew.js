@@ -1,6 +1,9 @@
 /* "وش الجديد": after an update, one short screen with the new things and a button to each.
    Shown once per version list; reachable again from the palette. */
 const WN=[
+ ['2.9.8',[
+  [I.cal,'املأ الأيام الفاضية','بالتقويم: الأيام اللي ما فيها شي بالأسبوع الجاي، يقترح لها أفكار من بنكك بأفضل وقت وتوافق قبل ما ينحط شي.','fill'],
+ ]],
  ['2.9.7',[
   [I.chart||I.star,'التقرير الأسبوعي صار أشمل','يحسب أيام سناب والسبوتلايت والشراكات الجديدة والدخل، ويقارنها بالأسبوع اللي قبله.','go:report'],
   [I.cmd||I.bolt,'اختصارات الكيبورد','اضغط ؟ تشوفها كلها: N منشور جديد، I فكرة، Alt مع رقم للصفحات. وتشتغل والكيبورد عربي.','keys'],
@@ -35,6 +38,7 @@ function openWhatsNew(all){const seen=S.prefs.wnSeen;
 document.addEventListener('click',e=>{const b=e.target.closest('[data-wn]');if(!b)return;const k=b.dataset.wn;closeModal();
   if(k==='bio'){S.prefs.biz={...(S.prefs.biz||{}),tab:'bio'};saveLocal();go('business')}
   else if(k==='keys')setTimeout(openKeys,30);
+  else if(k==='fill')setTimeout(openFill,30);
   else setTimeout(()=>runPalette(k),30)});
 {const _ab=afterBoot;afterBoot=function(){_ab();setTimeout(()=>{if(S.prefs.wnSeen!==wnLatest()&&!$('#modal-root').innerHTML&&!(typeof live!=='undefined'&&live))openWhatsNew()},2500)}}
 {const _pi=paletteItems;paletteItems=function(){return [..._pi(),['whatsnew','وش الجديد بالتحديثات',I.star]]}}
