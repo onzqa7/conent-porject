@@ -1,18 +1,23 @@
 {
   "ui": {
-    "version": "2.9.6",
-    "notes": "إصلاحات صغيرة",
+    "version": "2.9.7",
+    "notes": "اختصارات الكيبورد، الوكيل يدير واجهات البث، والتقرير الأسبوعي يشمل سناب والدخل",
     "minShell": "2.5.0",
     "files": [
       {
         "path": "agent.js",
-        "sha256": "207008a85f797526bd2e3dd011229f696cc041499ba61e4d7908ab361082227c",
-        "size": 24499
+        "sha256": "741f8512cd0c9d36e9b08f9625d58d7512dd42e84fbc09da60b0eed95b4ecf80",
+        "size": 24505
       },
       {
         "path": "agent2.js",
         "sha256": "341060918ddd067924c59557ef9677d530b961b92efecbb7b71031fbcdf8913a",
         "size": 8692
+      },
+      {
+        "path": "agent3.js",
+        "sha256": "31058b61c7206af9844bd198b03524aa228d2de28a26aec51ac26fde1285b4b0",
+        "size": 4702
       },
       {
         "path": "api.js",
@@ -226,13 +231,18 @@
       },
       {
         "path": "index.html",
-        "sha256": "c5a5151a17a98f1f7fa021f928758602c7e5debd9d7bd5ecb532359481ffb55a",
-        "size": 2651
+        "sha256": "bc3e8005205c3ced65f4d2c9ca85e31a7f5787043113beaa99d36ebfcc245495",
+        "size": 2752
       },
       {
         "path": "insights.js",
         "sha256": "104c8e959b86cdab1ea247a5fc80a3056f879d1bb73eecac9c80cd0a575954e5",
         "size": 4234
+      },
+      {
+        "path": "keys.js",
+        "sha256": "c7e46f708cd48fdb4ddd3ec5b1e52586901a59ac75885e1f48cebe2c5b79bfc5",
+        "size": 2718
       },
       {
         "path": "me.js",
@@ -275,6 +285,11 @@
         "size": 2449
       },
       {
+        "path": "report2.js",
+        "sha256": "fd4a48686c50871db4893d5e5b80e27b95ac75e570077b7277dc36845b12d55a",
+        "size": 1963
+      },
+      {
         "path": "seasons.css",
         "sha256": "83e388eb009267dad1189e00614955ebfd27bf463639f92e263782990f72af29",
         "size": 10585
@@ -306,8 +321,8 @@
       },
       {
         "path": "styles.css",
-        "sha256": "3a9e5d94784543eb34c9aa7ac19b4d0a7e12239fb7df161e644b435ea7fe98ca",
-        "size": 78813
+        "sha256": "7ce683d5874867b9b1879531d1f32de8d77b3f9d7aeaed2aaf9ed5f57280b48d",
+        "size": 79492
       },
       {
         "path": "today.js",
@@ -321,8 +336,8 @@
       },
       {
         "path": "whatsnew.js",
-        "sha256": "d20dc8ec29018a3be3605959ff076540328137a64a2e451cfab1574c947aa9a0",
-        "size": 3719
+        "sha256": "96a139c6e05b0f2d4396e9094f87f00ece949b85581c0f2606ac93caa32b71cd",
+        "size": 4435
       }
     ]
   },
