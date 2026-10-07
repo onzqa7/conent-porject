@@ -859,3 +859,4 @@ input[dir="ltr"]::placeholder,input.ltr::placeholder{direction:rtl;text-align:ri
 .td-it.todo.done .td-t b{text-decoration:line-through;color:var(--faint)}
 .td-it.todo .iconbtn{opacity:0}.td-it.todo:hover .iconbtn{opacity:1}
 .td-add{display:flex;gap:8px;margin-top:10px}.td-add input{flex:1}
+.qk-seg{align-self:start}.qk-seg svg{width:15px;height:15px;margin-inline-end:5px;vertical-align:-3px}

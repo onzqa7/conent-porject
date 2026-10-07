@@ -39,7 +39,7 @@ function run(args, { onStderrLine, cwd } = {}) {
   });
 }
 function cancelAll() { for (const p of running) { p.killedByUser = true; try { p.kill(); } catch {} } }
-const workDir = () => { const d = path.join(ctx.userDir(), 'cuts'); fs.mkdirSync(d, { recursive: true }); return d; };
+const workDir = () => { const d = path.join(typeof ctx.userDir === 'function' ? ctx.userDir() : ctx.userDir, 'cuts'); fs.mkdirSync(d, { recursive: true }); return d; };
 const okFile = f => typeof f === 'string' && (ctx.isAllowed ? ctx.isAllowed(f) : VIDEO_EXT.test(f) && fs.existsSync(f));
 const sendTo = (e, ch, ...a) => { try { if (!e.sender.isDestroyed()) e.sender.send(ch, ...a); } catch {} };
 const cancelErr = () => { const e = new Error('cancelled'); e.cancelled = true; return e; };
@@ -125,6 +125,7 @@ function register(c) {
   ctx = c;
   const { ipcMain, media, captions } = c;
   if (!ctx.userDir) ctx.userDir = () => c.app.getPath('userData');
+  if (c.app && c.app.on) c.app.on('will-quit', cancelAll);
 
   ipcMain.handle('cut:status', () => {
     let st = null; try { st = captions.status(); } catch {}

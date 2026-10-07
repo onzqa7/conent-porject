@@ -81,6 +81,7 @@ contextBridge.exposeInMainWorld('desktop', {
   },
   notify: (title, body) => ipcRenderer.invoke('app:notify', title, body),
   onNotifyClick: fn => on('app:notifyClick', fn),
+  onQuick: fn => on('app:quick', fn),
   updates: {
     state: () => ipcRenderer.invoke('update:state'),
     check: () => ipcRenderer.invoke('update:check'),

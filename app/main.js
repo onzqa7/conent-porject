@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog, shell, safeStorage, Menu, protocol, net, Tray, Notification, nativeImage } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, shell, safeStorage, Menu, protocol, net, Tray, Notification, nativeImage, globalShortcut } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const os = require('os');
@@ -514,7 +514,7 @@ function setupTray() {
   if (tray) return;
   tray = new Tray(nativeImage.createFromPath(path.join(__dirname, 'icon.png')).resize({ width: 16, height: 16 }));
   tray.setToolTip('استوديو المحتوى · النشر المجدول شغّال');
-  tray.setContextMenu(Menu.buildFromTemplate([{ label: 'افتح استوديو المحتوى', click: showMain }, { type: 'separator' }, { label: 'اقفل البرنامج نهائياً', click: () => { quitting = true; app.quit(); } }]));
+  tray.setContextMenu(Menu.buildFromTemplate([{ label: 'افتح استوديو المحتوى', click: showMain }, { label: 'فكرة سريعة  (Ctrl+Shift+Space)', click: () => quickCapture() }, { type: 'separator' }, { label: 'اقفل البرنامج نهائياً', click: () => { quitting = true; app.quit(); } }]));
   tray.on('click', showMain);
 }
 ipcMain.handle('bg:get', () => bgPrefs());
@@ -571,5 +571,9 @@ app.whenReady().then(() => {
   registerProtocols();
   createWindow();
   setupTray();
+  // Quick capture from anywhere in Windows: brings the app up with a small "new idea" box.
+  try { globalShortcut.register('CommandOrControl+Shift+Space', quickCapture); } catch {}
 });
+function quickCapture() { showMain(); if (mainWin) mainWin.webContents.send('app:quick'); }
+app.on('will-quit', () => { try { globalShortcut.unregisterAll(); } catch {} });
 app.on('window-all-closed', () => { media.cancelAll(); social.cancelAll(); captions.cancelAll(); captions.cancelDownload(); app.quit(); });
