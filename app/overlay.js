@@ -369,9 +369,9 @@ async function start() {
   if (server) return publicStatus();
   let lastErr = null;
   for (let p = PORT0; p < PORT0 + 6; p++) {
-    try { server = await listen(p); port = p; break; } catch (e) { lastErr = e; if (e.code !== 'EADDRINUSE') break; }
+    try { server = await listen(p); port = p; break; } catch (e) { lastErr = e; if (!['EADDRINUSE', 'EACCES'].includes(e.code)) break; }
   }
-  if (!server) return { ...publicStatus(), error: lastErr && lastErr.code === 'EADDRINUSE' ? 'المنفذ مستخدم من برنامج ثاني' : String((lastErr && lastErr.message) || lastErr) };
+  if (!server) return { ...publicStatus(), error: lastErr && ['EADDRINUSE', 'EACCES'].includes(lastErr.code) ? 'المنفذ مستخدم من برنامج ثاني' : String((lastErr && lastErr.message) || lastErr) };
   server.on('error', () => {});
   hbTimer = setInterval(() => { for (const c of clients) { try { c.res.write(': hb\n\n'); } catch {} } }, 15000);
   return publicStatus();

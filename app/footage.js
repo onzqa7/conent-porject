@@ -133,7 +133,7 @@ async function probeAll() {
       const f = Object.values(idx.files).find(x => (x.duration == null || x.needThumb) && x.status !== 'missing' && x.status !== 'error' && !x.probeFailed);
       if (!f) break;
       f.needThumb = false;
-      try { await probeFile(f); } catch (e) { f.probeFailed = true; if (f.status === 'queued') { f.status = 'error'; f.error = 'ما قدرت أقرأ الملف'; } }
+      try { await probeFile(f); } catch (e) { if (e && e.cancelled) { f.needThumb = !f.thumb; break; } f.probeFailed = true; if (f.status === 'queued') { f.status = 'error'; f.error = 'ما قدرت أقرأ الملف'; } }
       emit();
     }
   } finally { probing = false; emit(); }
@@ -169,7 +169,13 @@ async function pump() {
   const caps = capsReady();
   if (!caps.whisper || !caps.model) { emit(); return; }
   const q = queued();
-  const f = q.find(x => now() - x.mtime > SETTLE_MS);
+  // the saved mtime is from the last scan: look at the file again so a recording OBS is still writing waits
+  const f = q.find(x => {
+    let st; try { st = fs.statSync(x.path); } catch { return false; }
+    const size = st.size, mtime = Math.round(+st.mtime);
+    if (size !== x.size || mtime !== x.mtime) { dropT(x.id); Object.assign(x, { size, mtime, duration: null, thumb: null, done: 0, segs: 0 }); save(); }
+    return now() - mtime > SETTLE_MS;
+  });
   if (!f) { if (q.length) { clearTimeout(retryT); retryT = setTimeout(pump, 30e3); } return; }
   worker = { id: f.id, p: (f.done || 0) / (f.duration || 1), stop: null };
   f.status = 'indexing'; f.error = null; save(); emit(true);
@@ -181,8 +187,8 @@ async function pump() {
     while (tr.upto < f.duration - 0.3) {
       if (worker.stop) { const e = new Error('cancelled'); e.cancelled = true; throw e; }
       const a = tr.upto, b = Math.min(f.duration, a + CHUNK);
-      const r = await C.captions.transcribe({ file: f.path, start: a, end: b, model: idx.model, language: idx.lang, extractWav: C.media.extractWav },
-        p => { if (worker.stop) C.captions.cancelAll(); worker.p = (a + (b - a) * Math.min(1, p)) / f.duration; emit(); }); // a stop that landed during audio extraction kills whisper as soon as it starts
+      const r = await C.captions.transcribe({ file: f.path, start: a, end: b, model: idx.model, language: idx.lang, extractWav: C.media.extractWav, tag: 'ftg' },
+        p => { if (worker.stop) C.captions.cancelAll('ftg'); worker.p = (a + (b - a) * Math.min(1, p)) / f.duration; emit(); }); // a stop that landed during audio extraction kills whisper as soon as it starts
       if (worker.stop) { const e = new Error('cancelled'); e.cancelled = true; throw e; }
       tr.segs.push(...toSentences(r.words || []));
       tr.upto = b; tr.model = r.model; tr.lang = r.lang;
@@ -209,8 +215,7 @@ async function pump() {
 function stopCurrent(reason) {
   if (!worker) return;
   worker.stop = reason;
-  // captions has no per-job cancel; this stops whatever whisper/ffmpeg run is in flight
-  C.captions.cancelAll();
+  C.captions.cancelAll('ftg'); // only the archive's own whisper run
 }
 
 /* ---------- search ---------- */

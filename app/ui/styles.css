@@ -874,3 +874,5 @@ input[dir="ltr"]::placeholder,input.ltr::placeholder{direction:rtl;text-align:ri
 .ins-it.up span{background:color-mix(in srgb,var(--ok) 18%,transparent);color:var(--ok)}
 .ins-it.down span{background:color-mix(in srgb,var(--bad) 16%,transparent);color:var(--bad)}
 .ins-it small{margin-inline-start:auto;color:var(--faint);font-size:.72rem;white-space:nowrap}
+.linkbtn{background:none;border:0;padding:0;color:var(--accent-text);font:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.linkbtn:hover{color:var(--text)}

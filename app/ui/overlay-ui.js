@@ -116,7 +116,7 @@ function vOvl(){
    <section class="panel" id="ovStyle">${ovStyleHtml(sel.k)}</section>
   </div></div>`}
 
-const ovSel=(path,opts,cur)=>`<select data-ovf="${path}">${opts.map(([v,n])=>`<option value="${v}" ${String(cur)===String(v)?'selected':''}>${n}</option>`).join('')}</select>`;
+const ovSel=(path,opts,cur)=>`<select data-ovf="${path}">${opts.map(([v,n])=>`<option value="${esc(v)}" ${String(cur)===String(v)?'selected':''}>${esc(n)}</option>`).join('')}</select>`;
 const ovChk=(path,on,label,sub)=>`<label class="ovl-chk"><input type="checkbox" data-ovf="${path}" ${on?'checked':''}><span><b>${label}</b>${sub?`<small>${sub}</small>`:''}</span></label>`;
 function ovCtlHtml(k){const o=ovCfg();
   if(k==='lower'){const seg=OV.seg;return `<div class="ph"><h2>الفقرة الحالية</h2></div>

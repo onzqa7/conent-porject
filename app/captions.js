@@ -59,11 +59,11 @@ function deleteModel(key) { try { fs.unlinkSync(modelPath(key)); } catch {} }
 
 /* ---------- transcription ---------- */
 const running = new Set();
-function cancelAll() { for (const p of running) { p.killedByUser = true; try { p.kill(); } catch {} } }
+function cancelAll(tag) { for (const p of running) { if (tag && p.tag !== tag) continue; p.killedByUser = true; try { p.kill(); } catch {} } }
 const PUNCT = /^[\s.,!?؟،؛:;…"'«»()\-–—]+$/;
 
 // extractWav(file, start, end, outPath) comes from media.js so ffmpeg stays in one place.
-async function transcribe({ file, start, end, model = 'best', language = 'ar', extractWav }, onProgress = () => {}) {
+async function transcribe({ file, start, end, model = 'best', language = 'ar', extractWav, tag = 'caps' }, onProgress = () => {}) {
   if (!status().whisper) throw new Error('أداة التفريغ مو موجودة في البرنامج');
   const key = MODELS[model] && fs.existsSync(modelPath(model)) ? model : Object.keys(MODELS).find(k => fs.existsSync(modelPath(k)));
   if (!key) { const e = new Error('نموذج التفريغ مو محمّل'); e.code = 'no_model'; throw e; }
@@ -78,7 +78,7 @@ async function transcribe({ file, start, end, model = 'best', language = 'ar', e
     const args = ['-m', MODELS[key].file, '-f', id + '.wav', '-l', language || 'auto', '-ml', '1', '-sow', '-oj', '-of', id, '-pp', '-t', String(Math.max(2, Math.min(8, os.cpus().length - 1)))];
     await new Promise((resolve, reject) => {
       const p = spawn(WHISPER, args, { cwd: dir, windowsHide: true });
-      running.add(p);
+      p.tag = tag; running.add(p);
       let err = '';
       const onData = d => {
         const s = d.toString(); err = (err + s).slice(-6000);

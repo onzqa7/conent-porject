@@ -154,7 +154,7 @@ function register(c) {
         else {
           send('words', 0);
           try {
-            const r = await captions.transcribe({ file, start: s, end: en, model: opts.model || 'best', language: opts.language || 'ar', extractWav: media.extractWav }, (p, stage) => send('words', stage === 'audio' ? 0 : p));
+            const r = await captions.transcribe({ file, start: s, end: en, model: opts.model || 'best', language: opts.language || 'ar', extractWav: media.extractWav, tag: 'cut' }, (p, stage) => send('words', stage === 'audio' ? 0 : p));
             words = r.words; model = r.model;
           } catch (err) {
             if (err.cancelled || cancelled) throw cancelErr();
@@ -218,7 +218,7 @@ function register(c) {
     } finally { for (const f of tmp) try { fs.unlinkSync(f); } catch {} }
   });
 
-  ipcMain.handle('cut:cancel', () => { cancelled = true; cancelAll(); media.cancelAll(); try { captions.cancelAll(); } catch {} return true; });
+  ipcMain.handle('cut:cancel', () => { cancelled = true; cancelAll(); media.cancelAll(); try { captions.cancelAll('cut'); } catch {} return true; });
 }
 
 module.exports = { register, cancelAll, detectSilences, buildGraph, normKeep, remapWords, renderJumpCut };

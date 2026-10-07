@@ -462,7 +462,7 @@ ipcMain.handle('caps:transcribe', async (e, jobId, file, start, end, opts) => {
     return await captions.transcribe({ file, start, end, model: opts && opts.model, language: opts && opts.language, extractWav: media.extractWav }, (p, stage) => { if (!e.sender.isDestroyed()) e.sender.send('caps:progress', jobId, p, stage); });
   } catch (err) { return { error: err.cancelled ? 'cancelled' : String(err.message || err), code: err.code }; }
 });
-ipcMain.handle('caps:cancel', () => { captions.cancelAll(); media.cancelAll(); return true; });
+ipcMain.handle('caps:cancel', () => { captions.cancelAll('caps'); media.cancelAll(); return true; });
 
 /* ---------- updates IPC ---------- */
 ipcMain.handle('update:state', () => publicUpdateState());
@@ -534,7 +534,7 @@ ipcMain.handle('app:notify', (_e, title, body) => {
   n.on('click', () => { showMain(); if (mainWin) mainWin.webContents.send('app:notifyClick'); });
   n.show(); return true;
 });
-app.on('before-quit', () => { quitting = true; });
+app.on('before-quit', () => { quitting = true; try { media.cancelAll(); captions.cancelAll(); social.cancelAll(); } catch {} });
 const gotLock = app.requestSingleInstanceLock();
 if (!gotLock) app.quit();
 else app.on('second-instance', showMain);
@@ -569,14 +569,30 @@ app.whenReady().then(() => {
   const wpk = path.join(process.resourcesPath || '', 'bin', 'whisper', wexe);
   agent.init({ net, safeStorage, cfgFile: path.join(userDir(), 'agent.json'), keyFile: path.join(userDir(), 'agent-keys.bin') });
   captions.init({ net, workDir: path.join(userDir(), 'captions'), whisperPath: fs.existsSync(wpk) ? wpk : process.env.WHISPER_PATH || null });
+  // leftovers from a run that was killed mid-job: whisper's audio files and the clean-up exports' intermediate videos (can be gigabytes)
+  for (const [dir, rx] of [[path.join(userDir(), 'captions', 'models'), /^job-/], [path.join(userDir(), 'cuts'), /^(cut-.*\.mp4|g-.*\.txt)$/]]) {
+    try { for (const n of fs.readdirSync(dir)) if (rx.test(n)) { try { fs.unlinkSync(path.join(dir, n)); } catch {} } } catch {}
+  }
   uiInfo = currentUi();
   backupDaily();
   registerProtocols();
   createWindow();
   setupTray();
   // Quick capture from anywhere in Windows: brings the app up with a small "new idea" box.
-  try { globalShortcut.register('CommandOrControl+Shift+Space', quickCapture); } catch {}
+  applyQuickKey();
 });
+// Ctrl+Shift+Space is global while the app runs, so the user can switch it off (it is also select-column in Excel and hints in code editors)
+const QUICK_KEY = 'CommandOrControl+Shift+Space', quickFile = () => path.join(userDir(), 'quick.json');
+let quickState = { on: true, ok: false };
+function applyQuickKey() {
+  try { quickState.on = JSON.parse(fs.readFileSync(quickFile(), 'utf8')).on !== false; } catch {}
+  try { globalShortcut.unregister(QUICK_KEY); } catch {}
+  quickState.ok = false;
+  if (quickState.on) { try { quickState.ok = globalShortcut.register(QUICK_KEY, quickCapture); } catch {} }
+  return quickState;
+}
+ipcMain.handle('quick:get', () => quickState);
+ipcMain.handle('quick:set', (_e, on) => { try { fs.writeFileSync(quickFile(), JSON.stringify({ on: !!on })); } catch {} quickState.on = !!on; return applyQuickKey(); });
 function quickCapture() { showMain(); if (mainWin) mainWin.webContents.send('app:quick'); }
 app.on('will-quit', () => { try { globalShortcut.unregisterAll(); } catch {} });
 app.on('window-all-closed', () => { media.cancelAll(); social.cancelAll(); captions.cancelAll(); captions.cancelDownload(); app.quit(); });
