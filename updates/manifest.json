@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.5",
-    "notes": "جهّز فيديو البث لليوتيوب من صفحة البث",
+    "version": "2.9.6",
+    "notes": "إصلاحات صغيرة",
     "minShell": "2.5.0",
     "files": [
       {
@@ -11,13 +11,13 @@
       },
       {
         "path": "agent2.js",
-        "sha256": "964d969c95c105c65e40bf13045f3b7d2fa07505d21216cebb0d4bcaa48a9b81",
-        "size": 8615
+        "sha256": "341060918ddd067924c59557ef9677d530b961b92efecbb7b71031fbcdf8913a",
+        "size": 8692
       },
       {
         "path": "api.js",
-        "sha256": "e202a43fb1bea738cc5fba8ff0acf86a7be4f66b9758c67e2b0e18de83ec191d",
-        "size": 18796
+        "sha256": "048fe67f7ee15c243509c53233c27fb2a6d2f81080540b645e927d39890a0d06",
+        "size": 18812
       },
       {
         "path": "app.js",
@@ -256,8 +256,8 @@
       },
       {
         "path": "prayer.js",
-        "sha256": "0b917f92b7bac0ecc655aae5c9cfaef995345d5751b53156d001a786e7c8930a",
-        "size": 5073
+        "sha256": "882fdb39beaeff6371cee4b5f71497b829ce0793e5add28e2a319c219c45a50d",
+        "size": 5236
       },
       {
         "path": "pro.js",
@@ -321,8 +321,8 @@
       },
       {
         "path": "whatsnew.js",
-        "sha256": "24e5bcab274ba859f4ab45e52db0e5d7659fb259a2d5ab2d0a9b7c23f6cfdf5a",
-        "size": 3394
+        "sha256": "d20dc8ec29018a3be3605959ff076540328137a64a2e451cfab1574c947aa9a0",
+        "size": 3719
       }
     ]
   },
