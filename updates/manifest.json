@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.28",
-    "notes": "قص ونشر تلقائي، وأيقونة جديدة",
+    "version": "2.9.29",
+    "notes": "لوغو بخط ثمانية، استبعاد بالتقرير، ومشاهدات أسرع",
     "minShell": "2.9.8",
     "files": [
       {
@@ -426,8 +426,8 @@
       },
       {
         "path": "index.html",
-        "sha256": "faf0c3fb039232dd37128c0a06a46614f4505d7a52aa0faa3c56fbed44f92653",
-        "size": 3094
+        "sha256": "088ddd10d7e880c621358c305796ea512416c55845cb1bafe6d72e13324cc41a",
+        "size": 3126
       },
       {
         "path": "insights.js",
@@ -438,6 +438,11 @@
         "path": "keys.js",
         "sha256": "c7e46f708cd48fdb4ddd3ec5b1e52586901a59ac75885e1f48cebe2c5b79bfc5",
         "size": 2718
+      },
+      {
+        "path": "logo.js",
+        "sha256": "b89a32030066afc7eedb90d2af7ad16f54de3c8ea6f80eb90f5c4583f33b1070",
+        "size": 4339
       },
       {
         "path": "me.js",
@@ -496,8 +501,8 @@
       },
       {
         "path": "seasons.js",
-        "sha256": "0660314c8c8efb9d68979f0b362808bd0a2c4a9a1936855c2e549dcab16b2ee7",
-        "size": 47190
+        "sha256": "257ef7363bcc73fb1bdc8ffded97f35bd739a4b586c0b88b35ee73315eb80faf",
+        "size": 48312
       },
       {
         "path": "snap.css",
@@ -521,8 +526,8 @@
       },
       {
         "path": "styles.css",
-        "sha256": "ed50eb541dd51fd45fefb6f8899c166e871c2bed6526ffa1af11e859ce103eeb",
-        "size": 87789
+        "sha256": "5d35251f3e70a8a595b03afcb9eb544b39a79bc79cf9b4619b549c8d12bbe632",
+        "size": 89577
       },
       {
         "path": "today.js",
@@ -531,8 +536,8 @@
       },
       {
         "path": "track.js",
-        "sha256": "8fdeb11039d808142dddccf9d65765d25b8b1fb66027e08d154df42c503209de",
-        "size": 30521
+        "sha256": "29e9ac66e46d9f40126b29a1633051009052244e9acd0ad92af2b98275cc2557",
+        "size": 31298
       },
       {
         "path": "videos.js",
@@ -541,8 +546,8 @@
       },
       {
         "path": "whatsnew.js",
-        "sha256": "cda8849e2128d8d0909166c6c151507b4467f3cf66bcf9f1b7ee66f402fdbc72",
-        "size": 11872
+        "sha256": "35be1057e0adb4ff903e1a587f4ce99feaddc229b9cb3e053664853f5bf3b55e",
+        "size": 12483
       },
       {
         "path": "ytchans.js",
@@ -552,9 +557,9 @@
     ]
   },
   "shell": {
-    "version": "2.9.8",
-    "url": "https://raw.githubusercontent.com/onzqa7/conent-porject/main/updates/shell/content-studio-2.9.8.zip",
-    "sha256": "20de0c0c859f0bf36c9d118930b256d4431e6cace0aaf404f143d61b9b8cced7",
-    "notes": "قص ونشر تلقائي لقناة المقاطع، وأيقونة جديدة"
+    "version": "2.9.9",
+    "url": "https://raw.githubusercontent.com/onzqa7/conent-porject/main/updates/shell/content-studio-2.9.9.zip",
+    "sha256": "acd7d3c94d3614374c90bc3b5b33897714ea41365a5ecbb0d408ce8cb02b8e6f",
+    "notes": "التحديث يتثبت بدون نافذة سوداء، وأيقونة بخط ثمانية"
   }
 }

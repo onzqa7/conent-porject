@@ -123,6 +123,14 @@ async function prefetchShell() {
     if (mainWin && !mainWin.isDestroyed()) mainWin.webContents.send('update:state', publicUpdateState());
   } finally { updateState.shellBusy = false; }
 }
+// Runs the updater with no window at all. cmd started detached has no console, so every tool it calls
+// (tasklist, find, powershell) opened its own console window, which showed up as an empty terminal.
+// wscript has no console either, and it starts cmd with a hidden one that the rest of the script shares.
+function runHidden(script) {
+  const vbs = script.replace(/\.cmd$/, '.vbs');
+  fs.writeFileSync(vbs, `CreateObject("WScript.Shell").Run "cmd.exe /c """"${script}""""", 0, False\r\n`);
+  spawn(path.join(process.env.SystemRoot || 'C:\\Windows', 'System32', 'wscript.exe'), ['//B', '//Nologo', vbs], { detached: true, stdio: 'ignore', windowsHide: true }).unref();
+}
 function applyShellZip(zipSrc, relaunch, hidden) {
   const work = fs.mkdtempSync(path.join(os.tmpdir(), 'cs-update-'));
   const zip = path.join(work, 'update.zip');
@@ -133,14 +141,16 @@ function applyShellZip(zipSrc, relaunch, hidden) {
   fs.writeFileSync(script, [
     '@echo off',
     'chcp 65001 >nul',
+    'set n=0',
     ':wait',
-    `tasklist /FI "PID eq ${process.pid}" | find "${process.pid}" >nul && (timeout /t 1 /nobreak >nul & goto wait)`,
+    'set /a n+=1',
+    `tasklist /FI "PID eq ${process.pid}" /NH | find "${process.pid}" >nul && if %n% lss 120 (ping -n 2 127.0.0.1 >nul & goto wait)`,
     `powershell -NoProfile -ExecutionPolicy Bypass -Command "Expand-Archive -LiteralPath '${zip}' -DestinationPath '${path.join(work, 'x')}' -Force"`,
     `for /d %%D in ("${path.join(work, 'x')}\\*") do robocopy "%%D" "${install}" /E /NFL /NDL /NJH /NJS /NP >nul`,
     `del /q "${zipSrc}" >nul 2>&1`,
     relaunch ? `start "" "${path.join(install, exe)}"${hidden ? ' --hidden' : ''}` : 'rem',
   ].join('\r\n'));
-  spawn('cmd.exe', ['/c', script], { detached: true, stdio: 'ignore', windowsHide: true }).unref();
+  runHidden(script);
 }
 let shellApplied = false;
 app.on('will-quit', () => { if (!shellApplied && updateState.shellZip && fs.existsSync(updateState.shellZip)) { shellApplied = true; try { applyShellZip(updateState.shellZip, false); } catch {} } });
@@ -169,13 +179,15 @@ async function installShellUpdate(win, opts = {}) {
   fs.writeFileSync(script, [
     '@echo off',
     'chcp 65001 >nul',
+    'set n=0',
     ':wait',
-    `tasklist /FI "PID eq ${process.pid}" | find "${process.pid}" >nul && (timeout /t 1 /nobreak >nul & goto wait)`,
+    'set /a n+=1',
+    `tasklist /FI "PID eq ${process.pid}" /NH | find "${process.pid}" >nul && if %n% lss 120 (ping -n 2 127.0.0.1 >nul & goto wait)`,
     `powershell -NoProfile -ExecutionPolicy Bypass -Command "Expand-Archive -LiteralPath '${zip}' -DestinationPath '${path.join(work, 'x')}' -Force"`,
     `for /d %%D in ("${path.join(work, 'x')}\\*") do robocopy "%%D" "${install}" /E /NFL /NDL /NJH /NJS /NP >nul`,
     `start "" "${path.join(install, exe)}"`,
   ].join('\r\n'));
-  spawn('cmd.exe', ['/c', script], { detached: true, stdio: 'ignore', windowsHide: true }).unref();
+  runHidden(script);
   shellApplied = true; quitting = true;
   setTimeout(() => app.quit(), 300);
   return true;
@@ -635,11 +647,27 @@ let mainWin = null, tray = null, quitting = false;
 const bgFile = () => path.join(userDir(), 'background.json');
 function bgPrefs() { try { return { background: false, login: false, ...JSON.parse(fs.readFileSync(bgFile(), 'utf8')) }; } catch { return { background: false, login: false }; } }
 function showMain() { if (!mainWin) return; if (mainWin.isMinimized()) mainWin.restore(); mainWin.show(); mainWin.focus(); }
+// The app draws its own icon (the Thmanyah wordmark, which can only be rendered with the font installed on this PC)
+// and hands it over here; it is kept so the next start uses it straight away.
+const customIcon = () => path.join(app.getPath('userData'), 'icon-custom.png');
+const appIcon = () => fs.existsSync(customIcon()) ? customIcon() : path.join(__dirname, 'icon.png');
+ipcMain.handle('app:setIcon', (_e, dataUrl) => {
+  try {
+    if (!dataUrl) { fs.rmSync(customIcon(), { force: true }); } else {
+      const img = nativeImage.createFromDataURL(String(dataUrl)); if (img.isEmpty()) return false;
+      fs.writeFileSync(customIcon(), img.toPNG());
+    }
+    const img = nativeImage.createFromPath(appIcon());
+    if (mainWin && !mainWin.isDestroyed()) mainWin.setIcon(img);
+    if (tray) tray.setImage(img.resize({ width: 16, height: 16 }));
+    return true;
+  } catch { return false; }
+});
 function setupTray() {
   const p = bgPrefs();
   if (!p.background) { if (tray) { tray.destroy(); tray = null; } return; }
   if (tray) return;
-  tray = new Tray(nativeImage.createFromPath(path.join(__dirname, 'icon.png')).resize({ width: 16, height: 16 }));
+  tray = new Tray(nativeImage.createFromPath(appIcon()).resize({ width: 16, height: 16 }));
   tray.setToolTip('استوديو المحتوى · النشر المجدول شغّال');
   tray.setContextMenu(Menu.buildFromTemplate([{ label: 'افتح استوديو المحتوى', click: showMain }, { label: 'فكرة سريعة  (Ctrl+Shift+Space)', click: () => quickCapture() }, { type: 'separator' }, { label: 'اقفل البرنامج نهائياً', click: () => { quitting = true; app.quit(); } }]));
   tray.on('click', showMain);
@@ -654,7 +682,7 @@ ipcMain.handle('bg:set', (_e, p) => {
 });
 ipcMain.handle('app:notify', (_e, title, body) => {
   if (!Notification.isSupported()) return false;
-  const n = new Notification({ title, body, icon: path.join(__dirname, 'icon.png') });
+  const n = new Notification({ title, body, icon: appIcon() });
   n.on('click', () => { showMain(); if (mainWin) mainWin.webContents.send('app:notifyClick'); });
   n.show(); return true;
 });
@@ -666,7 +694,7 @@ else app.on('second-instance', showMain);
 function createWindow() {
   const win = new BrowserWindow({
     width: 1440, height: 900, minWidth: 1024, minHeight: 680,
-    title: 'استوديو المحتوى', icon: path.join(__dirname, 'icon.png'),
+    title: 'استوديو المحتوى', icon: appIcon(),
     backgroundColor: '#0B0D12', autoHideMenuBar: true, show: false,
     webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true, nodeIntegration: false, sandbox: true, backgroundThrottling: false },
   });

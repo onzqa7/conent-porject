@@ -10,6 +10,7 @@ const on = (channel, fn) => { const l = (_e, ...a) => fn(...a); ipcRenderer.on(c
 
 contextBridge.exposeInMainWorld('desktop', {
   info: () => ipcRenderer.invoke('app:info'),
+  setIcon: dataUrl => ipcRenderer.invoke('app:setIcon', dataUrl),
   loadData: () => ipcRenderer.invoke('data:load'),
   saveData: json => ipcRenderer.invoke('data:save', json),
   openDataFolder: () => ipcRenderer.invoke('data:openFolder'),
