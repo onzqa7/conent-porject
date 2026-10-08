@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.33",
-    "notes": "شريط التحديثات رجع، وGemini يعيد المحاولة لما يكون زحمة",
+    "version": "2.9.34",
+    "notes": "صفحة مقاطع اليوم",
     "minShell": "2.9.8",
     "files": [
       {
@@ -426,8 +426,8 @@
       },
       {
         "path": "index.html",
-        "sha256": "088ddd10d7e880c621358c305796ea512416c55845cb1bafe6d72e13324cc41a",
-        "size": 3126
+        "sha256": "95dca60ae4dcf1e04ba082b8401e3c8bd8859d7e46b7b46f2dcc5c80c6712ea4",
+        "size": 3160
       },
       {
         "path": "insights.js",
@@ -438,6 +438,11 @@
         "path": "keys.js",
         "sha256": "c7e46f708cd48fdb4ddd3ec5b1e52586901a59ac75885e1f48cebe2c5b79bfc5",
         "size": 2718
+      },
+      {
+        "path": "latest.js",
+        "sha256": "c140b6e4c1cce9ada710612f1d1fcfbc5cd25ed9a3ef092816f9967216e456a8",
+        "size": 3727
       },
       {
         "path": "logo.js",
@@ -526,8 +531,8 @@
       },
       {
         "path": "styles.css",
-        "sha256": "5d35251f3e70a8a595b03afcb9eb544b39a79bc79cf9b4619b549c8d12bbe632",
-        "size": 89577
+        "sha256": "9120bdb6c6e56af8eeb6e513867c935e94d7fcfacadae9bb3a6f59bfa5fc135f",
+        "size": 90249
       },
       {
         "path": "today.js",
@@ -546,8 +551,8 @@
       },
       {
         "path": "whatsnew.js",
-        "sha256": "6a45501402473e7602239b51e0f9658fb21cd9643b54ccac0018d97f5a2c9b36",
-        "size": 12724
+        "sha256": "c8f01adf5c0ca51e9d1ab144f3b5cf945083052d531788d2e97a377874b454e0",
+        "size": 12945
       },
       {
         "path": "ytchans.js",
