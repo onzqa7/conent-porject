@@ -557,9 +557,9 @@
     ]
   },
   "shell": {
-    "version": "2.9.9",
-    "url": "https://raw.githubusercontent.com/onzqa7/conent-porject/main/updates/shell/content-studio-2.9.9.zip",
-    "sha256": "acd7d3c94d3614374c90bc3b5b33897714ea41365a5ecbb0d408ce8cb02b8e6f",
-    "notes": "التحديث يتثبت بدون نافذة سوداء، وأيقونة بخط ثمانية"
+    "version": "2.9.10",
+    "url": "https://raw.githubusercontent.com/onzqa7/conent-porject/main/updates/shell/content-studio-2.9.10.zip",
+    "sha256": "5c206400b0d9dd4d52de9eb8fedfb802fc722cb93e914fcdd449610943d94fbe",
+    "notes": "الأيقونة الجديدة تطلع بشريط المهام وسطح المكتب"
   }
 }

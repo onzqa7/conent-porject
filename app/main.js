@@ -660,9 +660,41 @@ ipcMain.handle('app:setIcon', (_e, dataUrl) => {
     const img = nativeImage.createFromPath(appIcon());
     if (mainWin && !mainWin.isDestroyed()) mainWin.setIcon(img);
     if (tray) tray.setImage(img.resize({ width: 16, height: 16 }));
+    try { updateShortcutIcons(img, !!dataUrl); } catch {}
     return true;
   } catch { return false; }
 });
+// The pinned taskbar button, the desktop and Start menu shortcuts take their picture from the .exe, which updates
+// don't replace. So the icon is written as an .ico and every shortcut that opens this app is pointed at it.
+function icoFrom(img) {
+  const sizes = [16, 24, 32, 48, 64, 128, 256], pngs = sizes.map(n => img.resize({ width: n, height: n, quality: 'best' }).toPNG());
+  const head = Buffer.alloc(6 + 16 * sizes.length); head.writeUInt16LE(0, 0); head.writeUInt16LE(1, 2); head.writeUInt16LE(sizes.length, 4);
+  let off = head.length;
+  sizes.forEach((n, i) => { const e = 6 + 16 * i; head.writeUInt8(n >= 256 ? 0 : n, e); head.writeUInt8(n >= 256 ? 0 : n, e + 1); head.writeUInt16LE(1, e + 4); head.writeUInt16LE(32, e + 6); head.writeUInt32LE(pngs[i].length, e + 8); head.writeUInt32LE(off, e + 12); off += pngs[i].length; });
+  return Buffer.concat([head, ...pngs]);
+}
+function updateShortcutIcons(img, custom) {
+  if (process.platform !== 'win32' || !app.isPackaged) return;
+  const dir = app.getPath('userData');
+  let ico = '';
+  if (custom) { const buf = icoFrom(img); ico = path.join(dir, `icon-custom-${sha256(buf).slice(0, 8)}.ico`); if (!fs.existsSync(ico)) fs.writeFileSync(ico, buf); }
+  for (const f of fs.readdirSync(dir)) if (/^icon-custom-[0-9a-f]+\.ico$/.test(f) && path.join(dir, f) !== ico) { try { fs.unlinkSync(path.join(dir, f)); } catch {} }
+  const roaming = app.getPath('appData'), me = path.resolve(process.execPath).toLowerCase();
+  const dirs = [path.join(roaming, 'Microsoft', 'Internet Explorer', 'Quick Launch', 'User Pinned', 'TaskBar'), path.join(roaming, 'Microsoft', 'Internet Explorer', 'Quick Launch'),
+    path.join(roaming, 'Microsoft', 'Windows', 'Start Menu', 'Programs'), app.getPath('desktop')];
+  let n = 0;
+  for (const d of dirs) {
+    let files = []; try { files = fs.readdirSync(d); } catch { continue; }
+    for (const f of files) {
+      if (!/\.lnk$/i.test(f)) continue; const p = path.join(d, f);
+      try { const l = shell.readShortcutLink(p); if (!l.target || path.resolve(l.target).toLowerCase() !== me) continue;
+        if (String(l.icon || '').toLowerCase() === String(ico || process.execPath).toLowerCase()) continue;
+        if (shell.writeShortcutLink(p, 'update', { icon: ico || process.execPath, iconIndex: 0 })) n++; } catch {}
+    }
+  }
+  // ask Explorer to drop its cached pictures so the new one shows without signing out
+  if (n) try { spawn(path.join(process.env.SystemRoot || 'C:\\Windows', 'System32', 'ie4uinit.exe'), ['-show'], { detached: true, stdio: 'ignore', windowsHide: true }).unref(); } catch {}
+}
 function setupTray() {
   const p = bgPrefs();
   if (!p.background) { if (tray) { tray.destroy(); tray = null; } return; }
