@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.25",
-    "notes": "اختيار قنوات الإعلان، وفلتر المنصة والقناة بمتابعة مقاطعي",
+    "version": "2.9.26",
+    "notes": "ذكاء مجاني، فلتر التقرير، وإيقاف المواسم",
     "minShell": "2.9.6",
     "files": [
       {
@@ -410,14 +410,19 @@
         "size": 37042
       },
       {
+        "path": "freeai.js",
+        "sha256": "532a1cf0abe5928a2e5a8aaae9f2348b5c1107b1e1c53a526d4a80052ed92d2c",
+        "size": 5249
+      },
+      {
         "path": "growth.js",
         "sha256": "601b7fd5cf24a1317ab6089bae0389d1553920a77a9fc7ff559f963d75ecddb1",
         "size": 53850
       },
       {
         "path": "index.html",
-        "sha256": "dc1527b730ca41c8bb1a2fce00be5e168472a941294dde84e02e3e4cca96847b",
-        "size": 3024
+        "sha256": "aa68891894a319c14d8e0d43b39a1fe45093eba4c9a794d107ff6c7dd1f6bda5",
+        "size": 3058
       },
       {
         "path": "insights.js",
@@ -486,8 +491,8 @@
       },
       {
         "path": "seasons.js",
-        "sha256": "9cbdeeed64ada3440a1e2a44e6e4dd8e86bba8c748e366bb68d5f8ece17c7eb9",
-        "size": 43866
+        "sha256": "0660314c8c8efb9d68979f0b362808bd0a2c4a9a1936855c2e549dcab16b2ee7",
+        "size": 47190
       },
       {
         "path": "snap.css",
@@ -511,8 +516,8 @@
       },
       {
         "path": "styles.css",
-        "sha256": "60fe868b411712b6b20a559428df3511aad00940c61e4ba31712f28b973aa17f",
-        "size": 86951
+        "sha256": "2540336d7901cdaf0af0c49d773f62bfeae0088147e849b8b020eb4ea203a3e8",
+        "size": 87111
       },
       {
         "path": "today.js",
@@ -531,8 +536,8 @@
       },
       {
         "path": "whatsnew.js",
-        "sha256": "7d5482d138c293541e5a7dc4b8d6145b0c547130720c5c34b4e2edab3c96de22",
-        "size": 10463
+        "sha256": "ae4222a777fd403d588e24788b65b1b191d7c00281e453aab2824c382e6a63a5",
+        "size": 11054
       },
       {
         "path": "ytchans.js",
