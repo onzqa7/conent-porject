@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.19",
-    "notes": "إعلان تلقائي لما ينزل مقطع جديد: تغريدة وستوري",
+    "version": "2.9.20",
+    "notes": "قنوات يوتيوب المربوطة: فيديوهات كل قناة، وشيل القناة اللي مو لك",
     "minShell": "2.9.6",
     "files": [
       {
@@ -411,8 +411,8 @@
       },
       {
         "path": "index.html",
-        "sha256": "77d0435b39fe26d8854c72facb8c6890de282f1521d3ccbdf2a7b4abf533b020",
-        "size": 2955
+        "sha256": "f4405f08d108f1e7d7ba1c3a34ba65bea3f2ca93fdc514b98a8ebdd04ea1a643",
+        "size": 2989
       },
       {
         "path": "insights.js",
@@ -506,8 +506,8 @@
       },
       {
         "path": "styles.css",
-        "sha256": "e140d281684228f68b4ba045846da23a9c539bf4f95d47fdf9d935799a137219",
-        "size": 86345
+        "sha256": "b684caa00c8564ce3dead7287085e8902677e067dbdf7ae24e572b79986fc68b",
+        "size": 86689
       },
       {
         "path": "today.js",
@@ -521,13 +521,18 @@
       },
       {
         "path": "videos.js",
-        "sha256": "ff07bfdb8e33259ea5924281a407c6795405f873615c5492d0b978f83d3c7b18",
-        "size": 28501
+        "sha256": "a9aa75bdd7e966e0d7570cf1b906f1dbe0c796615ce918650db775ee9e11c663",
+        "size": 28534
       },
       {
         "path": "whatsnew.js",
-        "sha256": "6d81dee400d2a6a5b5276a20ac18dafb4a45aebadf97c51fe9a1fcf886da6dd0",
-        "size": 8305
+        "sha256": "2546078e7e5159a284078065af27994c7e8fc5f38799dbd0f2812c95394ebb1a",
+        "size": 8637
+      },
+      {
+        "path": "ytchans.js",
+        "sha256": "9353f1b14d4891c9253eac38e258d8d46b7e308e90a18803146deba40d123b91",
+        "size": 5583
       }
     ]
   },
