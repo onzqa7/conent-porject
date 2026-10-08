@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.12",
-    "notes": "تذكير بنشر جدول البثوث",
+    "version": "2.9.13",
+    "notes": "شلت قناة يوتيوب اللي مو لك وفيديوهاتها",
     "minShell": "2.5.0",
     "files": [
       {
@@ -251,8 +251,8 @@
       },
       {
         "path": "me.js",
-        "sha256": "356168f17662685342d8b5e40791ffaa63460f00c1e25c4a2b1e27d06afa48aa",
-        "size": 3559
+        "sha256": "cb8a2b2c8dc7ceee62e20597ef7ad8dcb6328bbde9800ba738f025f5bb8d3a7f",
+        "size": 4211
       },
       {
         "path": "overlay-ui.css",
