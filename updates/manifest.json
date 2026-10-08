@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.24",
-    "notes": "التحديثات تتطبق لحالها",
+    "version": "2.9.25",
+    "notes": "اختيار قنوات الإعلان، وفلتر المنصة والقناة بمتابعة مقاطعي",
     "minShell": "2.9.6",
     "files": [
       {
@@ -21,8 +21,8 @@
       },
       {
         "path": "announce.js",
-        "sha256": "594595337ea7e5fc4c4b4388cf00d10792668974ce321e5a1e380d319247847e",
-        "size": 12249
+        "sha256": "6ce94e8f46f5275f3f388d1d854c4397cda6a2590e7b6fa374126674b0184328",
+        "size": 13908
       },
       {
         "path": "api.js",
@@ -511,8 +511,8 @@
       },
       {
         "path": "styles.css",
-        "sha256": "1e17b368eafa42a97bec4d05bdef8ba657922bbb9a0c17345703a3e6df7510bf",
-        "size": 86782
+        "sha256": "60fe868b411712b6b20a559428df3511aad00940c61e4ba31712f28b973aa17f",
+        "size": 86951
       },
       {
         "path": "today.js",
@@ -521,8 +521,8 @@
       },
       {
         "path": "track.js",
-        "sha256": "7857a155a621b94df61ab51f8fc245fdfe7d432a636e96cf6cc10bf11c80c310",
-        "size": 29252
+        "sha256": "8fdeb11039d808142dddccf9d65765d25b8b1fb66027e08d154df42c503209de",
+        "size": 30521
       },
       {
         "path": "videos.js",
@@ -531,8 +531,8 @@
       },
       {
         "path": "whatsnew.js",
-        "sha256": "264de5726906bc24730c973f16f58c726cf6f63103abf6855d101709ab7680d2",
-        "size": 10095
+        "sha256": "7d5482d138c293541e5a7dc4b8d6145b0c547130720c5c34b4e2edab3c96de22",
+        "size": 10463
       },
       {
         "path": "ytchans.js",
