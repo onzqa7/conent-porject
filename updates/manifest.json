@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.22",
-    "notes": "كل قناة لحالها بالتحليلات، وشيل قناة من التحليلات",
+    "version": "2.9.23",
+    "notes": "حذف حساب، وإصلاح إعادة دراسة الفيديو وسبب عدم رد المساعد",
     "minShell": "2.9.6",
     "files": [
       {
@@ -31,8 +31,8 @@
       },
       {
         "path": "app.js",
-        "sha256": "93afcef296f2f1e99434c436a506bc8e45a30d2eac3fa948940e4f47cf97567f",
-        "size": 111668
+        "sha256": "923b495a2f746333ea33ffc32b03c71ef1bc76339dde3539815268e583ef429f",
+        "size": 112605
       },
       {
         "path": "bio.css",
@@ -501,8 +501,8 @@
       },
       {
         "path": "studies.js",
-        "sha256": "7dc6b583b785d7b931aec5ffb20e802a2f543e3067d11562c721fb2b548c572b",
-        "size": 63802
+        "sha256": "e4dbbe38eeb93687e6b6a696432d00ce31357f9c47cbdd8188b89c0c8a51c2fc",
+        "size": 65367
       },
       {
         "path": "styles.css",
@@ -516,8 +516,8 @@
       },
       {
         "path": "track.js",
-        "sha256": "7f2d56a3bacf59aa496aaa2406e8fcbc0be4240b2e29aa780eb17eb80bec4433",
-        "size": 29198
+        "sha256": "7857a155a621b94df61ab51f8fc245fdfe7d432a636e96cf6cc10bf11c80c310",
+        "size": 29252
       },
       {
         "path": "videos.js",
@@ -526,13 +526,13 @@
       },
       {
         "path": "whatsnew.js",
-        "sha256": "8aefa3956f8843b6b008eaffd4458b31a6da465e91b5beaa3f8a0f7b7835a12a",
-        "size": 9289
+        "sha256": "22a9c65167949034b0b96b84f3171faabbfc1f2d25bc79420470b67e6579aea5",
+        "size": 9771
       },
       {
         "path": "ytchans.js",
-        "sha256": "f2b6a84c6c27386245d12542dbdf3c66f7fc1e143c3ebf6e8660e37a005804a7",
-        "size": 5598
+        "sha256": "280fb829fb8837ed33dab38b3828412dee48da56f4238b6f4b43562947913a3d",
+        "size": 7090
       }
     ]
   },
