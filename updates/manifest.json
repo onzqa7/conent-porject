@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.20",
-    "notes": "قنوات يوتيوب المربوطة: فيديوهات كل قناة، وشيل القناة اللي مو لك",
+    "version": "2.9.21",
+    "notes": "إصلاح تحديث المشاهدات وتحديث كل ٣ ساعات",
     "minShell": "2.9.6",
     "files": [
       {
@@ -426,8 +426,8 @@
       },
       {
         "path": "me.js",
-        "sha256": "0a3fdf8afa60d0cb8af0e8ee7a762c97c31d43eb0b68c955b531fce597be2aef",
-        "size": 4252
+        "sha256": "8075e4724700939d760d2c3fd84301c87fed970cd34dc8288c2364aedba65ce8",
+        "size": 4430
       },
       {
         "path": "overlay-ui.css",
@@ -516,8 +516,8 @@
       },
       {
         "path": "track.js",
-        "sha256": "950f7b10eb04fe49a228916338fb776c10c2fe459f871f9ed81ff7daa889670f",
-        "size": 29138
+        "sha256": "7f2d56a3bacf59aa496aaa2406e8fcbc0be4240b2e29aa780eb17eb80bec4433",
+        "size": 29198
       },
       {
         "path": "videos.js",
@@ -526,8 +526,8 @@
       },
       {
         "path": "whatsnew.js",
-        "sha256": "2546078e7e5159a284078065af27994c7e8fc5f38799dbd0f2812c95394ebb1a",
-        "size": 8637
+        "sha256": "7528f505b5ec3819dc4d264cb20f259671c80dfbdc6b486eb6e0bd03f3b81552",
+        "size": 8906
       },
       {
         "path": "ytchans.js",
