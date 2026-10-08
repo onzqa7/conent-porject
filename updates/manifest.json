@@ -1,8 +1,8 @@
 {
   "ui": {
-    "version": "2.9.18",
-    "notes": "الحالة والمشاهدات بقائمة الحذف بالجملة",
-    "minShell": "2.5.0",
+    "version": "2.9.19",
+    "notes": "إعلان تلقائي لما ينزل مقطع جديد: تغريدة وستوري",
+    "minShell": "2.9.6",
     "files": [
       {
         "path": "agent.js",
@@ -18,6 +18,11 @@
         "path": "agent3.js",
         "sha256": "cafe4dcd05ea00c822a343e333b6335afc1ad5ca0f727be3d45cfad61f774133",
         "size": 5056
+      },
+      {
+        "path": "announce.js",
+        "sha256": "594595337ea7e5fc4c4b4388cf00d10792668974ce321e5a1e380d319247847e",
+        "size": 12249
       },
       {
         "path": "api.js",
@@ -406,8 +411,8 @@
       },
       {
         "path": "index.html",
-        "sha256": "83fbae80844c889e5f1b1aaa3a1a24afb6d6066c8af0e5c0f3359dfded9209de",
-        "size": 2920
+        "sha256": "77d0435b39fe26d8854c72facb8c6890de282f1521d3ccbdf2a7b4abf533b020",
+        "size": 2955
       },
       {
         "path": "insights.js",
@@ -501,8 +506,8 @@
       },
       {
         "path": "styles.css",
-        "sha256": "754164734fbc43b39115c93c88fedf5422ac9596bbb7e1ac600f6ac9b0be5d8e",
-        "size": 85597
+        "sha256": "e140d281684228f68b4ba045846da23a9c539bf4f95d47fdf9d935799a137219",
+        "size": 86345
       },
       {
         "path": "today.js",
@@ -521,8 +526,8 @@
       },
       {
         "path": "whatsnew.js",
-        "sha256": "4d238fcd8e6da469666f0d5ae99d50370c1f66025247991c4292b80db666f29f",
-        "size": 7925
+        "sha256": "6d81dee400d2a6a5b5276a20ac18dafb4a45aebadf97c51fe9a1fcf886da6dd0",
+        "size": 8305
       }
     ]
   },
