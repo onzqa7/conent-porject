@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.21",
-    "notes": "إصلاح تحديث المشاهدات وتحديث كل ٣ ساعات",
+    "version": "2.9.22",
+    "notes": "كل قناة لحالها بالتحليلات، وشيل قناة من التحليلات",
     "minShell": "2.9.6",
     "files": [
       {
@@ -416,8 +416,8 @@
       },
       {
         "path": "insights.js",
-        "sha256": "104c8e959b86cdab1ea247a5fc80a3056f879d1bb73eecac9c80cd0a575954e5",
-        "size": 4234
+        "sha256": "ff519d4ea5aff083f43c2cca7a1db30736d2ea071beadc523604c27318936daf",
+        "size": 4240
       },
       {
         "path": "keys.js",
@@ -501,13 +501,13 @@
       },
       {
         "path": "studies.js",
-        "sha256": "91b21956408738c94e71b3c5f885beb5ed8fac93ad5a7ce06bef016d5e39a430",
-        "size": 61574
+        "sha256": "7dc6b583b785d7b931aec5ffb20e802a2f543e3067d11562c721fb2b548c572b",
+        "size": 63802
       },
       {
         "path": "styles.css",
-        "sha256": "b684caa00c8564ce3dead7287085e8902677e067dbdf7ae24e572b79986fc68b",
-        "size": 86689
+        "sha256": "1e17b368eafa42a97bec4d05bdef8ba657922bbb9a0c17345703a3e6df7510bf",
+        "size": 86782
       },
       {
         "path": "today.js",
@@ -526,13 +526,13 @@
       },
       {
         "path": "whatsnew.js",
-        "sha256": "7528f505b5ec3819dc4d264cb20f259671c80dfbdc6b486eb6e0bd03f3b81552",
-        "size": 8906
+        "sha256": "8aefa3956f8843b6b008eaffd4458b31a6da465e91b5beaa3f8a0f7b7835a12a",
+        "size": 9289
       },
       {
         "path": "ytchans.js",
-        "sha256": "9353f1b14d4891c9253eac38e258d8d46b7e308e90a18803146deba40d123b91",
-        "size": 5583
+        "sha256": "f2b6a84c6c27386245d12542dbdf3c66f7fc1e143c3ebf6e8660e37a005804a7",
+        "size": 5598
       }
     ]
   },
