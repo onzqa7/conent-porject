@@ -14,12 +14,19 @@ const trMed=a=>{a=a.filter(x=>x>=0).sort((x,y)=>x-y);if(!a.length)return 0;const
 const trAge=r=>{const d=pd(r.date);return d?Math.max(0,(Date.now()-d)/TR_H):0};
 const trAgo=h=>h<1?'قبل دقايق':h<24?`قبل ${Math.round(h)} ساعة`:`قبل ${Math.round(h/24)} ${Math.round(h/24)<=2?'يوم':'أيام'}`;
 // a clip's "normal": the median of the creator's older clips on the same platform (and same kind, short or long)
-function trBase(r){const long=+r.duration>90,sim=x=>x.id!==r.id&&x.platform===r.platform&&+x.views>0&&trAge(x)>=7*24;
+function trBase(r){const long=+r.duration>90,sim=x=>x.id!==r.id&&x.platform===r.platform&&+x.views>0&&trAge(x)>=7*24&&(!x.privacy||x.privacy==='public');
   let rows=S.perf.filter(x=>sim(x)&&(+x.duration>90)===long);if(rows.length<3)rows=S.perf.filter(sim);
   return rows.length>=3?{v:trMed(rows.map(x=>+x.views)),n:rows.length,rows}:null}
 // most views come in the first days; this is the share of a normal week's views expected by this age
 const trCurve=h=>Math.min(1,1-Math.exp(-h/30));
-function trStatus(r){const h=trAge(r),b=trBase(r);if(h<3)return {k:'early',t:'بدري نحكم عليه',h};
+// public, unlisted, private or scheduled. YouTube says so through the API; a video yt-dlp found on the
+// channel page is public (that page lists nothing else); a tweet is public. Otherwise unknown (null).
+function trPriv(r){const p=String(r.privacy||'').toLowerCase(),at=r.publishAt&&new Date(r.publishAt);
+  if(p==='private'&&at&&+at>Date.now())return {k:'sched',t:`مجدول ينزل ${fmt(at,{weekday:'short',hour:'numeric',minute:'2-digit'})}`};
+  if(p==='public'||(!p&&r.platform==='youtube'&&!r.api&&r.accountId)||(!p&&r.platform==='x'))return {k:'pub',t:'عام'};
+  if(p==='unlisted')return {k:'unl',t:'غير مدرج'};if(p==='private'||p==='self_only')return {k:'priv',t:'خاص'};
+  return null}
+function trStatus(r){const h=trAge(r),b=trBase(r),pv=trPriv(r);if(pv&&pv.k!=='pub')return {k:'hidden',t:pv.k==='sched'?'لسا ما نزل':'مو عام، ما أقارنه',h};if(h<3)return {k:'early',t:'بدري نحكم عليه',h};
   if(!b)return {k:'nobase',t:'ما عندي مقاطع قديمة كفاية أقارن فيها',h};
   const exp=Math.max(1,b.v*trCurve(h)),x=(+r.views||0)/exp;
   return {k:x>=1.3?'hot':x>=.7?'ok':'slow',t:x>=1.3?'ينتشر فوق العادة':x>=.7?'ماشي طبيعي':'أبطأ من العادة',x,exp,h,b}}
@@ -63,7 +70,8 @@ function trCard(r){const st=trStatus(r),sp=trSpeed(r),why=st.k==='slow'?trWhy(r)
   return `<article class="tr-card ${st.k}" data-trid="${r.id}">
     <div class="tr-top">${r.thumb?`<img src="${esc(r.thumb)}" alt="" loading="lazy" referrerpolicy="no-referrer">`:`<span class="tr-ph">${I.film}</span>`}
       <div class="tr-mid"><b title="${esc(r.title||'')}">${esc(r.title||'مقطع')}</b>
-        <span class="small faint">${pchip(r.platform)} ${trAgo(st.h)} · ${nf(r.views)} مشاهدة${sp!=null?` · ${nf(Math.round(sp))} بالساعة`:''}</span>
+        <span class="small faint">${pchip(r.platform)} ${(pv=>pv?`<span class="tr-pv ${pv.k}">${pv.t}</span> `:'')(trPriv(r))}${trAgo(st.h)}${sp!=null?` · ${nf(Math.round(sp))} مشاهدة بالساعة`:''}</span>
+        <div class="tr-nums"><span><b class="num">${nfull(r.views)}</b> مشاهدة</span><span><b class="num">${nfull(r.likes)}</b> لايك</span><span><b class="num">${nfull(r.comments)}</b> تعليق</span>${+r.shares?`<span><b class="num">${nfull(r.shares)}</b> مشاركة</span>`:''}${+r.follows?`<span><b class="num">+${nfull(r.follows)}</b> مشترك</span>`:''}</div>
         ${st.b?`<div class="tr-bar" title="من أسبوع عادي عندك (${nf(st.b.v)} مشاهدة)"><i style="width:${bar}%"></i><s style="right:${Math.round(trCurve(st.h)*100)}%"></s></div>`:''}</div>
       <span class="tr-st ${st.k}">${st.t}${st.x!=null?` <small class="num">×${st.x.toFixed(1)}</small>`:''}</span></div>
     ${why.length?`<div class="tr-why"><p class="small muted">ليش ما انتشر:</p>${why.map(w=>`<div class="tr-r"><span>${esc(w.t)}</span><small>${esc(w.fix)}</small>${w.act?`<button type="button" class="linkbtn" data-tract="${w.act}" data-id="${r.id}">${{retitle:'اقترح عنوان',repost:'جهّز إعادة نشر',clip:'قصّه',why:'تحليل عميق'}[w.act]}</button>`:''}</div>`).join('')}</div>`:''}
@@ -166,7 +174,7 @@ if(typeof AG_TOOLS!=='undefined'){
   const _r=agRun;agRun=function(name,a){a=a||{};
     if(name==='track_videos'){const {sched,pub}=trItems();
       return {scheduled:sched.slice(0,15).map(p=>({id:p.id,title:p.title,date:p.date,platforms:p.platforms,auto:!!p.autoPublish,prayer_clash:(typeof prClash==='function'&&prClash(pd(p.date))||{}).n||null})),
-        published:pub.slice(0,25).map(r=>{const s=trStatus(r);return {id:r.id,title:r.title,platform:r.platform,hours_old:Math.round(s.h),views:+r.views||0,status:s.t,vs_normal:s.x!=null?+s.x.toFixed(2):null,views_per_hour:trSpeed(r)}}),
+        published:pub.slice(0,25).map(r=>{const s=trStatus(r);return {id:r.id,title:r.title,platform:r.platform,visibility:(trPriv(r)||{}).t||'غير معروف',likes:+r.likes||0,comments:+r.comments||0,hours_old:Math.round(s.h),views:+r.views||0,status:s.t,vs_normal:s.x!=null?+s.x.toFixed(2):null,views_per_hour:trSpeed(r)}}),
         _ui:{t:'شفت مقاطعك',go:'go:track'}}}
     if(name==='diagnose_video'){const r=find('perf',a.id);if(!r)return {error:'ما لقيت المقطع'};const s=trStatus(r);
       return {title:r.title,platform:r.platform,status:s.t,vs_normal:s.x!=null?+s.x.toFixed(2):null,reasons:trWhy(r).map(w=>({reason:w.t,fix:w.fix})),note:'الأسباب من مقارنة أرقام المستخدم نفسه، مو قواعد عامة'}}

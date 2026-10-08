@@ -1,6 +1,9 @@
 /* "وش الجديد": after an update, one short screen with the new things and a button to each.
    Shown once per version list; reachable again from the palette. */
 const WN=[
+ ['2.9.16',[
+  [I.eye||I.radar||I.star,'تشوف حالة كل مقطع وكم جاب','بـ«متابعة مقاطعي» كل مقطع يطلع عليه عام ولا غير مدرج ولا خاص ولا مجدول، وتحته المشاهدات واللايكات والتعليقات. اضغط «حدّث الأرقام» بعد ما تربط يوتيوب.','go:track'],
+ ]],
  ['2.9.15',[
   [I.trash||I.x,'حذف فيديوهات بالجملة من يوتيوب','اربط قناة المقاطع، اكتب «يبدأ بـ جزء» مثلاً، يطلع لك كل الفيديوهات، تراجعها وتحذفها. أو قل للوكيل.','bulkdel'],
  ]],

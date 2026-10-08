@@ -121,10 +121,10 @@ function ytFor(key) { return {
     }
     const out = [];
     for (let i = 0; i < Math.min(ids.length, limit); i += 50) {
-      const d = await this.get('https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics,contentDetails&id=' + ids.slice(i, i + 50).join(','));
+      const d = await this.get('https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics,contentDetails,status&id=' + ids.slice(i, i + 50).join(','));
       for (const v of d.items || []) {
         const m = /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/.exec(v.contentDetails.duration || '') || [];
-        out.push({ vid: v.id, url: `https://www.youtube.com/watch?v=${v.id}`, platform: 'youtube', title: v.snippet.title, date: v.snippet.publishedAt, thumb: v.snippet.thumbnails?.medium?.url || v.snippet.thumbnails?.default?.url || '', views: +v.statistics.viewCount || 0, likes: +v.statistics.likeCount || 0, comments: +v.statistics.commentCount || 0, duration: (+m[1] || 0) * 3600 + (+m[2] || 0) * 60 + (+m[3] || 0) });
+        out.push({ vid: v.id, url: `https://www.youtube.com/watch?v=${v.id}`, platform: 'youtube', privacy: v.status?.privacyStatus || null, publishAt: v.status?.publishAt || null, title: v.snippet.title, date: v.snippet.publishedAt, thumb: v.snippet.thumbnails?.medium?.url || v.snippet.thumbnails?.default?.url || '', views: +v.statistics.viewCount || 0, likes: +v.statistics.likeCount || 0, comments: +v.statistics.commentCount || 0, duration: (+m[1] || 0) * 3600 + (+m[2] || 0) * 60 + (+m[3] || 0) });
       }
     }
     // Watch time and subscribers per video for the last 90 days, when the analytics scope allows it.

@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.15",
-    "notes": "حذف فيديوهات يوتيوب بالجملة وربط قناة ثانية",
+    "version": "2.9.16",
+    "notes": "حالة كل مقطع (عام/خاص/مجدول) وأرقامه بمتابعة مقاطعي",
     "minShell": "2.5.0",
     "files": [
       {
@@ -21,8 +21,8 @@
       },
       {
         "path": "api.js",
-        "sha256": "048fe67f7ee15c243509c53233c27fb2a6d2f81080540b645e927d39890a0d06",
-        "size": 18812
+        "sha256": "2cb67042c3ac50cf34c2c572953c01bd8d0254df6e44b42bf9d25ec3e20bedc9",
+        "size": 18902
       },
       {
         "path": "app.js",
@@ -501,8 +501,8 @@
       },
       {
         "path": "styles.css",
-        "sha256": "739c10720ef80f2dc22ceca8dab966a85afef1778e30ffbd40bf7ad691ac5a08",
-        "size": 84605
+        "sha256": "7f9833181a58b5543e36791cd8276a857133ce744c72f52058cee345b01c9c6c",
+        "size": 85307
       },
       {
         "path": "today.js",
@@ -511,8 +511,8 @@
       },
       {
         "path": "track.js",
-        "sha256": "070fa99f13a29a67edd14ceef56b7cb2b88fc61475354f0735cf8813f58abead",
-        "size": 25536
+        "sha256": "fbab82ff1dd499fc4a99e75ed3ac3bfc9744b73161c841c1f80731ef444eb294",
+        "size": 26937
       },
       {
         "path": "videos.js",
@@ -521,15 +521,15 @@
       },
       {
         "path": "whatsnew.js",
-        "sha256": "e3cfced3d2e9e6bd12f4c759144c99f2bda5ec2eaddcc4224ce1552cf537c96f",
-        "size": 6848
+        "sha256": "519d0e9b891b61a70bd9db2706f1cdf91b61e9dbdda192bb14e5706cf5c1e919",
+        "size": 7228
       }
     ]
   },
   "shell": {
-    "version": "2.9.3",
-    "url": "https://raw.githubusercontent.com/onzqa7/conent-porject/main/updates/shell/content-studio-2.9.3.zip",
-    "sha256": "1a08a4c208de6098ee9c2a69a3a4994132824c166a390059f1b6d96964de5507",
-    "notes": "حذف فيديوهات يوتيوب بالجملة وربط أكثر من قناة"
+    "version": "2.9.4",
+    "url": "https://raw.githubusercontent.com/onzqa7/conent-porject/main/updates/shell/content-studio-2.9.4.zip",
+    "sha256": "b8a4e591a5c8e7a172464e9785bafadcc86005d9f2661104759b98e1d2cbc7e2",
+    "notes": "حالة كل مقطع وأرقامه بمتابعة مقاطعي"
   }
 }

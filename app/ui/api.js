@@ -115,7 +115,7 @@ syncAccount=async function(a,quiet){
       if(r.code==='auth'){if(!quiet)toast(r.error);await loadApi();return}
       if(a.platform==='x'){if(!quiet)toast('أرقام إكس تحتاج خطة مدفوعة، بجيبها بالطريقة العادية');return await _syncAccount(a,quiet)}
       if(!quiet)toast(r.error);return}
-    let added=0;for(const v of r.items){added+=mergeVideo(v,a);const row=S.perf.find(x=>x.vid===v.vid&&x.platform===a.platform);if(row){for(const f of ['saves','reach','follows','watchMin','avgView'])if(v[f]!=null)row[f]=+v[f];row.api=true}}
+    let added=0;for(const v of r.items){added+=mergeVideo(v,a);const row=S.perf.find(x=>x.vid===v.vid&&x.platform===a.platform);if(row){for(const f of ['saves','reach','follows','watchMin','avgView'])if(v[f]!=null)row[f]=+v[f];if(v.privacy){row.privacy=v.privacy;row.publishAt=v.publishAt||null;row.privAt=Date.now()}row.api=true}}
     linkAccount(a.platform,r.profile);a.syncedAt=Date.now();put('accounts',a,true);saveLocal();
     if(!quiet||added)toast(r.items.length?`جبت ${r.items.length} من ${PL(a.platform).n} الرسمي${added?` (${added} جديد)`:''}`:'ما لقيت منشورات في هالحساب')}
   finally{delete ui.vids.sync[a.id];render(true)}};
