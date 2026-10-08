@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.26",
-    "notes": "ذكاء مجاني، فلتر التقرير، وإيقاف المواسم",
+    "version": "2.9.27",
+    "notes": "ترتيب صفحة الجدولة، وحالة «صار لها سكربت» للأفكار",
     "minShell": "2.9.6",
     "files": [
       {
@@ -31,8 +31,8 @@
       },
       {
         "path": "app.js",
-        "sha256": "923b495a2f746333ea33ffc32b03c71ef1bc76339dde3539815268e583ef429f",
-        "size": 112605
+        "sha256": "225adfc0b1df6bd95126fb8bc329d7ebe6d32a88562d29de75463e4a5c608915",
+        "size": 113357
       },
       {
         "path": "autoupd.js",
@@ -416,8 +416,8 @@
       },
       {
         "path": "growth.js",
-        "sha256": "601b7fd5cf24a1317ab6089bae0389d1553920a77a9fc7ff559f963d75ecddb1",
-        "size": 53850
+        "sha256": "2059f3558db1ce8f7a308909e14f39a4672d899d4162a50c690fa8dbb85c481b",
+        "size": 53877
       },
       {
         "path": "index.html",
@@ -516,8 +516,8 @@
       },
       {
         "path": "styles.css",
-        "sha256": "2540336d7901cdaf0af0c49d773f62bfeae0088147e849b8b020eb4ea203a3e8",
-        "size": 87111
+        "sha256": "2ddf657c60b865368642a9d5f4efa4e9ae41f593b961f51b7a4e0f994f68a0ac",
+        "size": 87392
       },
       {
         "path": "today.js",
@@ -536,8 +536,8 @@
       },
       {
         "path": "whatsnew.js",
-        "sha256": "ae4222a777fd403d588e24788b65b1b191d7c00281e453aab2824c382e6a63a5",
-        "size": 11054
+        "sha256": "a34e6c29c35a4e8e310f62582902b4bca7285c0c84f18756b861fbccca410452",
+        "size": 11473
       },
       {
         "path": "ytchans.js",
