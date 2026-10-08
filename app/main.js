@@ -368,6 +368,12 @@ ipcMain.handle('api:ytConnectExtra', async () => {
   try { const k = connect.appKeys('youtube'); if (!k.clientId) return { code: 'setup', error: 'اربط قناتك الأساسية أول من «فيديوهاتي»' }; return { profile: await connect.ytConnectExtra(k) }; }
   catch (err) { return apiErr(err); }
 });
+// recent uploads of any connected channel, with privacy and numbers (for «متابعة مقاطعي»)
+ipcMain.handle('api:ytList', async (_e, key, limit) => {
+  const a = connect.ytAdapter(key); if (!a) return { error: 'القناة مو مربوطة' };
+  try { const profile = await a.profile(); return { profile, items: await a.list(Math.min(+limit || 50, 200)) }; }
+  catch (err) { return apiErr(err); }
+});
 ipcMain.handle('api:ytDisconnect', (_e, key) => { connect.ytDisconnect(key); return true; });
 ipcMain.handle('api:ytFind', async (_e, key, q) => {
   try {

@@ -78,6 +78,7 @@ contextBridge.exposeInMainWorld('desktop', {
     ytConnectExtra: () => ipcRenderer.invoke('api:ytConnectExtra'),
     ytDisconnect: key => ipcRenderer.invoke('api:ytDisconnect', key),
     ytFind: (key, q) => ipcRenderer.invoke('api:ytFind', key, q),
+    ytList: (key, limit) => ipcRenderer.invoke('api:ytList', key, limit),
     ytRemove: (key, id) => ipcRenderer.invoke('api:ytRemove', key, id),
     retitle: (pf, id, patch) => ipcRenderer.invoke('api:retitle', pf, id, patch),
     onProgress: fn => on('api:progress', fn),

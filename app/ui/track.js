@@ -6,7 +6,7 @@
 I.radar=ic('<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><path d="M12 12l6-6"/>');
 I.trash=I.trash||ic('<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>');
 {const e=Object.entries(VIEWS);for(const [k] of e)delete VIEWS[k];for(const [k,v] of e){VIEWS[k]=v;if(k==='videos')VIEWS.track={n:'متابعة مقاطعي',i:'radar',g:v.g}}if(!VIEWS.track)VIEWS.track={n:'متابعة مقاطعي',i:'radar',g:2}}
-VIEW_FNS.track=()=>vTrack();
+VIEW_FNS.track=()=>{trYt().then(y=>{if(y.ok&&ui.view==='track')render(true)}).catch(()=>{});return vTrack()};
 ui.tr={open:null,titles:{},busy:{}};
 
 const TR_DAYS=14,TR_H=3600e3;
@@ -129,7 +129,9 @@ document.addEventListener('submit',async e=>{if(e.target.id!=='trDelForm')return
   if(!$('#trSure').checked){toast('علّم إنك فاهم إن الحذف نهائي');$('#trSure').focus();return}
   const b=e.target.querySelector('button.danger');b.disabled=true;b.innerHTML='<span class="spin"></span> يحذف…';closeModal();await trDoDelete(ids)},true);
 document.addEventListener('click',async e=>{const b=e.target.closest('[data-tract]');if(!b)return;e.preventDefault();e.stopPropagation();const a=b.dataset.tract,r=b.dataset.id&&find('perf',b.dataset.id);
-  if(a==='sync'){for(const acc of S.accounts.filter(x=>accountUrls(x).length))await syncAccount(acc,true);return}
+  if(a==='sync'){b.disabled=true;b.innerHTML='<span class="spin"></span> يحدّث…';const y=await trYt(true);
+    for(const acc of S.accounts.filter(x=>accountUrls(x).length&&!(x.platform==='youtube'&&y.ok)))try{await syncAccount(acc,true)}catch(e){}
+    render(true);toast(y.ok?`حدّثت ${y.n} مقطع من يوتيوب${y.err?`، وقناة ما ضبطت: ${y.err}`:''}`:y.err?`يوتيوب: ${y.err}`:'حدّثت الأرقام. اربط يوتيوب من «فيديوهاتي» عشان تطلع حالة كل مقطع');return}
   if(a==='forget'){const id=$('#trDelForm')?.dataset.id;const x=id&&find('perf',id);closeModal();if(x){trForget(x);saveLocal();render(true);toast('شلته من البرنامج، وهو باقي على المنصة')}return}
   if(!r)return;
   if(a==='retitle')trSuggestTitles(r);
@@ -144,10 +146,27 @@ function trWatch(){if(!window.desktop?.notify)return;const sent={...(S.prefs.trS
     if(st.k==='slow'){sent[r.id]=Date.now();ch=true;const w=trWhy(r)[0];window.desktop.notify('مقطع ماشي أبطأ من العادة',`«${(r.title||'').slice(0,50)}» على ${PL(r.platform).n}${w?': '+w.t:''}. افتح «متابعة مقاطعي».`)}
     else if(st.k==='hot'&&!sent['h'+r.id]){sent['h'+r.id]=Date.now();ch=true;window.desktop.notify('مقطع ينتشر 🔥',`«${(r.title||'').slice(0,50)}» على ${PL(r.platform).n} فوق عادتك بـ ×${st.x.toFixed(1)}. رد على التعليقات وهو حامي.`)}}
   if(ch){S.prefs.trSent=Object.fromEntries(Object.entries(sent).filter(([,t])=>Date.now()-t<30*864e5));saveLocal()}}
+/* privacy + numbers straight from every connected YouTube channel (main and extra ones like a clips channel).
+   The public reader can't see private or unlisted videos, so this is the only way to know them. */
+let trYtApi=()=>window.desktop?.api;
+async function trYt(force){const api=trYtApi();if(!api?.ytList||!api.ytChannels)return {ok:false};
+  if(!force&&Date.now()-(+S.prefs.trYt||0)<15*60e3)return {ok:false};S.prefs.trYt=Date.now();
+  let chs=[];try{chs=await api.ytChannels()}catch(e){}if(!chs.length)return {ok:false};
+  let n=0,ok=0,err='';
+  for(const ch of chs){const r=await api.ytList(ch.key,50).catch(e=>({error:String(e.message||e)}));
+    if(!r||r.error){err=(r&&r.error)||'خطأ';continue}ok++;
+    const p=r.profile||{},h=String(p.handle||'').replace(/^@/,'').toLowerCase(),yt=S.accounts.filter(x=>x.platform==='youtube');
+    let acc=yt.find(x=>x.ytKey===ch.key)||(h&&yt.find(x=>String(x.handle||'').replace(/^@/,'').toLowerCase()===h));
+    if(!acc){acc=put('accounts',{platform:'youtube',handle:p.handle||'',url:p.handle?`https://www.youtube.com/@${p.handle}`:'',followers:+p.followers||0,goal:'',weekly:3,notes:'',api:true,ytKey:ch.key},true)}
+    else if(acc.ytKey!==ch.key){acc.ytKey=ch.key;put('accounts',acc,true)}
+    for(const v of r.items||[]){mergeVideo(v,acc);const row=S.perf.find(x=>x.vid===v.vid&&x.platform==='youtube');if(!row)continue;n++;
+      for(const f of ['saves','reach','follows','watchMin','avgView'])if(v[f]!=null)row[f]=+v[f];
+      row.privacy=v.privacy||null;row.publishAt=v.publishAt||null;row.privAt=Date.now();row.api=true}}
+  saveLocal();return {ok:ok>0,n,err}}
 // recent clips need fresher numbers than the once-a-day sync: every 3 hours while something is under 3 days old
 async function trRefresh(){if(!window.desktop||typeof syncAccount!=='function')return;const fresh=trItems().pub.some(r=>trAge(r)<72);
   if(!fresh||Date.now()-(+S.prefs.trSync||0)<3*TR_H){trWatch();return}
-  S.prefs.trSync=Date.now();saveLocal();for(const a of S.accounts.filter(x=>accountUrls(x).length)){try{await syncAccount(a,true)}catch(e){}}trWatch()}
+  S.prefs.trSync=Date.now();saveLocal();const y=await trYt(true).catch(()=>({}));for(const a of S.accounts.filter(x=>accountUrls(x).length&&!(x.platform==='youtube'&&y.ok))){try{await syncAccount(a,true)}catch(e){}}trWatch()}
 setInterval(()=>{trRefresh().catch(()=>{})},20*60e3);
 {const _ab=afterBoot;afterBoot=function(){_ab();setTimeout(()=>{trRefresh().catch(()=>{})},90e3)}}
 

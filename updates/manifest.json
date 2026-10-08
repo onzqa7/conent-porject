@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.16",
-    "notes": "حالة كل مقطع (عام/خاص/مجدول) وأرقامه بمتابعة مقاطعي",
+    "version": "2.9.17",
+    "notes": "متابعة مقاطعي تجيب الحالة والأرقام من كل قنوات يوتيوب المربوطة",
     "minShell": "2.5.0",
     "files": [
       {
@@ -511,8 +511,8 @@
       },
       {
         "path": "track.js",
-        "sha256": "fbab82ff1dd499fc4a99e75ed3ac3bfc9744b73161c841c1f80731ef444eb294",
-        "size": 26937
+        "sha256": "950f7b10eb04fe49a228916338fb776c10c2fe459f871f9ed81ff7daa889670f",
+        "size": 29138
       },
       {
         "path": "videos.js",
@@ -521,15 +521,15 @@
       },
       {
         "path": "whatsnew.js",
-        "sha256": "519d0e9b891b61a70bd9db2706f1cdf91b61e9dbdda192bb14e5706cf5c1e919",
-        "size": 7228
+        "sha256": "0ff24b6ad8b0bc3282d4dc21cd4df471b9b5c08a9840b0f07e4b4d143aa70073",
+        "size": 7598
       }
     ]
   },
   "shell": {
-    "version": "2.9.4",
-    "url": "https://raw.githubusercontent.com/onzqa7/conent-porject/main/updates/shell/content-studio-2.9.4.zip",
-    "sha256": "b8a4e591a5c8e7a172464e9785bafadcc86005d9f2661104759b98e1d2cbc7e2",
-    "notes": "حالة كل مقطع وأرقامه بمتابعة مقاطعي"
+    "version": "2.9.5",
+    "url": "https://raw.githubusercontent.com/onzqa7/conent-porject/main/updates/shell/content-studio-2.9.5.zip",
+    "sha256": "70123e47cc4192928b68b4fbef3e0c3ff6ca4c3fa408cbfd0ba478e18980d3a2",
+    "notes": "حالة المقاطع من كل قنوات يوتيوب"
   }
 }
