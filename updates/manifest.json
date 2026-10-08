@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.14",
-    "notes": "متابعة مقاطعي، الحذف من كل المنصات، تشخيص الانتشار، خطوط جديدة، وقناتك الصحيحة",
+    "version": "2.9.15",
+    "notes": "حذف فيديوهات يوتيوب بالجملة وربط قناة ثانية",
     "minShell": "2.5.0",
     "files": [
       {
@@ -38,6 +38,11 @@
         "path": "bio.js",
         "sha256": "cc68fcebe3f286b168843bf8e97b013972eea8ef616a7df750892e6be7bc8c8f",
         "size": 32849
+      },
+      {
+        "path": "bulk.js",
+        "sha256": "d0dbc55918955e41d13d5633a934566e80147e34511d352f9ff78bbfc18fa5ed",
+        "size": 12120
       },
       {
         "path": "business.css",
@@ -401,8 +406,8 @@
       },
       {
         "path": "index.html",
-        "sha256": "637323e525e6d6c9dad7d9a0e32e820ec944cf572b4845d84eb193591daa221e",
-        "size": 2888
+        "sha256": "83fbae80844c889e5f1b1aaa3a1a24afb6d6066c8af0e5c0f3359dfded9209de",
+        "size": 2920
       },
       {
         "path": "insights.js",
@@ -496,8 +501,8 @@
       },
       {
         "path": "styles.css",
-        "sha256": "86740e0661c48f2308fcb0d56cf4884a9f90bc36215a8c18be49b30422e5f307",
-        "size": 83932
+        "sha256": "739c10720ef80f2dc22ceca8dab966a85afef1778e30ffbd40bf7ad691ac5a08",
+        "size": 84605
       },
       {
         "path": "today.js",
@@ -516,15 +521,15 @@
       },
       {
         "path": "whatsnew.js",
-        "sha256": "2d6f972c6757f38c66a7524890a913de4cd0bfdd2a62976619b3cf1d590cc327",
-        "size": 6562
+        "sha256": "e3cfced3d2e9e6bd12f4c759144c99f2bda5ec2eaddcc4224ce1552cf537c96f",
+        "size": 6848
       }
     ]
   },
   "shell": {
-    "version": "2.9.2",
-    "url": "https://raw.githubusercontent.com/onzqa7/conent-porject/main/updates/shell/content-studio-2.9.2.zip",
-    "sha256": "66cf5bec5d848ff7373b28c31f877af187842e0b65992eba10952647b6304a2a",
-    "notes": "حذف المقاطع وتعديل العنوان من يوتيوب وإكس، وخطوط جديدة للترجمة"
+    "version": "2.9.3",
+    "url": "https://raw.githubusercontent.com/onzqa7/conent-porject/main/updates/shell/content-studio-2.9.3.zip",
+    "sha256": "1a08a4c208de6098ee9c2a69a3a4994132824c166a390059f1b6d96964de5507",
+    "notes": "حذف فيديوهات يوتيوب بالجملة وربط أكثر من قناة"
   }
 }

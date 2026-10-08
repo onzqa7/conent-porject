@@ -1,2 +1,2 @@
-{ "name": "content-studio", "productName": "Content Studio", "version": "2.9.2", "main": "main.js", "description": "استوديو المحتوى", "author": "onzqa",
+{ "name": "content-studio", "productName": "Content Studio", "version": "2.9.3", "main": "main.js", "description": "استوديو المحتوى", "author": "onzqa",
   "dependencies": { "@anthropic-ai/sdk": "0.131.0" } }

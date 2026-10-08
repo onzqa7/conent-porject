@@ -361,6 +361,30 @@ ipcMain.handle('api:retitle', async (_e, pf, id, patch) => {
   try { return await a.retitle(String(id || ''), patch || {}); }
   catch (err) { const r = apiErr(err); if (err && err.status === 403 && /scope|permission|insufficient/i.test(err.message)) r.code = 'scope'; return r; }
 });
+// More than one YouTube channel (e.g. a separate clips channel), and finding videos by title to delete in bulk.
+const arNorm = s => String(s || '').normalize('NFKC').replace(/[\u064B-\u065F\u0670\u0640\u200B-\u200F\u202A-\u202E\u2066-\u2069]/g, '').replace(/[أإآٱ]/g, 'ا').replace(/ى/g, 'ي').replace(/ة/g, 'ه').replace(/\s+/g, ' ').trim().toLowerCase();
+ipcMain.handle('api:ytChannels', () => connect.ytChannels());
+ipcMain.handle('api:ytConnectExtra', async () => {
+  try { const k = connect.appKeys('youtube'); if (!k.clientId) return { code: 'setup', error: 'اربط قناتك الأساسية أول من «فيديوهاتي»' }; return { profile: await connect.ytConnectExtra(k) }; }
+  catch (err) { return apiErr(err); }
+});
+ipcMain.handle('api:ytDisconnect', (_e, key) => { connect.ytDisconnect(key); return true; });
+ipcMain.handle('api:ytFind', async (_e, key, q) => {
+  try {
+    const mode = q && q.mode === 'contains' ? 'contains' : 'starts', t = arNorm(q && q.text);
+    if (!t) return { error: 'اكتب الكلمة اللي تبحث فيها' };
+    const all = await connect.ytAllUploads(key);
+    const strip = s => arNorm(s).replace(/^[^\p{L}\p{N}]+/u, '');
+    const items = all.filter(v => mode === 'contains' ? arNorm(v.title).includes(t) : strip(v.title).startsWith(t));
+    return { total: all.length, items };
+  } catch (err) { return apiErr(err); }
+});
+ipcMain.handle('api:ytRemove', async (_e, key, id) => {
+  const a = connect.ytAdapter(key); if (!a) return { error: 'القناة مو مربوطة' };
+  if (!id || typeof id !== 'string') return { error: 'معرّف الفيديو ناقص' };
+  try { return await a.remove(id); }
+  catch (err) { if (err && err.status === 404) return { ok: true, gone: true }; const r = apiErr(err); if (err && err.status === 403 && /quota/i.test(err.message)) r.code = 'quota'; return r; }
+});
 ipcMain.handle('api:pickVideo', async () => {
   const r = await dialog.showOpenDialog(BrowserWindow.getFocusedWindow(), { properties: ['openFile'], filters: [{ name: 'فيديو', extensions: ['mp4', 'mov', 'm4v', 'webm'] }] });
   return r.canceled ? null : r.filePaths[0];

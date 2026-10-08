@@ -84,22 +84,23 @@ function readChunk(file, start, len) {
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 /* ---------- YouTube ---------- */
-const youtube = {
+// One adapter per connected channel: 'youtube' is the main one, 'youtube#<channelId>' are extra channels (e.g. a clips channel).
+function ytFor(key) { return {
   scopes: 'https://www.googleapis.com/auth/youtube.upload https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/yt-analytics.readonly https://www.googleapis.com/auth/youtube.force-ssl',
   async connect({ clientId, clientSecret }) {
     const st = b64url(crypto.randomBytes(16)), p = pkce();
-    const url = 'https://accounts.google.com/o/oauth2/v2/auth?' + new URLSearchParams({ client_id: clientId, redirect_uri: REDIRECT, response_type: 'code', scope: this.scopes, access_type: 'offline', prompt: 'consent', state: st, code_challenge: p.challenge, code_challenge_method: 'S256' });
+    const url = 'https://accounts.google.com/o/oauth2/v2/auth?' + new URLSearchParams({ client_id: clientId, redirect_uri: REDIRECT, response_type: 'code', scope: this.scopes, access_type: 'offline', prompt: 'select_account consent', state: st, code_challenge: p.challenge, code_challenge_method: 'S256' });
     const code = await waitForCode(url, st);
     const t = await req('https://oauth2.googleapis.com/token', { method: 'POST', form: { client_id: clientId, client_secret: clientSecret, code, code_verifier: p.verifier, grant_type: 'authorization_code', redirect_uri: REDIRECT } });
     const conn = { clientId, clientSecret, access: t.access_token, refresh: t.refresh_token, exp: Date.now() + (t.expires_in - 60) * 1000 };
-    setConn('youtube', conn);
+    setConn(key, conn);
     return this.profile();
   },
   async token() {
-    const c = getConn('youtube'); if (!c) throw new ApiError('يوتيوب مو مربوط');
+    const c = getConn(key); if (!c) throw new ApiError('يوتيوب مو مربوط');
     if (Date.now() < c.exp) return c.access;
     const t = await req('https://oauth2.googleapis.com/token', { method: 'POST', form: { client_id: c.clientId, client_secret: c.clientSecret, refresh_token: c.refresh, grant_type: 'refresh_token' } });
-    c.access = t.access_token; c.exp = Date.now() + (t.expires_in - 60) * 1000; setConn('youtube', c);
+    c.access = t.access_token; c.exp = Date.now() + (t.expires_in - 60) * 1000; setConn(key, c);
     return c.access;
   },
   async get(url) { return req(url, { headers: { Authorization: 'Bearer ' + await this.token() } }); },
@@ -107,11 +108,11 @@ const youtube = {
     const d = await this.get('https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics,contentDetails&mine=true');
     const ch = d.items && d.items[0]; if (!ch) throw new ApiError('ما لقيت قناة يوتيوب في هالحساب');
     const p = { id: ch.id, name: ch.snippet.title, handle: (ch.snippet.customUrl || '').replace(/^@/, ''), followers: +ch.statistics.subscriberCount || 0, videos: +ch.statistics.videoCount || 0, views: +ch.statistics.viewCount || 0, avatar: ch.snippet.thumbnails?.default?.url || '', uploads: ch.contentDetails.relatedPlaylists.uploads };
-    const c = getConn('youtube'); c.profile = p; setConn('youtube', c);
+    const c = getConn(key); c.profile = p; setConn(key, c);
     return p;
   },
   async list(limit = 50) {
-    const c = getConn('youtube'); const pl = c.profile?.uploads || (await this.profile()).uploads;
+    const c = getConn(key); const pl = c.profile?.uploads || (await this.profile()).uploads;
     const ids = []; let page = '';
     while (ids.length < limit) {
       const d = await this.get(`https://www.googleapis.com/youtube/v3/playlistItems?part=contentDetails&maxResults=50&playlistId=${pl}${page ? '&pageToken=' + page : ''}`);
@@ -152,7 +153,7 @@ const youtube = {
   },
   // Latest comments across the channel. Replying needs the youtube.force-ssl scope (added in 2.4).
   async comments(limit = 100) {
-    const id = getConn('youtube').profile?.id || (await this.profile()).id;
+    const id = getConn(key).profile?.id || (await this.profile()).id;
     const out = []; let page = '';
     while (out.length < limit) {
       const d = await this.get(`https://www.googleapis.com/youtube/v3/commentThreads?part=snippet,replies&allThreadsRelatedToChannelId=${id}&maxResults=100&order=time&textFormat=plainText${page ? '&pageToken=' + page : ''}`);
@@ -189,7 +190,8 @@ const youtube = {
     }
     return { url: `https://www.youtube.com/watch?v=${res.id}`, id: res.id, privacy: res.status?.privacyStatus };
   },
-};
+}; }
+const youtube = ytFor('youtube');
 
 /* ---------- Instagram (Instagram API with Instagram Login, token from the Meta app dashboard) ---------- */
 const IG = 'https://graph.instagram.com';
@@ -416,4 +418,28 @@ function disconnect(pf) {
   delete all[pf]; save(all);
 }
 
-module.exports = { init, ADAPTERS, status, disconnect, appKeys, cancelAuth, REDIRECT, ApiError };
+/* ---------- extra YouTube channels ---------- */
+function ytChannels() { const all = load(); return Object.keys(all).filter(k => k === 'youtube' || k.startsWith('youtube#')).map(k => ({ key: k, profile: all[k].profile || null })); }
+async function ytConnectExtra(creds) {
+  const tmp = 'youtube#new'; const a = ytFor(tmp);
+  try { const p = await a.connect(creds); const all = load(); const c = all[tmp]; delete all[tmp];
+    if (all.youtube && all.youtube.profile && all.youtube.profile.id === p.id) { save(all); return p; } // that's the main channel, already connected
+    all['youtube#' + p.id] = c; save(all); return p; }
+  catch (e) { const all = load(); delete all[tmp]; save(all); throw e; }
+}
+function ytAdapter(key) { if (key !== 'youtube' && !/^youtube#[\w-]{6,40}$/.test(String(key))) return null; return load()[key] ? ytFor(key) : null; }
+function ytDisconnect(key) { if (!String(key).startsWith('youtube#')) return; const all = load(); delete all[key]; save(all); }
+// every upload of a channel (titles only), for finding videos to delete in bulk
+async function ytAllUploads(key, max = 2000) {
+  const a = ytAdapter(key); if (!a) throw new ApiError('القناة مو مربوطة');
+  const c = getConn(key); const pl = c.profile?.uploads || (await a.profile()).uploads;
+  const out = []; let page = '';
+  while (out.length < max) {
+    const d = await a.get(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&maxResults=50&playlistId=${pl}${page ? '&pageToken=' + page : ''}`);
+    for (const i of d.items || []) out.push({ vid: i.contentDetails.videoId, title: i.snippet.title, date: i.contentDetails.videoPublishedAt || i.snippet.publishedAt, thumb: i.snippet.thumbnails?.default?.url || '' });
+    if (!d.nextPageToken) break; page = d.nextPageToken;
+  }
+  return out;
+}
+
+module.exports = { init, ADAPTERS, status, disconnect, appKeys, cancelAuth, REDIRECT, ApiError, ytChannels, ytConnectExtra, ytAdapter, ytDisconnect, ytAllUploads };

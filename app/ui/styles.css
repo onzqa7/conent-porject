@@ -943,3 +943,8 @@ input[dir="ltr"]::placeholder,input.ltr::placeholder{direction:rtl;text-align:ri
 .fontpick button.th-miss{opacity:.55}.fontpick button.th-miss span::after{content:" · مو منزّل";color:var(--faint)}
 .th-note{margin-top:6px}.capfont{width:auto;min-width:120px}
 .tr-ph svg{width:26px;height:26px}
+.bk-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}.bk-row .f{margin:0}
+.bk-list{display:flex;flex-direction:column;gap:4px;max-height:42vh;overflow:auto;margin:8px 0 12px;padding-inline-end:4px}
+.bk-it{display:flex;gap:10px;align-items:center;padding:6px 8px;border:1px solid var(--line);border-radius:10px;cursor:pointer}
+.bk-it img{width:48px;height:27px;border-radius:4px;object-fit:cover;flex:none}.bk-it span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bk-it small{flex:none}.bk-it input{accent-color:var(--bad)}.bk-it.done{opacity:.5}.bk-it.done span{text-decoration:line-through}.bk-it.fail small{color:var(--bad)}
