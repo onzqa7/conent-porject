@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.30",
-    "notes": "إصلاح المتابعين الجدد بالسالب",
+    "version": "2.9.31",
+    "notes": "استبعاد المنصات والقنوات بالتحليلات",
     "minShell": "2.9.8",
     "files": [
       {
@@ -521,8 +521,8 @@
       },
       {
         "path": "studies.js",
-        "sha256": "e4dbbe38eeb93687e6b6a696432d00ce31357f9c47cbdd8188b89c0c8a51c2fc",
-        "size": 65367
+        "sha256": "67d6f7fffd2d4b014b9cbbfff7ec8cdbc1730d4b17f19c85d044486f02409b77",
+        "size": 66013
       },
       {
         "path": "styles.css",
@@ -546,8 +546,8 @@
       },
       {
         "path": "whatsnew.js",
-        "sha256": "35be1057e0adb4ff903e1a587f4ce99feaddc229b9cb3e053664853f5bf3b55e",
-        "size": 12483
+        "sha256": "6a45501402473e7602239b51e0f9658fb21cd9643b54ccac0018d97f5a2c9b36",
+        "size": 12724
       },
       {
         "path": "ytchans.js",
