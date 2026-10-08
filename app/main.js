@@ -368,6 +368,41 @@ ipcMain.handle('api:ytConnectExtra', async () => {
   try { const k = connect.appKeys('youtube'); if (!k.clientId) return { code: 'setup', error: 'اربط قناتك الأساسية أول من «فيديوهاتي»' }; return { profile: await connect.ytConnectExtra(k) }; }
   catch (err) { return apiErr(err); }
 });
+// "new video" announcements: thumbnail, then a tweet with it and an Instagram story made from a picture the UI draws
+ipcMain.handle('api:ytLatest', async () => { try { return { items: await connect.ytLatest(10) }; } catch (err) { return apiErr(err); } });
+async function ytThumbBuf(vid) {
+  for (const q of ['maxresdefault', 'sddefault', 'hqdefault']) {
+    try { const r = await net.fetch(`https://i.ytimg.com/vi/${encodeURIComponent(vid)}/${q}.jpg`); if (r.ok) { const b = Buffer.from(await r.arrayBuffer()); if (b.length > 2000) return b; } } catch {}
+  }
+  return null;
+}
+ipcMain.handle('api:ytThumb', async (_e, vid) => { if (!/^[\w-]{6,20}$/.test(String(vid))) return null; const b = await ytThumbBuf(vid); return b ? 'data:image/jpeg;base64,' + b.toString('base64') : null; });
+function stillToVideo(png, out, secs = 6) {
+  return new Promise((res, rej) => {
+    const p = spawn(locateFfmpeg(), ['-y', '-loop', '1', '-i', png, '-f', 'lavfi', '-i', 'anullsrc=r=44100:cl=stereo', '-t', String(secs), '-vf', 'scale=1080:1920,format=yuv420p', '-r', '30', '-c:v', 'libx264', '-preset', 'veryfast', '-c:a', 'aac', '-b:a', '64k', '-shortest', '-movflags', '+faststart', out], { windowsHide: true });
+    let err = ''; p.stderr.on('data', d => { err = (err + d).slice(-600); });
+    p.on('error', rej); p.on('close', c => c === 0 ? res(out) : rej(new Error('ffmpeg: ' + err.slice(-200))));
+  });
+}
+ipcMain.handle('api:announce', async (_e, o = {}) => {
+  const vid = String(o.vid || ''); if (!/^[\w-]{6,20}$/.test(vid)) return { error: 'معرّف الفيديو ناقص' };
+  const out = {};
+  if (o.x) {
+    try { const img = await ytThumbBuf(vid); if (!img) throw new Error('ما لقيت صورة المقطع');
+      out.x = await connect.ADAPTERS.x.postImage({ image: img, text: String(o.text || '') }); }
+    catch (err) { out.x = apiErr(err); }
+  }
+  if (o.ig) {
+    let dir;
+    try { const m = /^data:image\/png;base64,(.+)$/.exec(String(o.story || '')); if (!m) throw new Error('صورة الستوري ناقصة');
+      dir = fs.mkdtempSync(path.join(os.tmpdir(), 'cs-story-')); const png = path.join(dir, 'story.png'), mp4 = path.join(dir, 'story.mp4');
+      fs.writeFileSync(png, Buffer.from(m[1], 'base64')); await stillToVideo(png, mp4);
+      out.ig = await connect.ADAPTERS.instagram.publish({ file: mp4, mediaType: 'STORIES' }); }
+    catch (err) { out.ig = apiErr(err); }
+    finally { if (dir) try { fs.rmSync(dir, { recursive: true, force: true }); } catch {} }
+  }
+  return out;
+});
 // recent uploads of any connected channel, with privacy and numbers (for «متابعة مقاطعي»)
 ipcMain.handle('api:ytList', async (_e, key, limit) => {
   const a = connect.ytAdapter(key); if (!a) return { error: 'القناة مو مربوطة' };
@@ -382,6 +417,7 @@ ipcMain.handle('api:ytFind', async (_e, key, q) => {
     const all = await connect.ytAllUploads(key);
     const strip = s => arNorm(s).replace(/^[^\p{L}\p{N}]+/u, '');
     const items = all.filter(v => mode === 'contains' ? arNorm(v.title).includes(t) : strip(v.title).startsWith(t));
+    await connect.ytStats(key, items.slice(0, 500));
     return { total: all.length, items };
   } catch (err) { return apiErr(err); }
 });

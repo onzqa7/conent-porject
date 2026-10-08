@@ -953,3 +953,5 @@ input[dir="ltr"]::placeholder,input.ltr::placeholder{direction:rtl;text-align:ri
 .tr-pv.unl{background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent)}.tr-pv.sched{background:color-mix(in srgb,#5b8cff 18%,transparent);color:#7ea3ff}
 .tr-nums{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.85rem;color:var(--muted)}.tr-nums b{color:var(--fg);font-size:1rem}
 .tr-card.hidden{opacity:.85}.tr-st.hidden{background:var(--line);color:var(--muted)}
+
+.bk-it>span{display:flex;flex-direction:column;gap:2px}.bk-it .bk-t{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.bk-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-style:normal;font-size:.8rem;color:var(--muted)}.bk-meta i{font-style:normal}

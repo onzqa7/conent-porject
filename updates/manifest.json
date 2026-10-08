@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.17",
-    "notes": "متابعة مقاطعي تجيب الحالة والأرقام من كل قنوات يوتيوب المربوطة",
+    "version": "2.9.18",
+    "notes": "الحالة والمشاهدات بقائمة الحذف بالجملة",
     "minShell": "2.5.0",
     "files": [
       {
@@ -41,8 +41,8 @@
       },
       {
         "path": "bulk.js",
-        "sha256": "d0dbc55918955e41d13d5633a934566e80147e34511d352f9ff78bbfc18fa5ed",
-        "size": 12120
+        "sha256": "c6f080ce3aa048778d57b5855db0dc90e6b29e30443ac359084fabcfc7020a72",
+        "size": 13128
       },
       {
         "path": "business.css",
@@ -501,8 +501,8 @@
       },
       {
         "path": "styles.css",
-        "sha256": "7f9833181a58b5543e36791cd8276a857133ce744c72f52058cee345b01c9c6c",
-        "size": 85307
+        "sha256": "754164734fbc43b39115c93c88fedf5422ac9596bbb7e1ac600f6ac9b0be5d8e",
+        "size": 85597
       },
       {
         "path": "today.js",
@@ -521,15 +521,15 @@
       },
       {
         "path": "whatsnew.js",
-        "sha256": "0ff24b6ad8b0bc3282d4dc21cd4df471b9b5c08a9840b0f07e4b4d143aa70073",
-        "size": 7598
+        "sha256": "4d238fcd8e6da469666f0d5ae99d50370c1f66025247991c4292b80db666f29f",
+        "size": 7925
       }
     ]
   },
   "shell": {
-    "version": "2.9.5",
-    "url": "https://raw.githubusercontent.com/onzqa7/conent-porject/main/updates/shell/content-studio-2.9.5.zip",
-    "sha256": "70123e47cc4192928b68b4fbef3e0c3ff6ca4c3fa408cbfd0ba478e18980d3a2",
-    "notes": "حالة المقاطع من كل قنوات يوتيوب"
+    "version": "2.9.6",
+    "url": "https://raw.githubusercontent.com/onzqa7/conent-porject/main/updates/shell/content-studio-2.9.6.zip",
+    "sha256": "75cfff40f445bf7b3b892ad87a4b01ec73514c8d5528c60a69a1781c87d8d819",
+    "notes": "الحالة والمشاهدات بالحذف بالجملة"
   }
 }

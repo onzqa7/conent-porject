@@ -247,11 +247,12 @@ const instagram = {
     const r = await req(`${IG}/${cid}/replies`, { method: 'POST', form: { message: text, access_token: t } });
     return { id: r.id };
   },
-  async publish({ file, caption }, onProgress) {
+  async publish({ file, caption, mediaType }, onProgress) {
+    onProgress = onProgress || (() => {});
     const t = await this.token();
     const uid = getConn('instagram').profile?.id || (await this.profile()).id;
     const size = fs.statSync(file).size;
-    const c = await req(`${IG}/${uid}/media`, { method: 'POST', form: { media_type: 'REELS', upload_type: 'resumable', caption: caption || '', access_token: t } });
+    const c = await req(`${IG}/${uid}/media`, { method: 'POST', form: mediaType === 'STORIES' ? { media_type: 'STORIES', upload_type: 'resumable', access_token: t } : { media_type: 'REELS', upload_type: 'resumable', caption: caption || '', access_token: t } });
     onProgress(0.05);
     const up = await F(c.uri || `https://rupload.facebook.com/ig-api-upload/${c.id}`, { method: 'POST', headers: { Authorization: 'OAuth ' + t, offset: '0', file_size: String(size) }, body: fs.readFileSync(file) });
     if (!up.ok) throw new ApiError('ما قدرت أرفع الفيديو لإنستقرام: ' + (await up.text()).slice(0, 200), up.status);
@@ -372,6 +373,17 @@ const x = {
     const d = await this.call('tweets/' + encodeURIComponent(id), { method: 'DELETE' });
     return { ok: !!(d && d.data && d.data.deleted) };
   },
+  // a tweet with one picture (e.g. a video's thumbnail)
+  async postImage({ image, mime = 'image/jpeg', text }) {
+    const fd = new FormData();
+    fd.append('media', new Blob([image], { type: mime }), mime === 'image/png' ? 'image.png' : 'image.jpg');
+    fd.append('media_category', 'tweet_image'); fd.append('media_type', mime);
+    const r = await F(`${XAPI}/media/upload`, { method: 'POST', headers: { Authorization: 'Bearer ' + await this.token() }, body: fd });
+    const tx = await r.text(); let j = {}; try { j = JSON.parse(tx); } catch {}
+    if (!r.ok || !j.data || !j.data.id) throw new ApiError('ما قدرت أرفع الصورة لإكس: ' + tx.slice(0, 200), r.status);
+    const d = await this.call('tweets', { method: 'POST', json: { text: String(text || '').slice(0, 280), media: { media_ids: [j.data.id] } } });
+    return { id: d.data.id, url: `https://x.com/${getConn('x').profile?.handle || 'i'}/status/${d.data.id}` };
+  },
   async publish({ file, caption }, onProgress) {
     let mediaIds;
     if (file) {
@@ -427,6 +439,16 @@ async function ytConnectExtra(creds) {
     all['youtube#' + p.id] = c; save(all); return p; }
   catch (e) { const all = load(); delete all[tmp]; save(all); throw e; }
 }
+// newest uploads of the main channel with their state, cheap enough to check every few minutes (2 quota units)
+async function ytLatest(n = 10) {
+  const a = ytAdapter('youtube'); if (!a) throw new ApiError('يوتيوب مو مربوط');
+  const c = getConn('youtube'); const pl = c.profile?.uploads || (await a.profile()).uploads;
+  const d = await a.get(`https://www.googleapis.com/youtube/v3/playlistItems?part=contentDetails&maxResults=${Math.min(50, n)}&playlistId=${pl}`);
+  const ids = (d.items || []).map(i => i.contentDetails.videoId); if (!ids.length) return [];
+  const v = await a.get('https://www.googleapis.com/youtube/v3/videos?part=snippet,status,contentDetails,liveStreamingDetails&id=' + ids.join(','));
+  return (v.items || []).map(x => { const m = /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/.exec(x.contentDetails?.duration || '') || [];
+    return { vid: x.id, url: `https://youtu.be/${x.id}`, title: x.snippet.title, date: x.snippet.publishedAt, privacy: x.status?.privacyStatus || null, publishAt: x.status?.publishAt || null, live: x.snippet.liveBroadcastContent || 'none', wasLive: !!x.liveStreamingDetails, duration: (+m[1] || 0) * 3600 + (+m[2] || 0) * 60 + (+m[3] || 0), channel: c.profile?.name || '', handle: c.profile?.handle || '' }; });
+}
 function ytAdapter(key) { if (key !== 'youtube' && !/^youtube#[\w-]{6,40}$/.test(String(key))) return null; return load()[key] ? ytFor(key) : null; }
 function ytDisconnect(key) { if (!String(key).startsWith('youtube#')) return; const all = load(); delete all[key]; save(all); }
 // every upload of a channel (titles only), for finding videos to delete in bulk
@@ -441,5 +463,17 @@ async function ytAllUploads(key, max = 2000) {
   }
   return out;
 }
+// privacy and numbers for a set of videos (1 quota unit per 50)
+async function ytStats(key, items) {
+  const a = ytAdapter(key); if (!a) return items;
+  for (let i = 0; i < items.length; i += 50) {
+    const part = items.slice(i, i + 50);
+    try { const d = await a.get('https://www.googleapis.com/youtube/v3/videos?part=statistics,status&id=' + part.map(v => v.vid).join(','));
+      for (const x of d.items || []) { const v = part.find(y => y.vid === x.id); if (!v) continue;
+        v.privacy = x.status?.privacyStatus || null; v.publishAt = x.status?.publishAt || null;
+        v.views = +x.statistics?.viewCount || 0; v.likes = +x.statistics?.likeCount || 0; v.comments = +x.statistics?.commentCount || 0; } } catch {}
+  }
+  return items;
+}
 
-module.exports = { init, ADAPTERS, status, disconnect, appKeys, cancelAuth, REDIRECT, ApiError, ytChannels, ytConnectExtra, ytAdapter, ytDisconnect, ytAllUploads };
+module.exports = { init, ADAPTERS, status, disconnect, appKeys, cancelAuth, REDIRECT, ApiError, ytChannels, ytConnectExtra, ytAdapter, ytDisconnect, ytAllUploads, ytLatest, ytStats };
