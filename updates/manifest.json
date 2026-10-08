@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.31",
-    "notes": "استبعاد المنصات والقنوات بالتحليلات",
+    "version": "2.9.32",
+    "notes": "كل المنصات تطلع بالفلتر",
     "minShell": "2.9.8",
     "files": [
       {
@@ -501,8 +501,8 @@
       },
       {
         "path": "seasons.js",
-        "sha256": "346155441964190e36988cf1b95ba2457b95050866157da2a02249ce0d9b5a0d",
-        "size": 48760
+        "sha256": "53beeee82d2bca31b956564eceec60be587df40bde62d82f8977fce7a95ee024",
+        "size": 48768
       },
       {
         "path": "snap.css",
@@ -521,8 +521,8 @@
       },
       {
         "path": "studies.js",
-        "sha256": "67d6f7fffd2d4b014b9cbbfff7ec8cdbc1730d4b17f19c85d044486f02409b77",
-        "size": 66013
+        "sha256": "cafa6f3834e8b575ec81742e67507ae734d53077d756858dfdb29d3664518935",
+        "size": 65980
       },
       {
         "path": "styles.css",
