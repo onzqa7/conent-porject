@@ -179,6 +179,13 @@ function buildAss(words, o, W, H) {
       });
     });
   }
+  // a hook line over the first seconds (auto clips), drawn as a box at the top
+  let hookSt = '';
+  if (o.hook) {
+    const hs = Math.round(W * (vertical ? 0.078 : 0.05));
+    hookSt = `\nStyle: Hook,${font},${hs},${black},${black},${assColor(o.hookBg || '#FFFFFF')},${assColor(o.hookBg || '#FFFFFF')},-1,0,0,0,100,100,0,0,3,${Math.round(hs * 0.35)},0,8,${Math.round(W * 0.08)},${Math.round(W * 0.08)},${Math.round(H * (vertical ? 0.12 : 0.06))},-1`;
+    ev.unshift([0, Math.max(1.5, +o.hookDur || 3.5), esc(String(o.hook).slice(0, 90)), 'Hook']);
+  }
   return `[Script Info]
 ScriptType: v4.00+
 PlayResX: ${W}
@@ -188,11 +195,11 @@ ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-${st}
+${st}${hookSt}
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
-${ev.map(([s, e, t]) => `Dialogue: 0,${assTime(s)},${assTime(e)},Default,,0,0,0,,${t}`).join('\n')}
+${ev.map(([s, e, t, n]) => `Dialogue: ${n ? 1 : 0},${assTime(s)},${assTime(e)},${n || 'Default'},,0,0,0,,${t}`).join('\n')}
 `;
 }
 

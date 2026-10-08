@@ -1,8 +1,8 @@
 {
   "ui": {
-    "version": "2.9.27",
-    "notes": "ترتيب صفحة الجدولة، وحالة «صار لها سكربت» للأفكار",
-    "minShell": "2.9.6",
+    "version": "2.9.28",
+    "notes": "قص ونشر تلقائي، وأيقونة جديدة",
+    "minShell": "2.9.8",
     "files": [
       {
         "path": "agent.js",
@@ -33,6 +33,11 @@
         "path": "app.js",
         "sha256": "225adfc0b1df6bd95126fb8bc329d7ebe6d32a88562d29de75463e4a5c608915",
         "size": 113357
+      },
+      {
+        "path": "autoclip.js",
+        "sha256": "2f57fe7307d6ecdf24dfd55d253d41b3cb762987fb13b0641aa857518b77f196",
+        "size": 19581
       },
       {
         "path": "autoupd.js",
@@ -416,13 +421,13 @@
       },
       {
         "path": "growth.js",
-        "sha256": "2059f3558db1ce8f7a308909e14f39a4672d899d4162a50c690fa8dbb85c481b",
-        "size": 53877
+        "sha256": "fbc4e367cc612070a0f3775015d28b83b034602b5d61eeac4111218d29edea74",
+        "size": 53920
       },
       {
         "path": "index.html",
-        "sha256": "aa68891894a319c14d8e0d43b39a1fe45093eba4c9a794d107ff6c7dd1f6bda5",
-        "size": 3058
+        "sha256": "faf0c3fb039232dd37128c0a06a46614f4505d7a52aa0faa3c56fbed44f92653",
+        "size": 3094
       },
       {
         "path": "insights.js",
@@ -516,8 +521,8 @@
       },
       {
         "path": "styles.css",
-        "sha256": "2ddf657c60b865368642a9d5f4efa4e9ae41f593b961f51b7a4e0f994f68a0ac",
-        "size": 87392
+        "sha256": "ed50eb541dd51fd45fefb6f8899c166e871c2bed6526ffa1af11e859ce103eeb",
+        "size": 87789
       },
       {
         "path": "today.js",
@@ -536,8 +541,8 @@
       },
       {
         "path": "whatsnew.js",
-        "sha256": "a34e6c29c35a4e8e310f62582902b4bca7285c0c84f18756b861fbccca410452",
-        "size": 11473
+        "sha256": "cda8849e2128d8d0909166c6c151507b4467f3cf66bcf9f1b7ee66f402fdbc72",
+        "size": 11872
       },
       {
         "path": "ytchans.js",
@@ -547,9 +552,9 @@
     ]
   },
   "shell": {
-    "version": "2.9.7",
-    "url": "https://raw.githubusercontent.com/onzqa7/conent-porject/main/updates/shell/content-studio-2.9.7.zip",
-    "sha256": "beeab01536a3d0ff2b9ed60cc0fc39b997cad52685250f57166374c270f3359f",
-    "notes": "التحديثات تنزل وتتثبت لحالها"
+    "version": "2.9.8",
+    "url": "https://raw.githubusercontent.com/onzqa7/conent-porject/main/updates/shell/content-studio-2.9.8.zip",
+    "sha256": "20de0c0c859f0bf36c9d118930b256d4431e6cace0aaf404f143d61b9b8cced7",
+    "notes": "قص ونشر تلقائي لقناة المقاطع، وأيقونة جديدة"
   }
 }

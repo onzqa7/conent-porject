@@ -383,7 +383,8 @@ ipcMain.handle('api:publish', async (e, jobId, pf, post) => {
   try {
     if (post.file && !fs.existsSync(post.file)) return { code: 'file', error: 'ملف الفيديو مو موجود' };
     if (pf !== 'x' && !post.file) return { code: 'file', error: 'هالمنصة تحتاج ملف فيديو' };
-    return await connect.ADAPTERS[pf].publish(post, p => { if (!e.sender.isDestroyed()) e.sender.send('api:progress', jobId, pf, p); });
+    const ad = connect.ADAPTERS[pf] || connect.ytAdapter(pf); if (!ad) return { code: 'setup', error: 'القناة مو مربوطة' };
+    return await ad.publish(post, p => { if (!e.sender.isDestroyed()) e.sender.send('api:progress', jobId, pf, p); });
   } catch (err) { return apiErr(err); }
 });
 ipcMain.handle('api:comments', async (_e, pf, limit) => {
@@ -396,7 +397,7 @@ ipcMain.handle('api:reply', async (_e, pf, cid, text) => {
 });
 // Deleting a published video and editing its title, where the platform's API allows it (YouTube, X).
 ipcMain.handle('api:remove', async (_e, pf, id) => {
-  const a = connect.ADAPTERS[pf]; if (!a || !a.remove) return { code: 'unsupported', error: 'المنصة ما تسمح بالحذف من برة تطبيقها' };
+  const a = connect.ADAPTERS[pf] || connect.ytAdapter(pf); if (!a || !a.remove) return { code: 'unsupported', error: 'المنصة ما تسمح بالحذف من برة تطبيقها' };
   if (!id || typeof id !== 'string') return { error: 'معرّف المقطع ناقص' };
   try { return await a.remove(id); }
   catch (err) { if (err && err.status === 404) return { ok: true, gone: true }; const r = apiErr(err); if (err && err.status === 403 && /scope|permission|insufficient/i.test(err.message)) r.code = 'scope'; return r; }
@@ -550,11 +551,11 @@ ipcMain.handle('clips:export', async (e, jobId, file, items, outDir) => {
     while (fs.existsSync(out)) out = path.join(outDir, `${safe(it.name)} (${k++}).mp4`);
     try {
       let burn = null;
-      if (it.cap && Array.isArray(it.cap.words) && it.cap.words.length) {
+      if (it.cap && ((Array.isArray(it.cap.words) && it.cap.words.length) || (it.cap.opts && it.cap.opts.hook))) {
         if (!info) info = await media.probe(file).catch(() => null);
         const [W, H] = media.outSize(it.fmt, info);
-        const words = it.cap.words.filter(w => w.e > it.start && w.s < it.end).map(w => ({ s: Math.max(0, w.s - it.start), e: Math.min(it.end, w.e) - it.start, w: String(w.w), k: !!w.k }));
-        if (words.length) burn = captions.prepareBurn(words, it.cap.opts || {}, W, H, path.join(__dirname, 'fonts'));
+        const words = (it.cap.words || []).filter(w => w.e > it.start && w.s < it.end).map(w => ({ s: Math.max(0, w.s - it.start), e: Math.min(it.end, w.e) - it.start, w: String(w.w), k: !!w.k }));
+        if (words.length || (it.cap.opts && it.cap.opts.hook)) burn = captions.prepareBurn(words, it.cap.opts || {}, W, H, path.join(__dirname, 'fonts'));
       }
       try {
         await media.exportClip(file, it.start, it.end, it.fmt, out, p => { if (!e.sender.isDestroyed()) e.sender.send('clips:exportProgress', jobId, i, items.length, p); }, burn);
