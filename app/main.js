@@ -311,6 +311,8 @@ ipcMain.handle('agent:chat', (e, id, messages, tools, opts) => agent.chat(id, me
 ipcMain.handle('agent:cancel', (_e, id) => { agent.cancel(id); return true; });
 ipcMain.handle('key:clear', () => { try { fs.unlinkSync(keyFile()); } catch {} client = null; return true; });
 ipcMain.handle('key:set', async (_e, k) => {
+  // a Google key pasted in the Claude box: set it up as the free Gemini for everything instead of refusing it
+  if (/^AIza[\w-]{20,}$/.test(String(k || '').trim())) { agent.setCfg({ provider: 'gemini', base: '', model: '', key: String(k).trim(), useForAll: true, configured: true }); return { ok: true, gemini: true }; }
   try { await new Anthropic({ apiKey: k }).models.retrieve(MODEL); } catch (err) { return { ok: false, ...errInfo(err) }; }
   writeKey(k); client = null; return { ok: true };
 });

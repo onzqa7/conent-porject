@@ -51,7 +51,9 @@ function friendly(status, body, r) {
   if (status === 401 || status === 403) return { code: 'auth', error: 'المفتاح غير صحيح أو ما عنده صلاحية' };
   if (status === 404) return { code: 'model', error: `النموذج "${r.model}" مو موجود عند المزود${r.provider === 'ollama' ? `. نزّله بالأمر: ollama pull ${r.model}` : ''}` };
   if (status === 429) return { code: 'rate_limited', error: 'طلبات كثيرة أو انتهى رصيدك عند المزود' };
-  let m = ''; try { const j = JSON.parse(body); m = (j.error && (j.error.message || j.error)) || j.message || ''; } catch { m = String(body || '').slice(0, 300); }
+  if (status === 503 || status === 502 || status === 500) return { code: 'busy', error: r.provider === 'ollama' ? 'Ollama شغال بس النموذج ما جهز. تأكد إنك نزّلته (ollama pull ' + r.model + ') وجرّب.' : `${r.provider === 'gemini' ? 'Gemini' : 'المزود'} زحمة الحين وما رد بعد كم محاولة. جرّب بعد دقيقة.` };
+  // Gemini's OpenAI-style errors come as a list: [{ error: { message } }]
+  let m = ''; try { let j = JSON.parse(body); if (Array.isArray(j)) j = j[0] || {}; m = (j.error && (j.error.message || j.error)) || j.message || ''; } catch { m = String(body || '').slice(0, 300); }
   return { code: 'upstream_error', error: m || ('خطأ من المزود ' + status) };
 }
 function offline(r, e) {
@@ -81,8 +83,17 @@ async function chat(id, messages, tools, onText, opts = {}) {
   const ac = new AbortController(); jobs.set(id, ac);
   const body = { model: r.model, messages, stream: true, ...(tools && tools.length ? { tools, tool_choice: 'auto' } : {}), ...(opts.json ? { response_format: { type: 'json_object' } } : {}) };
   try {
-    let res = await NET.fetch(url(r.base, '/chat/completions'), { method: 'POST', headers: headers(r), body: JSON.stringify(body), signal: ac.signal });
-    if (!res.ok && opts.json && res.status === 400) { delete body.response_format; res = await NET.fetch(url(r.base, '/chat/completions'), { method: 'POST', headers: headers(r), body: JSON.stringify(body), signal: ac.signal }); }
+    const send = () => NET.fetch(url(r.base, '/chat/completions'), { method: 'POST', headers: headers(r), body: JSON.stringify(body), signal: ac.signal });
+    let res = await send();
+    if (!res.ok && opts.json && res.status === 400) { delete body.response_format; res = await send(); }
+    // busy or rate-limited: wait and try again, and on Gemini move to a lighter model (each has its own free quota)
+    const alts = r.provider === 'gemini' ? [...new Set([r.model, 'gemini-2.5-flash', 'gemini-2.5-flash-lite', 'gemini-2.0-flash'])].filter(m => m !== r.model) : [];
+    for (let i = 0; !res.ok && [429, 500, 502, 503].includes(res.status) && i < 4; i++) {
+      if (ac.signal.aborted) break;
+      await new Promise(ok => setTimeout(ok, [1500, 3000, 2000, 2000][i]));
+      if (i >= 1 && alts.length) body.model = alts.shift();
+      res = await send();
+    }
     if (!res.ok) return friendly(res.status, await res.text(), r);
     const ct = res.headers.get('content-type') || '';
     if (!ct.includes('event-stream')) { const j = await res.json(); const m = (j.choices && j.choices[0] && j.choices[0].message) || {}; if (m.content) onText(m.content); return { content: m.content || '', tool_calls: m.tool_calls || [] }; }
@@ -111,6 +122,8 @@ async function chat(id, messages, tools, onText, opts = {}) {
     return { content: stripThink(content), tool_calls: calls.filter(Boolean) };
   } catch (e) {
     if (ac.signal.aborted) return { code: 'cancelled', error: 'توقف' };
+    // Ollama isn't running but a Gemini key is saved: switch to Gemini and carry on
+    if (r.provider === 'ollama' && readKeys().gemini && !opts._fellBack) { setCfg({ provider: 'gemini', base: '', model: '' }); jobs.delete(id); return chat(id, messages, tools, onText, { ...opts, _fellBack: true }); }
     return offline(r, e);
   } finally { jobs.delete(id); }
 }

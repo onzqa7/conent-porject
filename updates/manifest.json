@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.32",
-    "notes": "كل المنصات تطلع بالفلتر",
+    "version": "2.9.33",
+    "notes": "شريط التحديثات رجع، وGemini يعيد المحاولة لما يكون زحمة",
     "minShell": "2.9.8",
     "files": [
       {
@@ -41,8 +41,8 @@
       },
       {
         "path": "autoupd.js",
-        "sha256": "75dddef2b6221ba22a07c7997e1c09a7c043724b802bf5e487e7b57cb8b42db0",
-        "size": 2534
+        "sha256": "399146fb66af851ef83aee0b42bb3811c41b86943a95597ef0d7c7fad2b83d52",
+        "size": 3427
       },
       {
         "path": "bio.css",
@@ -557,9 +557,9 @@
     ]
   },
   "shell": {
-    "version": "2.9.10",
-    "url": "https://raw.githubusercontent.com/onzqa7/conent-porject/main/updates/shell/content-studio-2.9.10.zip",
-    "sha256": "5c206400b0d9dd4d52de9eb8fedfb802fc722cb93e914fcdd449610943d94fbe",
-    "notes": "الأيقونة الجديدة تطلع بشريط المهام وسطح المكتب"
+    "version": "2.9.11",
+    "url": "https://raw.githubusercontent.com/onzqa7/conent-porject/main/updates/shell/content-studio-2.9.11.zip",
+    "sha256": "58e20371ddda888a21827a7d41e22263a6e84ae2ea5fa7387f4c9c63364927ad",
+    "notes": "Gemini يعيد المحاولة لما يكون زحمة، ويشتغل بدل Ollama لما يكون مقفل"
   }
 }

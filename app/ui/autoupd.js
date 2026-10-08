@@ -17,7 +17,9 @@ function auTick(){const u=ui.updates,api=window.desktop?.updates;if(!u||!api)ret
 setInterval(auTick,20e3);
 // after an automatic refresh, say so once
 {const _ab=afterBoot;afterBoot=function(){_ab();let v=null;try{v=sessionStorage.getItem('auDone');sessionStorage.removeItem('auDone')}catch(e){}if(v)setTimeout(()=>toast(`تحدّث البرنامج لحاله (نسخة ${v}) ✓`),1500)}}
-// no banners for things that happen by themselves; one only when an old version can't do it alone
+// a bar on top whenever there's an update: it still goes in by itself, the button just does it now
 updateBanner=function(){const u=ui.updates;if(!u)return '';
+  if(u.uiReady)return `<div class="banner">${I.bolt}<span><b>تحديث جديد</b> (نسخة ${esc(u.uiReady.version)})${u.uiReady.notes?' · '+esc(u.uiReady.notes):''}<span class="small faint"> · يتطبق لحاله لما تفضى</span></span><span class="sp"></span><button class="btn primary sm" data-act="applyUi">حدّث الآن</button></div>`;
   if(u.shellUpdate&&!('ready' in u.shellUpdate))return `<div class="banner">${I.dl}<span><b>آخر تحديث تضغطه بنفسك</b> (نسخة ${esc(u.shellUpdate.version)}). بعده كل التحديثات تنزل وتتثبت لحالها.</span><span class="sp"></span><span class="small num" id="shellProg"></span><button class="btn primary sm" data-act="installShell">نزّل وثبّت</button></div>`;
+  if(u.shellUpdate)return `<div class="banner">${I.dl}<span><b>تحديث كبير</b> (نسخة ${esc(u.shellUpdate.version)})${u.shellUpdate.notes?' · '+esc(u.shellUpdate.notes):''}<span class="small faint"> · ${u.shellUpdate.ready?'جاهز، يتثبت لما تسكّر البرنامج':'ينزل بالخلفية…'}</span></span><span class="sp"></span><span class="small num" id="shellProg"></span>${u.shellUpdate.ready?'<button class="btn primary sm" data-act="installShell">ثبّته الحين</button>':''}</div>`;
   return ''};
