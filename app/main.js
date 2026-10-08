@@ -93,6 +93,7 @@ async function checkUpdates(win) {
     }
     const sh = manifest.shell;
     if (sh && cmpVer(sh.version, app.getVersion()) > 0) updateState.shell = { version: sh.version, url: sh.url, sha256: sh.sha256, notes: sh.notes || '' };
+    if (updateState.shell && !updateState.shellZip) prefetchShell().catch(() => {});
     updateState.error = null;
   } catch (e) {
     updateState.error = String(e.message || e);
@@ -102,11 +103,54 @@ async function checkUpdates(win) {
   }
   return updateState;
 }
-const publicUpdateState = () => ({ enabled: !!CONFIG.updateBase, ui: uiInfo && uiInfo.version, shell: app.getVersion(), uiReady: updateState.uiReady, shellUpdate: updateState.shell && { version: updateState.shell.version, notes: updateState.shell.notes }, error: updateState.error, checking: updateState.checking });
+const publicUpdateState = () => ({ enabled: !!CONFIG.updateBase, ui: uiInfo && uiInfo.version, shell: app.getVersion(), uiReady: updateState.uiReady, shellUpdate: updateState.shell && { version: updateState.shell.version, notes: updateState.shell.notes, ready: !!updateState.shellZip }, error: updateState.error, checking: updateState.checking });
 
-async function installShellUpdate(win) {
+// The big update is fetched quietly in the background and put in place when the app is closed or sitting
+// in the tray, so nobody has to press anything.
+const pendingDir = () => path.join(userDir(), 'pending-shell');
+async function prefetchShell() {
+  const sh = updateState.shell;
+  if (!sh || process.platform !== 'win32' || !app.isPackaged || updateState.shellBusy) return;
+  const zip = path.join(pendingDir(), sh.version + '.zip');
+  if (fs.existsSync(zip) && (!sh.sha256 || sha256(fs.readFileSync(zip)) === sh.sha256)) { updateState.shellZip = zip; return; }
+  updateState.shellBusy = true;
+  try {
+    const buf = await fetchBuf(sh.url);
+    if (sh.sha256 && sha256(buf) !== sh.sha256) throw new Error('checksum');
+    fs.rmSync(pendingDir(), { recursive: true, force: true }); fs.mkdirSync(pendingDir(), { recursive: true });
+    fs.writeFileSync(zip + '.part', buf); fs.renameSync(zip + '.part', zip);
+    updateState.shellZip = zip;
+    if (mainWin && !mainWin.isDestroyed()) mainWin.webContents.send('update:state', publicUpdateState());
+  } finally { updateState.shellBusy = false; }
+}
+function applyShellZip(zipSrc, relaunch, hidden) {
+  const work = fs.mkdtempSync(path.join(os.tmpdir(), 'cs-update-'));
+  const zip = path.join(work, 'update.zip');
+  fs.copyFileSync(zipSrc, zip);
+  const install = path.dirname(process.execPath);
+  const exe = path.basename(process.execPath);
+  const script = path.join(work, 'update.cmd');
+  fs.writeFileSync(script, [
+    '@echo off',
+    'chcp 65001 >nul',
+    ':wait',
+    `tasklist /FI "PID eq ${process.pid}" | find "${process.pid}" >nul && (timeout /t 1 /nobreak >nul & goto wait)`,
+    `powershell -NoProfile -ExecutionPolicy Bypass -Command "Expand-Archive -LiteralPath '${zip}' -DestinationPath '${path.join(work, 'x')}' -Force"`,
+    `for /d %%D in ("${path.join(work, 'x')}\\*") do robocopy "%%D" "${install}" /E /NFL /NDL /NJH /NJS /NP >nul`,
+    `del /q "${zipSrc}" >nul 2>&1`,
+    relaunch ? `start "" "${path.join(install, exe)}"${hidden ? ' --hidden' : ''}` : 'rem',
+  ].join('\r\n'));
+  spawn('cmd.exe', ['/c', script], { detached: true, stdio: 'ignore', windowsHide: true }).unref();
+}
+let shellApplied = false;
+app.on('will-quit', () => { if (!shellApplied && updateState.shellZip && fs.existsSync(updateState.shellZip)) { shellApplied = true; try { applyShellZip(updateState.shellZip, false); } catch {} } });
+async function installShellUpdate(win, opts = {}) {
   const sh = updateState.shell;
   if (!sh || process.platform !== 'win32' || !app.isPackaged) throw new Error('التحديث متاح لنسخة ويندوز فقط');
+  if (updateState.shellZip && fs.existsSync(updateState.shellZip)) {
+    shellApplied = true; applyShellZip(updateState.shellZip, true, !!opts.hidden);
+    quitting = true; setTimeout(() => app.quit(), 300); return true;
+  }
   const send = p => { if (!win.isDestroyed()) win.webContents.send('update:progress', p); };
   const r = await net.fetch(sh.url);
   if (!r.ok) throw new Error('HTTP ' + r.status);
@@ -132,6 +176,7 @@ async function installShellUpdate(win) {
     `start "" "${path.join(install, exe)}"`,
   ].join('\r\n'));
   spawn('cmd.exe', ['/c', script], { detached: true, stdio: 'ignore', windowsHide: true }).unref();
+  shellApplied = true; quitting = true;
   setTimeout(() => app.quit(), 300);
   return true;
 }
@@ -546,7 +591,7 @@ ipcMain.handle('caps:cancel', () => { captions.cancelAll('caps'); media.cancelAl
 ipcMain.handle('update:state', () => publicUpdateState());
 ipcMain.handle('update:check', e => checkUpdates(BrowserWindow.fromWebContents(e.sender)).then(publicUpdateState));
 ipcMain.handle('update:applyUi', e => { uiInfo = currentUi(); updateState.uiReady = null; BrowserWindow.fromWebContents(e.sender).reload(); return true; });
-ipcMain.handle('update:installShell', e => installShellUpdate(BrowserWindow.fromWebContents(e.sender)).then(() => ({ ok: true }), err => ({ error: String(err.message || err) })));
+ipcMain.handle('update:installShell', (e, opts) => installShellUpdate(BrowserWindow.fromWebContents(e.sender), opts || {}).then(() => ({ ok: true }), err => ({ error: String(err.message || err) })));
 ipcMain.handle('app:info', () => ({ shell: app.getVersion(), ui: uiInfo && uiInfo.version, platform: process.platform }));
 
 /* ---------- protocols & window ---------- */
@@ -633,7 +678,7 @@ function createWindow() {
   mainWin = win;
   win.loadURL('app://studio/index.html');
   win.webContents.once('did-finish-load', () => setTimeout(() => checkUpdates(win), 4000));
-  setInterval(() => checkUpdates(win), 6 * 3600 * 1000);
+  setInterval(() => checkUpdates(win), 30 * 60 * 1000);
   return win;
 }
 

@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.23",
-    "notes": "حذف حساب، وإصلاح إعادة دراسة الفيديو وسبب عدم رد المساعد",
+    "version": "2.9.24",
+    "notes": "التحديثات تتطبق لحالها",
     "minShell": "2.9.6",
     "files": [
       {
@@ -33,6 +33,11 @@
         "path": "app.js",
         "sha256": "923b495a2f746333ea33ffc32b03c71ef1bc76339dde3539815268e583ef429f",
         "size": 112605
+      },
+      {
+        "path": "autoupd.js",
+        "sha256": "75dddef2b6221ba22a07c7997e1c09a7c043724b802bf5e487e7b57cb8b42db0",
+        "size": 2534
       },
       {
         "path": "bio.css",
@@ -411,8 +416,8 @@
       },
       {
         "path": "index.html",
-        "sha256": "f4405f08d108f1e7d7ba1c3a34ba65bea3f2ca93fdc514b98a8ebdd04ea1a643",
-        "size": 2989
+        "sha256": "dc1527b730ca41c8bb1a2fce00be5e168472a941294dde84e02e3e4cca96847b",
+        "size": 3024
       },
       {
         "path": "insights.js",
@@ -526,8 +531,8 @@
       },
       {
         "path": "whatsnew.js",
-        "sha256": "22a9c65167949034b0b96b84f3171faabbfc1f2d25bc79420470b67e6579aea5",
-        "size": 9771
+        "sha256": "264de5726906bc24730c973f16f58c726cf6f63103abf6855d101709ab7680d2",
+        "size": 10095
       },
       {
         "path": "ytchans.js",
@@ -537,9 +542,9 @@
     ]
   },
   "shell": {
-    "version": "2.9.6",
-    "url": "https://raw.githubusercontent.com/onzqa7/conent-porject/main/updates/shell/content-studio-2.9.6.zip",
-    "sha256": "75cfff40f445bf7b3b892ad87a4b01ec73514c8d5528c60a69a1781c87d8d819",
-    "notes": "الحالة والمشاهدات بالحذف بالجملة"
+    "version": "2.9.7",
+    "url": "https://raw.githubusercontent.com/onzqa7/conent-porject/main/updates/shell/content-studio-2.9.7.zip",
+    "sha256": "beeab01536a3d0ff2b9ed60cc0fc39b997cad52685250f57166374c270f3359f",
+    "notes": "التحديثات تنزل وتتثبت لحالها"
   }
 }

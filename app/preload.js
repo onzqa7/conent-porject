@@ -101,7 +101,7 @@ contextBridge.exposeInMainWorld('desktop', {
     state: () => ipcRenderer.invoke('update:state'),
     check: () => ipcRenderer.invoke('update:check'),
     applyUi: () => ipcRenderer.invoke('update:applyUi'),
-    installShell: () => ipcRenderer.invoke('update:installShell'),
+    installShell: opts => ipcRenderer.invoke('update:installShell', opts),
     onState: fn => on('update:state', fn),
     onProgress: fn => on('update:progress', fn),
   },
