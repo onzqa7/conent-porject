@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.35",
-    "notes": "المنصة واضحة بمقاطع اليوم وفلتر لها",
+    "version": "2.9.36",
+    "notes": "تيك توك بمقاطع اليوم",
     "minShell": "2.9.8",
     "files": [
       {
@@ -441,8 +441,8 @@
       },
       {
         "path": "latest.js",
-        "sha256": "73fa34cdcce5a56473ca9fe72c506ae025a4d9fbc7565e041731cbc1bc4e5ca3",
-        "size": 4232
+        "sha256": "63d321ad4a948cfaafa3711db08bd5d2ba723daa120addfa0b72ebcfb47688fb",
+        "size": 5986
       },
       {
         "path": "logo.js",
