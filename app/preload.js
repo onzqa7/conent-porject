@@ -73,6 +73,8 @@ contextBridge.exposeInMainWorld('desktop', {
     pickVideo: () => ipcRenderer.invoke('api:pickVideo'),
     comments: (pf, limit) => ipcRenderer.invoke('api:comments', pf, limit),
     reply: (pf, cid, text) => ipcRenderer.invoke('api:reply', pf, cid, text),
+    remove: (pf, id) => ipcRenderer.invoke('api:remove', pf, id),
+    retitle: (pf, id, patch) => ipcRenderer.invoke('api:retitle', pf, id, patch),
     onProgress: fn => on('api:progress', fn),
   },
   bg: {

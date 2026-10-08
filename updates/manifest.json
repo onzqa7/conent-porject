@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.13",
-    "notes": "شلت قناة يوتيوب اللي مو لك وفيديوهاتها",
+    "version": "2.9.14",
+    "notes": "متابعة مقاطعي، الحذف من كل المنصات، تشخيص الانتشار، خطوط جديدة، وقناتك الصحيحة",
     "minShell": "2.5.0",
     "files": [
       {
@@ -51,8 +51,8 @@
       },
       {
         "path": "capui.js",
-        "sha256": "7031a57ff8149ade160168fc65c47e1184b899137cdd8c3093eaf7978d896841",
-        "size": 15319
+        "sha256": "b0062e4b44fa2276f34b71e934dfc20b7f487e4663e9777fd628cf4a6e7a9d56",
+        "size": 16122
       },
       {
         "path": "clips.js",
@@ -216,8 +216,173 @@
       },
       {
         "path": "fonts/fonts.css",
-        "sha256": "e9fad27918c4e90a04c977de53935baba4dce05c6534ee459063831da8d4c880",
-        "size": 31801
+        "sha256": "0b617af76ad0bacff111ef120730b4a828a73dcc01a71318ebddcd07a2eadb9c",
+        "size": 60333
+      },
+      {
+        "path": "fonts/g100.woff2",
+        "sha256": "530903c9168cfc13d3ef363b71c042d5c887476c4454a91223309465ae89c87f",
+        "size": 31672
+      },
+      {
+        "path": "fonts/g101.woff2",
+        "sha256": "6f289856f002502ea9cc6aa85c2fd509f8aa6c3a17b5adf08f2ccc148cfeea4f",
+        "size": 17468
+      },
+      {
+        "path": "fonts/g102.woff2",
+        "sha256": "006fba6fe32a900c60f154cc9e2e142bf075078dc97a94715dd9f1f5d4e4421e",
+        "size": 32912
+      },
+      {
+        "path": "fonts/g103.woff2",
+        "sha256": "53706a39de7c9d9b74032b0af6549cf9809e3f98b343ea5b054a25e10b1c2e7a",
+        "size": 17392
+      },
+      {
+        "path": "fonts/g104.woff2",
+        "sha256": "7acac6ae3ea4d4eeb7c9b636856c46274f5904e02caff83a545d75ebb9754faf",
+        "size": 33328
+      },
+      {
+        "path": "fonts/g105.woff2",
+        "sha256": "7f9acc49f37d11319a44ecf80edb205f11cffddcb3013a0bbbc6af46dcf12b9c",
+        "size": 19280
+      },
+      {
+        "path": "fonts/g106.woff2",
+        "sha256": "970b721e9b094fe85c6b9049e0e53ee27cd27ec6d3b7b324c8e731a574343132",
+        "size": 22280
+      },
+      {
+        "path": "fonts/g107.woff2",
+        "sha256": "1a859701b2de3899c0a4bd329cdae9555e2d3548ef389277ec8a55a8c2680c4b",
+        "size": 23632
+      },
+      {
+        "path": "fonts/g108.woff2",
+        "sha256": "19d8649a87ff19b7e69bf406122424c37e002a3a4cb9085e404132a7b9cb6bdf",
+        "size": 23076
+      },
+      {
+        "path": "fonts/g109.woff2",
+        "sha256": "94ad0d2ec52cffbf72d65868475d87c68e4362c2e5b96c7a5304acf113c5709f",
+        "size": 23064
+      },
+      {
+        "path": "fonts/g110.woff2",
+        "sha256": "9eccd028ae6abe71116f7ae42cb227bc64e465d56099ffd1275f12fdce597486",
+        "size": 12348
+      },
+      {
+        "path": "fonts/g111.woff2",
+        "sha256": "99554d5210754377fe095595168cd44ea16fa84c6c21b3a37157f58a5fd66e8a",
+        "size": 20356
+      },
+      {
+        "path": "fonts/g112.woff2",
+        "sha256": "9abf8a10b4a2f27b698740522c9beec9ded7728aeef0738ac0d6e175bf6249d7",
+        "size": 108560
+      },
+      {
+        "path": "fonts/g113.woff2",
+        "sha256": "d600850a2b0f3d862559d0bb040bca877e0f75cf9ee71a893bbd5089a224e3cd",
+        "size": 19544
+      },
+      {
+        "path": "fonts/g114.woff2",
+        "sha256": "c775d9f8c3a7cf0d0c2bb5246dd699e8c09bf6f8758e1be0b98939331b18bcce",
+        "size": 99968
+      },
+      {
+        "path": "fonts/g115.woff2",
+        "sha256": "f53eb332acb23ec7e09e2487909c56cf841d649c970084d6a74d82aa9534f737",
+        "size": 20300
+      },
+      {
+        "path": "fonts/g116.woff2",
+        "sha256": "2a10d33e1f7129ab2b6ec76666e82ac5b509fbcfa7b4a3a1289bff42d2d64cd7",
+        "size": 94032
+      },
+      {
+        "path": "fonts/g117.woff2",
+        "sha256": "2a30d48ddf0a75254b40b236fcfe789aed180526224ccb5089fd0b49999e0ec0",
+        "size": 19696
+      },
+      {
+        "path": "fonts/g118.woff2",
+        "sha256": "20389b17106ed2ca92ef4f36e785e521a617dc13865d7c6e63a47c7ad37afff3",
+        "size": 26876
+      },
+      {
+        "path": "fonts/g119.woff2",
+        "sha256": "f4c8220f2e0fd44efbe16535b9d9f62645b6f4311123ff9f01811d7394d58cc8",
+        "size": 26276
+      },
+      {
+        "path": "fonts/g120.woff2",
+        "sha256": "f5052e4870bf211fc22df5b85e791a292a77b9baef8cef1dc5a8e62a783ea1e0",
+        "size": 32468
+      },
+      {
+        "path": "fonts/g121.woff2",
+        "sha256": "691cd1d9b4c0cdf31a1dcf04259c86f92c85e69f6622abab7964d81e36890691",
+        "size": 35348
+      },
+      {
+        "path": "fonts/g122.woff2",
+        "sha256": "9546e241e03956efa85f43838d37e091938a7236a4db41d2ff122d0e46c2541b",
+        "size": 72452
+      },
+      {
+        "path": "fonts/g123.woff2",
+        "sha256": "2843806528fb38152b39d1b2e523cdbcd7feb101d7a7273f41da334c3c9b4594",
+        "size": 36780
+      },
+      {
+        "path": "fonts/g124.woff2",
+        "sha256": "ac5a4babc4add700b40f8a26e1fcaec937e4f0633f8528af312a9f29955c31ab",
+        "size": 26664
+      },
+      {
+        "path": "fonts/g125.woff2",
+        "sha256": "a6530eb7debe445b8b7e02c0adf702e232135fd6d630032eb39931307632fd45",
+        "size": 26688
+      },
+      {
+        "path": "fonts/g126.woff2",
+        "sha256": "c88c951eaccee149f1c77627871c072abd928db76e1867213ed58c8d4e197ea7",
+        "size": 29908
+      },
+      {
+        "path": "fonts/g127.woff2",
+        "sha256": "639db307264be456e9cd2bec14141fca234a2d41f8384de25591759cce1e4839",
+        "size": 20852
+      },
+      {
+        "path": "fonts/g128.woff2",
+        "sha256": "223acac06d8d59c10a2bbd71a42cf7d70917875122b88f2ca7395773fe42ba54",
+        "size": 29616
+      },
+      {
+        "path": "fonts/g129.woff2",
+        "sha256": "ffb9144e4a5424f00c55a3146d384ed5d81e71593d0d2c24cd4c8eb41aa5f510",
+        "size": 21156
+      },
+      {
+        "path": "fonts/g130.woff2",
+        "sha256": "ce85091f020920b65762b387b194ef59457ea5b25b760f2dcc35240a94bb8669",
+        "size": 165960
+      },
+      {
+        "path": "fonts/g131.woff2",
+        "sha256": "fed070abc960c5f214fcb02b7b178cdab751ef7facd79a899f571bc21d38b8f8",
+        "size": 31416
+      },
+      {
+        "path": "fonts2.js",
+        "sha256": "9db4766f0e1040d2c4dd4e0de94188751168c64d573373eaf35c6be5968d17ec",
+        "size": 2288
       },
       {
         "path": "footage-ui.css",
@@ -236,8 +401,8 @@
       },
       {
         "path": "index.html",
-        "sha256": "eeb793f67e701a5f9ae44daff10d3898ee054b3927b798302cf236be18410b5c",
-        "size": 2821
+        "sha256": "637323e525e6d6c9dad7d9a0e32e820ec944cf572b4845d84eb193591daa221e",
+        "size": 2888
       },
       {
         "path": "insights.js",
@@ -251,8 +416,8 @@
       },
       {
         "path": "me.js",
-        "sha256": "cb8a2b2c8dc7ceee62e20597ef7ad8dcb6328bbde9800ba738f025f5bb8d3a7f",
-        "size": 4211
+        "sha256": "0a3fdf8afa60d0cb8af0e8ee7a762c97c31d43eb0b68c955b531fce597be2aef",
+        "size": 4252
       },
       {
         "path": "overlay-ui.css",
@@ -331,13 +496,18 @@
       },
       {
         "path": "styles.css",
-        "sha256": "c5e8548022665a0eef4451d3537ffdf942f241c37c8bf57fbf6ab4d5fde8bba6",
-        "size": 80584
+        "sha256": "86740e0661c48f2308fcb0d56cf4884a9f90bc36215a8c18be49b30422e5f307",
+        "size": 83932
       },
       {
         "path": "today.js",
         "sha256": "904d28a609d62172a712791e87e159f5833e2955167abfcae26710960a074486",
         "size": 8023
+      },
+      {
+        "path": "track.js",
+        "sha256": "070fa99f13a29a67edd14ceef56b7cb2b88fc61475354f0735cf8813f58abead",
+        "size": 25536
       },
       {
         "path": "videos.js",
@@ -346,15 +516,15 @@
       },
       {
         "path": "whatsnew.js",
-        "sha256": "502f7afd73c203b23d8c07375d66eaff5cc71dd1c3f1374f3f7356b89db1d5ac",
-        "size": 5659
+        "sha256": "2d6f972c6757f38c66a7524890a913de4cd0bfdd2a62976619b3cf1d590cc327",
+        "size": 6562
       }
     ]
   },
   "shell": {
-    "version": "2.9.1",
-    "url": "https://raw.githubusercontent.com/onzqa7/conent-porject/main/updates/shell/content-studio-2.9.1.zip",
-    "sha256": "ebe4cad33fca05eadc9c14910a7cac66804652c00a846285789693b874b7018d",
-    "notes": "الأرشيف ما يفرّغ التسجيل وهو للحين يتسجل، وإيقاف كل العمليات لما تقفل البرنامج"
+    "version": "2.9.2",
+    "url": "https://raw.githubusercontent.com/onzqa7/conent-porject/main/updates/shell/content-studio-2.9.2.zip",
+    "sha256": "66cf5bec5d848ff7373b28c31f877af187842e0b65992eba10952647b6304a2a",
+    "notes": "حذف المقاطع وتعديل العنوان من يوتيوب وإكس، وخطوط جديدة للترجمة"
   }
 }

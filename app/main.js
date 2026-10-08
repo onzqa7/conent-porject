@@ -349,6 +349,18 @@ ipcMain.handle('api:reply', async (_e, pf, cid, text) => {
   try { return await connect.ADAPTERS[pf].reply(cid, text); }
   catch (err) { const r = apiErr(err); if (err && err.status === 403 && /scope|permission|insufficient/i.test(err.message)) r.code = 'scope'; return r; }
 });
+// Deleting a published video and editing its title, where the platform's API allows it (YouTube, X).
+ipcMain.handle('api:remove', async (_e, pf, id) => {
+  const a = connect.ADAPTERS[pf]; if (!a || !a.remove) return { code: 'unsupported', error: 'المنصة ما تسمح بالحذف من برة تطبيقها' };
+  if (!id || typeof id !== 'string') return { error: 'معرّف المقطع ناقص' };
+  try { return await a.remove(id); }
+  catch (err) { if (err && err.status === 404) return { ok: true, gone: true }; const r = apiErr(err); if (err && err.status === 403 && /scope|permission|insufficient/i.test(err.message)) r.code = 'scope'; return r; }
+});
+ipcMain.handle('api:retitle', async (_e, pf, id, patch) => {
+  const a = connect.ADAPTERS[pf]; if (!a || !a.retitle) return { code: 'unsupported', error: 'المنصة ما تسمح بتعديل العنوان من برة تطبيقها' };
+  try { return await a.retitle(String(id || ''), patch || {}); }
+  catch (err) { const r = apiErr(err); if (err && err.status === 403 && /scope|permission|insufficient/i.test(err.message)) r.code = 'scope'; return r; }
+});
 ipcMain.handle('api:pickVideo', async () => {
   const r = await dialog.showOpenDialog(BrowserWindow.getFocusedWindow(), { properties: ['openFile'], filters: [{ name: 'فيديو', extensions: ['mp4', 'mov', 'm4v', 'webm'] }] });
   return r.canceled ? null : r.filePaths[0];

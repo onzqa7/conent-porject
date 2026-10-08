@@ -135,6 +135,21 @@ const youtube = {
     } catch {}
     return out;
   },
+  // Deleting and editing need youtube.force-ssl, which connections since 2.4 already have.
+  async remove(id) {
+    const r = await F('https://www.googleapis.com/youtube/v3/videos?id=' + encodeURIComponent(id), { method: 'DELETE', headers: { Authorization: 'Bearer ' + await this.token() } });
+    if (r.status === 204 || r.status === 404) return { ok: true, gone: r.status === 404 };
+    const t = await r.text(); let m = t; try { m = JSON.parse(t).error.message; } catch {} throw new ApiError(m, r.status);
+  },
+  async retitle(id, { title, description }) {
+    const d = await this.get('https://www.googleapis.com/youtube/v3/videos?part=snippet&id=' + encodeURIComponent(id));
+    const v = (d.items || [])[0]; if (!v) throw new ApiError('ما لقيت الفيديو على يوتيوب', 404);
+    const sn = { ...v.snippet, title: String(title || v.snippet.title).slice(0, 100) };
+    if (description != null) sn.description = String(description).slice(0, 5000);
+    delete sn.thumbnails; delete sn.localized; delete sn.channelTitle; delete sn.publishedAt; delete sn.channelId; delete sn.liveBroadcastContent;
+    await req('https://www.googleapis.com/youtube/v3/videos?part=snippet', { method: 'PUT', headers: { Authorization: 'Bearer ' + await this.token() }, json: { id, snippet: sn } });
+    return { ok: true, title: sn.title };
+  },
   // Latest comments across the channel. Replying needs the youtube.force-ssl scope (added in 2.4).
   async comments(limit = 100) {
     const id = getConn('youtube').profile?.id || (await this.profile()).id;
@@ -350,6 +365,10 @@ const x = {
     const d = await this.call(`users/${id}/tweets?max_results=${Math.min(100, Math.max(5, limit))}&tweet.fields=created_at,public_metrics&exclude=retweets,replies`);
     const handle = getConn('x').profile?.handle || '';
     return (d.data || []).map(t => ({ vid: t.id, url: `https://x.com/${handle}/status/${t.id}`, platform: 'x', title: t.text.slice(0, 200), date: t.created_at, views: t.public_metrics?.impression_count ?? null, likes: t.public_metrics?.like_count, comments: t.public_metrics?.reply_count, shares: (t.public_metrics?.retweet_count || 0) + (t.public_metrics?.quote_count || 0), saves: t.public_metrics?.bookmark_count }));
+  },
+  async remove(id) {
+    const d = await this.call('tweets/' + encodeURIComponent(id), { method: 'DELETE' });
+    return { ok: !!(d && d.data && d.data.deleted) };
   },
   async publish({ file, caption }, onProgress) {
     let mediaIds;

@@ -11,7 +11,15 @@ const MODELS = {
   fast: { file: 'ggml-small-q5_1.bin', label: 'سريع', mb: 190 },
   best: { file: 'ggml-large-v3-turbo-q5_0.bin', label: 'دقيق', mb: 574 },
 };
-const FONTS = { cairo: { file: 'Cairo_900Black.ttf', name: 'Cairo Black' }, tajawal: { file: 'Tajawal_800ExtraBold.ttf', name: 'Tajawal ExtraBold' } };
+const FONTS = {
+  cairo: { file: 'Cairo_900Black.ttf', name: 'Cairo Black' }, tajawal: { file: 'Tajawal_800ExtraBold.ttf', name: 'Tajawal ExtraBold' },
+  almarai: { file: 'Almarai_800.ttf', name: 'Almarai ExtraBold' }, changa: { file: 'Changa_800.ttf', name: 'Changa ExtraBold' },
+  messiri: { file: 'ElMessiri_700.ttf', name: 'El Messiri Bold' }, lemonada: { file: 'Lemonada_700.ttf', name: 'Lemonada Bold' },
+  marhey: { file: 'Marhey_700.ttf', name: 'Marhey Bold' }, reem: { file: 'ReemKufi_700.ttf', name: 'Reem Kufi Bold' },
+  baloo: { file: 'BalooBhaijaan2_800.ttf', name: 'Baloo Bhaijaan 2 ExtraBold' }, rubik: { file: 'Rubik_800.ttf', name: 'Rubik ExtraBold' },
+  // Thmanyah's licence forbids shipping the files, so this one is used only when the user has installed it on Windows.
+  thmanyah: { name: 'Thmanyah Sans', bold: true, system: true },
+};
 
 function init(deps) { WHISPER = deps.whisperPath; WORK = deps.workDir; net = deps.net; fs.mkdirSync(path.join(WORK, 'models'), { recursive: true }); }
 const modelPath = k => path.join(WORK, 'models', MODELS[k].file);
@@ -135,7 +143,7 @@ function groupWords(words, max) {
 // words: [{s,e,w,k}] already relative to the clip (k marks a keyword). W,H output size.
 function buildAss(words, o, W, H) {
   const style = o.style || 'karaoke';
-  const font = (FONTS[o.font] || FONTS.cairo).name;
+  const F = FONTS[o.font] || FONTS.cairo, font = F.name, bold = F.bold ? -1 : 0;
   const vertical = H > W;
   const base = Math.round(W * (style === 'classic' ? 0.08 : style === 'pop' ? 0.17 : 0.125) * (o.size || 1) * (vertical ? 1 : 0.75));
   const align = o.pos === 'top' ? 8 : o.pos === 'middle' ? 5 : 2;
@@ -145,8 +153,8 @@ function buildAss(words, o, W, H) {
   const baseColor = style === 'yellow' ? assColor('#FFD60A') : white;
   const outline = Math.max(2, Math.round(base * 0.09));
   const st = style === 'classic'
-    ? `Style: Default,${font},${base},${white},${white},${assColor('#000000', 0x60)},${assColor('#000000', 0x60)},0,0,0,0,100,100,0,0,3,${Math.round(base * 0.25)},0,${align},60,60,${marginV},-1`
-    : `Style: Default,${font},${base},${baseColor},${baseColor},${black},${assColor('#000000', 0x80)},0,0,0,0,100,100,0,0,1,${outline},${Math.round(outline * 0.6)},${align},60,60,${marginV},-1`;
+    ? `Style: Default,${font},${base},${white},${white},${assColor('#000000', 0x60)},${assColor('#000000', 0x60)},${bold},0,0,0,100,100,0,0,3,${Math.round(base * 0.25)},0,${align},60,60,${marginV},-1`
+    : `Style: Default,${font},${base},${baseColor},${baseColor},${black},${assColor('#000000', 0x80)},${bold},0,0,0,100,100,0,0,1,${outline},${Math.round(outline * 0.6)},${align},60,60,${marginV},-1`;
   const ev = [];
   const word = (x, active) => {
     const t = esc(x.w);
@@ -193,7 +201,7 @@ function prepareBurn(words, opts, W, H, fontSrcDir) {
   const dir = path.join(WORK, 'burn');
   const fdir = path.join(dir, 'fonts');
   fs.mkdirSync(fdir, { recursive: true });
-  for (const f of Object.values(FONTS)) { const dst = path.join(fdir, f.file); if (!fs.existsSync(dst)) fs.writeFileSync(dst, fs.readFileSync(path.join(fontSrcDir, f.file))); }
+  for (const f of Object.values(FONTS)) { if (!f.file) continue; const dst = path.join(fdir, f.file); if (!fs.existsSync(dst)) fs.writeFileSync(dst, fs.readFileSync(path.join(fontSrcDir, f.file))); }
   const name = 'cap-' + crypto.randomBytes(4).toString('hex') + '.ass';
   fs.writeFileSync(path.join(dir, name), buildAss(words, opts, W, H), 'utf8');
   return { cwd: dir, filter: `ass=${name}:fontsdir=fonts:shaping=complex`, cleanup: () => { try { fs.unlinkSync(path.join(dir, name)); } catch {} } };
