@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.34",
-    "notes": "صفحة مقاطع اليوم",
+    "version": "2.9.35",
+    "notes": "المنصة واضحة بمقاطع اليوم وفلتر لها",
     "minShell": "2.9.8",
     "files": [
       {
@@ -441,8 +441,8 @@
       },
       {
         "path": "latest.js",
-        "sha256": "c140b6e4c1cce9ada710612f1d1fcfbc5cd25ed9a3ef092816f9967216e456a8",
-        "size": 3727
+        "sha256": "73fa34cdcce5a56473ca9fe72c506ae025a4d9fbc7565e041731cbc1bc4e5ca3",
+        "size": 4232
       },
       {
         "path": "logo.js",
@@ -531,8 +531,8 @@
       },
       {
         "path": "styles.css",
-        "sha256": "9120bdb6c6e56af8eeb6e513867c935e94d7fcfacadae9bb3a6f59bfa5fc135f",
-        "size": 90249
+        "sha256": "70ff0e374608198a7e9f11535ed0059528ed61058fec112f69d4695350e3531b",
+        "size": 90282
       },
       {
         "path": "today.js",
