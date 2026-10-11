@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.38",
-    "notes": "مواعيد النزول تنحسب من آخر مقطع نزل",
+    "version": "2.9.39",
+    "notes": "مواعيد النزول: تنحسب من قناتك الرئيسية بس، والخاص ما ينحسب",
     "minShell": "2.9.8",
     "files": [
       {
@@ -71,8 +71,8 @@
       },
       {
         "path": "cadence.js",
-        "sha256": "f541a6341cd83106ae34b3112d86fd3717ea469cf2e18b454caa1576ce330ec0",
-        "size": 7220
+        "sha256": "4ff48c7f2d50d886fa2000dc2b3a6c299270ea22d2ba38529cd4d0e2686ae9b4",
+        "size": 8598
       },
       {
         "path": "capui.js",
@@ -536,8 +536,8 @@
       },
       {
         "path": "styles.css",
-        "sha256": "aa6f42307958e59279de575eab57c82c0b47a7472024f25b2f1513fd92efaa69",
-        "size": 91311
+        "sha256": "cd6b0cc996c0fc9761308f0bce7953d5f94e6eb180806ba25ddc7fbdf562c535",
+        "size": 91317
       },
       {
         "path": "today.js",

@@ -9,8 +9,14 @@ const cadNoon=d=>new Date(d.getFullYear(),d.getMonth(),d.getDate(),12);
 // The rhythm restarts from the last one before a day, so uploading yesterday pushes the next slot to yesterday+N.
 function cadDays(r){const ks=new Set();
   for(const p of S.posts){const d=p.status!=='idea'&&pd(p.date);if(d&&(!r.pf||!(p.platforms||[]).length||(p.platforms||[]).includes(r.pf)))ks.add(ymd(d))}
-  for(const x of S.perf||[]){const d=pd(x.date);if(d&&(!r.pf||x.platform===r.pf))ks.add(ymd(d))}
+  const acc=cadAcc(r);
+  for(const x of S.perf||[]){if(r.pf&&x.platform!==r.pf)continue;if(acc&&x.accountId!==acc)continue;
+    // a private video only counts on the day it is set to go public
+    const pv=String(x.privacy||'').toLowerCase(),d=pv==='private'?(x.publishAt?pd(x.publishAt):null):pd(x.date);if(d)ks.add(ymd(d))}
   return [...ks].sort()}
+// which account's uploads count: the one picked, or (for rules saved before the picker) the platform's first account
+function cadAcc(r){if(r.acc!==undefined)return r.acc;const a=r.pf&&S.accounts.find(a=>a.platform===r.pf);return a?a.id:''}
+function cadLast(r){const t=ymd(new Date()),ds=cadDays(r).filter(k=>k<=t);return ds.length?new Date(ds[ds.length-1]+'T12:00'):null}
 function cadDue(r,d,days){const e=Math.max(1,+r.every||1),key=ymd(d);days=days||cadDays(r);
   let last=null;for(const k of days){if(k<key)last=k;else break}
   const s=last?new Date(last+'T12:00'):new Date((r.start||ymd(new Date()))+'T12:00'),n=Math.round((cadNoon(d)-s)/CAD_DAY);
@@ -28,13 +34,14 @@ function cadSlots(key){const d=new Date(key+'T12:00');if(d<cadNoon(new Date()))r
   h=h.replace(/(<div class="cell [^"]*" data-day="(\d{4}-\d\d-\d\d)" data-act="dayAdd"><span class="d">\d+<\/span>)/g,(m,head,key)=>head+cadSlots(key).map(({r,i})=>
     `<div class="ev cad-slot" data-cad="${i}" data-day="${key}" style="--pc:${r.pf?PL(r.pf).c:'var(--accent)'}" title="موعد ${esc(cadName(r))}: اضغط عشان تحط المقطع">${esc(cadName(r))} · ${cadTime(r.time)}</div>`).join(''));
   const k='<div class="cal">',at=h.indexOf(k);if(at<0)return h;
-  const rs=cadRules(),bar=`<div class="cad-bar">${I.clock||''}<span class="cad-sum">${rs.length?rs.map(r=>{const nx=cadNext(r);return `<span class="cad-chip"><i style="background:${r.pf?PL(r.pf).c:'var(--accent)'}"></i>${esc(cadName(r))} ${cadEvery(r.every)}${nx?` · الجاي ${ymd(nx)===ymd(new Date())?'اليوم':fmt(nx,{weekday:'long'})}`:''}</span>`}).join(''):'<span class="muted">حدد كل كم يوم ينزل مقطع، وتطلع مواعيده بالتقويم.</span>'}</span>
+  const rs=cadRules(),bar=`<div class="cad-bar">${I.clock||''}<span class="cad-sum">${rs.length?rs.map(r=>{const nx=cadNext(r);return `<span class="cad-chip"><i style="background:${r.pf?PL(r.pf).c:'var(--accent)'}"></i>${esc(cadName(r))}${(()=>{const a=S.accounts.find(a=>a.id===cadAcc(r));return a&&a.handle&&S.accounts.filter(x=>x.platform===a.platform).length>1?' ⁦@'+esc(String(a.handle).replace(/^@/,''))+'⁩':''})()} ${cadEvery(r.every)}${(()=>{const l=cadLast(r);return l?` · آخر نزول ${ymd(l)===ymd(new Date())?'اليوم':fmt(l,{weekday:'long',day:'numeric'})}`:''})()}${nx?` · الجاي ${ymd(nx)===ymd(new Date())?'اليوم':fmt(nx,{weekday:'long'})}`:''}</span>`}).join(''):'<span class="muted">حدد كل كم يوم ينزل مقطع، وتطلع مواعيده بالتقويم.</span>'}</span>
     <button class="btn sm" data-cadx="open">${rs.length?'عدّل المواعيد':'كل كم يوم أنزّل؟'}</button></div>`;
   return h.slice(0,at)+bar+h.slice(at)}}
 
 function cadRow(r,i){const pf=Object.entries(PLATFORMS);
   return `<div class="cad-row" data-i="${i}">
     <label class="f">المنصة<select class="cad-pf"><option value="">أي منصة</option>${pf.map(([k,v])=>`<option value="${k}" ${r.pf===k?'selected':''}>${esc(v.n)}</option>`).join('')}</select></label>
+    <label class="f">الحساب<select class="cad-acc"><option value="">كل الحسابات</option>${S.accounts.filter(a=>a.handle).map(a=>`<option value="${a.id}" ${cadAcc(r)===a.id?'selected':''}>${esc(PL(a.platform).n)} · ${esc(String(a.handle).replace(/^@/,''))}</option>`).join('')}</select></label>
     <label class="f">كل كم يوم<input class="cad-ev" type="number" min="1" max="60" value="${+r.every||2}" dir="ltr"></label>
     <label class="f">الساعة<input class="cad-t" type="time" value="${esc(r.time||'19:00')}"></label>
     <label class="f">يبدأ من<input class="cad-s" type="date" value="${esc(r.start||ymd(new Date()))}"></label>
@@ -54,8 +61,8 @@ document.addEventListener('click',e=>{
   if(b.dataset.cadx==='add'){const l=$('#cadForm .cad-list');l.insertAdjacentHTML('beforeend',cadRow({every:2,time:'19:00',start:ymd(new Date())},l.children.length));return}
   if(b.dataset.cadx==='rm'){b.closest('.cad-row').remove();return}},true);
 document.addEventListener('submit',e=>{if(e.target.id!=='cadForm')return;e.preventDefault();e.stopImmediatePropagation();
-  S.prefs.cad=$$('#cadForm .cad-row').map(r=>({pf:r.querySelector('.cad-pf').value,every:Math.min(60,Math.max(1,parseInt(r.querySelector('.cad-ev').value)||1)),
+  S.prefs.cad=$$('#cadForm .cad-row').map(r=>({pf:r.querySelector('.cad-pf').value,acc:r.querySelector('.cad-acc').value,every:Math.min(60,Math.max(1,parseInt(r.querySelector('.cad-ev').value)||1)),
     time:r.querySelector('.cad-t').value||'19:00',start:r.querySelector('.cad-s').value||ymd(new Date()),format:r.querySelector('.cad-fm').value}));
-  saveLocal();closeModal();render(true);toast(S.prefs.cad.length?'انحفظت المواعيد، تلقاها بالتقويم':'شلت كل المواعيد')},true);
+  S.prefs.cad.forEach(r=>{const a=r.acc&&S.accounts.find(a=>a.id===r.acc);if(a)r.pf=a.platform});saveLocal();closeModal();render(true);toast(S.prefs.cad.length?'انحفظت المواعيد، تلقاها بالتقويم':'شلت كل المواعيد')},true);
 {const _pi=paletteItems;paletteItems=function(){return [..._pi(),['cadence','كل كم يوم ينزل مقطع',I.cal]]}}
 {const _rp=runPalette;runPalette=function(key){if(key==='cadence'){closeModal();setTimeout(openCadence,30);return}return _rp(key)}}

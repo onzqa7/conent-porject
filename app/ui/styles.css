@@ -1001,6 +1001,6 @@ input[dir="ltr"]::placeholder,input.ltr::placeholder{direction:rtl;text-align:ri
 .ev.cad-slot{background:transparent;border:1px dashed var(--pc);border-inline-start:3px solid var(--pc);color:var(--muted);cursor:pointer}
 .ev.cad-slot:hover{background:var(--hover);color:var(--text)}
 .cad-list{display:flex;flex-direction:column;gap:10px;margin-bottom:10px}
-.cad-row{display:grid;grid-template-columns:1.3fr .8fr .9fr 1.1fr 1.3fr auto;gap:8px;align-items:end;padding:10px;border:1px solid var(--line);border-radius:12px}
+.cad-row{display:grid;grid-template-columns:1.1fr 1.3fr .7fr .9fr 1.1fr 1.2fr auto;gap:8px;align-items:end;padding:10px;border:1px solid var(--line);border-radius:12px}
 .cad-row .f{margin:0}
 @media (max-width:760px){.cad-row{grid-template-columns:1fr 1fr}}
