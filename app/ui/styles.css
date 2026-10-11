@@ -992,3 +992,15 @@ input[dir="ltr"]::placeholder,input.ltr::placeholder{direction:rtl;text-align:ri
 .lt-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.lt-t b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .lt-n{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex:none}.lt-n .bk-meta{font-style:normal}
 .lt-pf{flex:none;min-width:84px}
+/* cadence: due slots in the calendar */
+.cad-bar{display:flex;align-items:center;gap:10px;margin:0 0 12px;padding:9px 12px;border-radius:12px;background:var(--surface);border:1px solid var(--line);font-size:.86rem}
+.cad-bar>svg{width:16px;height:16px;color:var(--accent);flex:none}
+.cad-sum{flex:1;display:flex;flex-wrap:wrap;gap:6px 14px;min-width:0}
+.cad-chip{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.cad-chip i{width:8px;height:8px;border-radius:50%;display:inline-block}
+.ev.cad-slot{background:transparent;border:1px dashed var(--pc);border-inline-start:3px solid var(--pc);color:var(--muted);cursor:pointer}
+.ev.cad-slot:hover{background:var(--hover);color:var(--text)}
+.cad-list{display:flex;flex-direction:column;gap:10px;margin-bottom:10px}
+.cad-row{display:grid;grid-template-columns:1.3fr .8fr .9fr 1.1fr 1.3fr auto;gap:8px;align-items:end;padding:10px;border:1px solid var(--line);border-radius:12px}
+.cad-row .f{margin:0}
+@media (max-width:760px){.cad-row{grid-template-columns:1fr 1fr}}

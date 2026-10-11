@@ -1,6 +1,9 @@
 /* "وش الجديد": after an update, one short screen with the new things and a button to each.
    Shown once per version list; reachable again from the palette. */
 const WN=[
+ ['2.9.37',[
+  [I.cal,'كل كم يوم ينزل مقطع','بالتقويم اضغط «كل كم يوم أنزّل؟» وحدد لكل منصة كل كم يوم والساعة. تطلع المواعيد خانات منقطة، اضغطها وحط المقطع.','go:content'],
+ ]],
  ['2.9.34',[
   [I.film,'مقاطع اليوم','صفحة لحالها: كل مقطع نزل اليوم (أو أمس أو هالأسبوع) وكم جاب مشاهدات ولايكات وتعليقات.','go:latest'],
  ]],

@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.36",
-    "notes": "تيك توك بمقاطع اليوم",
+    "version": "2.9.37",
+    "notes": "كل كم يوم ينزل مقطع: مواعيد ثابتة لكل منصة تطلع بالتقويم",
     "minShell": "2.9.8",
     "files": [
       {
@@ -68,6 +68,11 @@
         "path": "business.js",
         "sha256": "3cb332659e0c521457b55d8f23e7be948314358d639f12cfdb462dd3da076f51",
         "size": 58733
+      },
+      {
+        "path": "cadence.js",
+        "sha256": "a7db5004e294a9fbd8aa54a7f52fdf1f7f18528bd7d90c0beb4db064ad6acfa0",
+        "size": 6355
       },
       {
         "path": "capui.js",
@@ -426,8 +431,8 @@
       },
       {
         "path": "index.html",
-        "sha256": "95dca60ae4dcf1e04ba082b8401e3c8bd8859d7e46b7b46f2dcc5c80c6712ea4",
-        "size": 3160
+        "sha256": "45c128bd83eca2abbd551dc08ea4b4866e2396f138abbff371441c5e08fed618",
+        "size": 3195
       },
       {
         "path": "insights.js",
@@ -531,8 +536,8 @@
       },
       {
         "path": "styles.css",
-        "sha256": "70ff0e374608198a7e9f11535ed0059528ed61058fec112f69d4695350e3531b",
-        "size": 90282
+        "sha256": "aa6f42307958e59279de575eab57c82c0b47a7472024f25b2f1513fd92efaa69",
+        "size": 91311
       },
       {
         "path": "today.js",
@@ -551,8 +556,8 @@
       },
       {
         "path": "whatsnew.js",
-        "sha256": "c8f01adf5c0ca51e9d1ab144f3b5cf945083052d531788d2e97a377874b454e0",
-        "size": 12945
+        "sha256": "6143031dd195faade6fcb2bb2698b3ccdb50c269cea99e5a65412334636f0e19",
+        "size": 13228
       },
       {
         "path": "ytchans.js",
