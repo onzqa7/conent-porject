@@ -1,19 +1,28 @@
 /* «كل كم يوم ينزل مقطع»: the user sets a rhythm per platform (every N days at a time, from a start date)
-   and the calendar shows each due day as a dashed slot. A slot disappears once a post for that platform sits on
+   and the calendar shows each due day as a dashed slot, counted from the last upload for that platform. A slot disappears once a post for that platform sits on
    that day; clicking it opens a new post already set to that day, time, platform and format. Nothing is created
    until the user saves the post. */
 const cadRules=()=>Array.isArray(S.prefs.cad)?S.prefs.cad:[];
 const CAD_DAY=864e5;
 const cadNoon=d=>new Date(d.getFullYear(),d.getMonth(),d.getDate(),12);
-function cadDue(r,d){const s=new Date((r.start||ymd(new Date()))+'T12:00'),n=Math.round((cadNoon(d)-s)/CAD_DAY),e=Math.max(1,+r.every||1);return n>=0&&n%e===0}
-function cadTaken(r,key){return S.posts.some(p=>p.status!=='idea'&&pd(p.date)&&ymd(pd(p.date))===key&&(!r.pf||(p.platforms||[]).includes(r.pf)))}
+// days something actually went up (or is planned) for this rule's platform: calendar posts plus synced uploads.
+// The rhythm restarts from the last one before a day, so uploading yesterday pushes the next slot to yesterday+N.
+function cadDays(r){const ks=new Set();
+  for(const p of S.posts){const d=p.status!=='idea'&&pd(p.date);if(d&&(!r.pf||!(p.platforms||[]).length||(p.platforms||[]).includes(r.pf)))ks.add(ymd(d))}
+  for(const x of S.perf||[]){const d=pd(x.date);if(d&&(!r.pf||x.platform===r.pf))ks.add(ymd(d))}
+  return [...ks].sort()}
+function cadDue(r,d,days){const e=Math.max(1,+r.every||1),key=ymd(d);days=days||cadDays(r);
+  let last=null;for(const k of days){if(k<key)last=k;else break}
+  const s=last?new Date(last+'T12:00'):new Date((r.start||ymd(new Date()))+'T12:00'),n=Math.round((cadNoon(d)-s)/CAD_DAY);
+  return last?n>0&&n%e===0:n>=0&&n%e===0}
+function cadTaken(r,key,days){return (days||cadDays(r)).includes(key)}
 const cadName=r=>r.pf?PL(r.pf).n:'مقطع';
 const cadEvery=n=>(n=+n||1)===1?'كل يوم':n===2?'كل يومين':n<=10?`كل ${n} أيام`:`كل ${n} يوم`;
 const cadTime=t=>{const [h,m]=(t||'19:00').split(':').map(Number),d=new Date();d.setHours(h||0,m||0,0,0);return fmt(d,{hour:'numeric',minute:'2-digit'})};
 // next due day for a rule, from today on, that has nothing on it yet
-function cadNext(r){const t=cadNoon(new Date());for(let i=0;i<120;i++){const d=new Date(t.getTime()+i*CAD_DAY);if(cadDue(r,d)&&!cadTaken(r,ymd(d)))return d}return null}
+function cadNext(r){const t=cadNoon(new Date()),ds=cadDays(r);for(let i=0;i<120;i++){const d=new Date(t.getTime()+i*CAD_DAY);if(cadDue(r,d,ds)&&!cadTaken(r,ymd(d),ds))return d}return null}
 function cadSlots(key){const d=new Date(key+'T12:00');if(d<cadNoon(new Date()))return [];
-  return cadRules().map((r,i)=>({r,i})).filter(({r})=>(ui.pf==='all'||!r.pf||r.pf===ui.pf)&&cadDue(r,d)&&!cadTaken(r,key))}
+  return cadRules().map((r,i)=>({r,i})).filter(({r})=>{if(!(ui.pf==='all'||!r.pf||r.pf===ui.pf))return false;const ds=cadDays(r);return cadDue(r,d,ds)&&!cadTaken(r,key,ds)})}
 
 {const _vc=vCal;vCal=function(){let h=_vc();
   h=h.replace(/(<div class="cell [^"]*" data-day="(\d{4}-\d\d-\d\d)" data-act="dayAdd"><span class="d">\d+<\/span>)/g,(m,head,key)=>head+cadSlots(key).map(({r,i})=>
@@ -32,7 +41,7 @@ function cadRow(r,i){const pf=Object.entries(PLATFORMS);
     <label class="f">النوع<select class="cad-fm">${FORMATS.map(f=>`<option ${(r.format||FORMATS[1])===f?'selected':''}>${esc(f)}</option>`).join('')}</select></label>
     <button type="button" class="iconbtn" data-cadx="rm" aria-label="احذف هالموعد">${I.x}</button></div>`}
 function openCadence(){const rs=cadRules().length?cadRules():[{pf:(S.accounts.find(a=>a.platform==='youtube')||S.accounts[0]||{}).platform||'',every:2,time:'19:00',start:ymd(new Date()),format:FORMATS[1]}];
-  openModal(`${mhead('كل كم يوم ينزل مقطع')}<form id="cadForm"><div class="body"><p class="small muted" style="margin-top:0">لكل منصة حدد كل كم يوم ينزل مقطع والساعة. تطلع المواعيد بالتقويم كخانات منقطة، واضغط الخانة عشان تحط المقطع فيها. لو حطيت مقطع بنفس اليوم تختفي الخانة.</p>
+  openModal(`${mhead('كل كم يوم ينزل مقطع')}<form id="cadForm"><div class="body"><p class="small muted" style="margin-top:0">لكل منصة حدد كل كم يوم ينزل مقطع والساعة. العدّ يبدأ من آخر مقطع نزل، فلو نزّلت قبل الموعد ينحسب من يومه. تطلع المواعيد بالتقويم كخانات منقطة، واضغط الخانة عشان تحط المقطع فيها. لو حطيت مقطع بنفس اليوم تختفي الخانة.</p>
     <div class="cad-list">${rs.map(cadRow).join('')}</div>
     <button type="button" class="btn ghost sm" data-cadx="add">${I.plus||''} أضف منصة ثانية</button></div>
     <footer><span></span><div class="row"><button type="button" class="btn" data-act="closeModal">إلغاء</button><button class="btn primary">احفظ</button></div></footer></form>`,true)}

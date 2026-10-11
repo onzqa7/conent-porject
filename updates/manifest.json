@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.37",
-    "notes": "كل كم يوم ينزل مقطع: مواعيد ثابتة لكل منصة تطلع بالتقويم",
+    "version": "2.9.38",
+    "notes": "مواعيد النزول تنحسب من آخر مقطع نزل",
     "minShell": "2.9.8",
     "files": [
       {
@@ -71,8 +71,8 @@
       },
       {
         "path": "cadence.js",
-        "sha256": "a7db5004e294a9fbd8aa54a7f52fdf1f7f18528bd7d90c0beb4db064ad6acfa0",
-        "size": 6355
+        "sha256": "f541a6341cd83106ae34b3112d86fd3717ea469cf2e18b454caa1576ce330ec0",
+        "size": 7220
       },
       {
         "path": "capui.js",
