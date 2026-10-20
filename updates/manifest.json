@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.40",
-    "notes": "خطة نوفمبر: الفيديوهات والشورتس ومهام التصوير انضافت لتقويمك ومهامك",
+    "version": "2.9.41",
+    "notes": "واجهة أبسط، وصار فيه جدول تصوير وجدول تنزيل",
     "minShell": "2.9.8",
     "files": [
       {
@@ -431,8 +431,8 @@
       },
       {
         "path": "index.html",
-        "sha256": "9aa3703b0f02332d5d5028e67dedbbd78190c6c710cde2288be42e7c1ef48686",
-        "size": 3233
+        "sha256": "78f5eea8e65f46fdb753d98a739cd373929dd8d61f8c7f7a5da607d28bc8c153",
+        "size": 3313
       },
       {
         "path": "insights.js",
@@ -505,9 +505,49 @@
         "size": 2402
       },
       {
+        "path": "s-dash.png",
+        "sha256": "accbe5b9bbac137519c7e091b5d5beae9b494b9037e9fc12b0d93c783662dae5",
+        "size": 306183
+      },
+      {
+        "path": "s-dash2.png",
+        "sha256": "42eab5c6bb6243173dc2565fd755fd998a26265e4b6240a35eeb18b381ec31ea",
+        "size": 290049
+      },
+      {
+        "path": "s-form.png",
+        "sha256": "3f8c941137f99bf01113877a9b8fddbf6be1931bf19074754f442dc516afa067",
+        "size": 174263
+      },
+      {
+        "path": "s-rel.png",
+        "sha256": "54072cf92a35194d90c2be6d9bead965344c38217941d178a3d2871500577534",
+        "size": 195236
+      },
+      {
+        "path": "s-rel2.png",
+        "sha256": "5c71c8e60245cae6a6c7a33d91ca24efab886bd464db340569822d73bfbaa448",
+        "size": 195285
+      },
+      {
+        "path": "s-shoot.png",
+        "sha256": "28d83f7ccab28a6fd5dc7e87bd6092b8956d8436e0e96ca7074c58bcbcc7f9b2",
+        "size": 176737
+      },
+      {
         "path": "schedpost.js",
         "sha256": "59eadb05d43c3558da87ff28f643f57e18f5b0fab6dd8fb431ba10b23c184fa8",
         "size": 7907
+      },
+      {
+        "path": "schedule.css",
+        "sha256": "3b5e9e3918eb116a9bc8dbfa5a82a8506cd3b7d1f4921ddcfce6ef9c94a302be",
+        "size": 4277
+      },
+      {
+        "path": "schedule.js",
+        "sha256": "7d52f81a78b7a457226518baf948b42b1549fb846344ed94fad8c9a747db5eed",
+        "size": 26568
       },
       {
         "path": "seasons.css",
