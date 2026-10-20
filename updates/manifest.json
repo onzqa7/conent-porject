@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.43",
-    "notes": "فكرة جديدة ببنك الأفكار: الذباب الإلكتروني",
+    "version": "2.9.44",
+    "notes": "جدول للشورتس لحالها، كتب أنصح فيها لكل فيديو وفكرة، وفكرة «هوس الشهرة»",
     "minShell": "2.9.8",
     "files": [
       {
@@ -53,6 +53,11 @@
         "path": "bio.js",
         "sha256": "cc68fcebe3f286b168843bf8e97b013972eea8ef616a7df750892e6be7bc8c8f",
         "size": 32849
+      },
+      {
+        "path": "books.js",
+        "sha256": "9b855fa8edb393fafe8bed98482f930daabc0a0f7a1668718822f69f0b041ca4",
+        "size": 3284
       },
       {
         "path": "bulk.js",
@@ -436,8 +441,8 @@
       },
       {
         "path": "index.html",
-        "sha256": "8d47156c3460f62135e66db47f6f116bff41953182daec7254819ef2bf2cc1e7",
-        "size": 3380
+        "sha256": "adaf3c48e372c21389b73af7d36f01ef8d757b78ec3b85635ace24015553bf7c",
+        "size": 3413
       },
       {
         "path": "insights.js",
@@ -476,8 +481,8 @@
       },
       {
         "path": "plan-oct26.js",
-        "sha256": "767427438eb5ae92a4989a430e0ab22d9488e4d0898a8cd0d9db6773fc0862e9",
-        "size": 24756
+        "sha256": "e11d520a4c0b873bb6114bde34fb820f3e17aae4442ebb4db67b3f0ffcb9f3b6",
+        "size": 25061
       },
       {
         "path": "polish.js",
@@ -546,13 +551,13 @@
       },
       {
         "path": "schedule.css",
-        "sha256": "05185928272c157f9df10033405e944e17446f8617e2fc6674313f3a8232312a",
-        "size": 5862
+        "sha256": "b8773a379ab263c1d12be6f7b5c3c2d7267d113dac04deaa7747eb3a2266bc57",
+        "size": 7526
       },
       {
         "path": "schedule.js",
-        "sha256": "b22de4541a01872e9efcbe724c0a68ba5078b29d20667ac2f980a01db3e97284",
-        "size": 26891
+        "sha256": "8b8227c3dac8eae1192dc57f4448ecc2185b4657de11351c4be54dafadfc4492",
+        "size": 32240
       },
       {
         "path": "seasons.css",
@@ -566,8 +571,8 @@
       },
       {
         "path": "seeds.js",
-        "sha256": "47b992b26aa902464e0c6e094faaf0014cb089b75ac8f9f20708780487c8d229",
-        "size": 4706
+        "sha256": "2912c92dc5df44626b2ef91b9b41bd315ec361a583d8ec8d75f8f58f6ecba810",
+        "size": 12365
       },
       {
         "path": "snap.css",

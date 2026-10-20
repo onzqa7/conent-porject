@@ -84,3 +84,25 @@
 .cz-checks{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:6px}
 .cz-ck{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--raised);cursor:pointer}
 .cz-ck input{accent-color:var(--accent);width:16px;height:16px}
+
+/* جدول الشورتس */
+.so-grid{display:grid;gap:8px}
+.so-it{display:flex;align-items:flex-start;gap:14px;padding:12px 14px;background:var(--surface);border:1px solid var(--line);border-radius:12px;cursor:pointer;transition:border-color .15s}
+.so-it:hover{border-color:var(--line2)}
+.so-it.late{border-color:color-mix(in srgb,var(--bad) 40%,var(--line))}
+.so-it.done{opacity:.7}
+.so-n{width:38px;height:38px;flex:none;border-radius:11px;display:grid;place-items:center;font-weight:800;font-size:1.05rem;background:color-mix(in srgb,var(--accent) 16%,var(--raised));color:var(--accent)}
+.so-m{flex:1;min-width:0;display:grid;gap:5px}
+.so-top{display:flex;align-items:center;gap:10px}
+.so-top b{flex:1;min-width:0;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.so-hook{margin:0;font-size:.86rem;color:var(--muted);line-height:1.6}
+.so-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font-size:.78rem;color:var(--faint)}
+.so-step{display:inline-flex;align-items:center;gap:4px;padding:0 8px;border-radius:99px;border:1px dashed var(--line2);line-height:1.8}
+.so-step.ok{border-style:solid;border-color:color-mix(in srgb,var(--ok) 50%,var(--line));color:var(--ok)}
+.so-step svg{width:12px;height:12px}
+.so-bk{color:var(--muted)}
+
+/* كتب أنصح فيها */
+.bk-box{display:grid;gap:6px;padding:10px 12px;border:1px solid color-mix(in srgb,var(--accent) 25%,var(--line));border-radius:12px;background:color-mix(in srgb,var(--accent) 4%,var(--surface))}
+.bk-h{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;font-weight:600}
+.bk-box textarea{min-height:80px;line-height:1.8}
