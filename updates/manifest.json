@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.41",
-    "notes": "واجهة أبسط، وصار فيه جدول تصوير وجدول تنزيل",
+    "version": "2.9.42",
+    "notes": "خصّص البرنامج من الإعدادات: وش يطلع بالقائمة والرئيسية وصفحة البداية",
     "minShell": "2.9.8",
     "files": [
       {
@@ -93,6 +93,11 @@
         "path": "creator.js",
         "sha256": "c2be864a0fab7715755c44e0d8fad87eec8d4c77c90a94411499382e8842cfc9",
         "size": 45510
+      },
+      {
+        "path": "custom.js",
+        "sha256": "e4acf9e49aa6391b7f3653797da4428765cb6ffcda4ac6a23aa423a9f6a10ad1",
+        "size": 7817
       },
       {
         "path": "cuts-ui.css",
@@ -431,8 +436,8 @@
       },
       {
         "path": "index.html",
-        "sha256": "78f5eea8e65f46fdb753d98a739cd373929dd8d61f8c7f7a5da607d28bc8c153",
-        "size": 3313
+        "sha256": "e2c9f8ac79d27ea77026743a91eef4b6bb2960a821c955e373f13d48cf731a4f",
+        "size": 3347
       },
       {
         "path": "insights.js",
@@ -541,13 +546,13 @@
       },
       {
         "path": "schedule.css",
-        "sha256": "3b5e9e3918eb116a9bc8dbfa5a82a8506cd3b7d1f4921ddcfce6ef9c94a302be",
-        "size": 4277
+        "sha256": "05185928272c157f9df10033405e944e17446f8617e2fc6674313f3a8232312a",
+        "size": 5862
       },
       {
         "path": "schedule.js",
-        "sha256": "7d52f81a78b7a457226518baf948b42b1549fb846344ed94fad8c9a747db5eed",
-        "size": 26568
+        "sha256": "b22de4541a01872e9efcbe724c0a68ba5078b29d20667ac2f980a01db3e97284",
+        "size": 26891
       },
       {
         "path": "seasons.css",

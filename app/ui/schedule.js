@@ -137,10 +137,13 @@ document.addEventListener('change',e=>{const c=e.target.closest('[data-shtd]');i
 /* ---------- الوضع البسيط ---------- */
 const SIMPLE=['dashboard','shoot','release','content','ideas','writer','videos','analytics','accounts','settings'];
 const isSimple=()=>S.prefs.simple!==false;
+// the user's own menu (from الإعدادات ← خصّص البرنامج); الإعدادات stays last so it can always be changed back
+function navMine(){const k=(Array.isArray(S.prefs.navPick)?S.prefs.navPick:SIMPLE).filter(x=>VIEWS[x]&&x!=='settings');return [...new Set(k),'settings']}
+window.NAV_DEFAULT=SIMPLE;window.navMine=navMine;
 {const _nc=navCount;navCount=function(k){const t=today();if(k==='shoot')return S.shoots.filter(x=>!x.done&&x.date<=t).length;if(k==='release')return S.posts.filter(p=>p.status!=='published'&&pd(p.date)>=new Date()&&pd(p.date)<new Date(Date.now()+7*DAY)).length;return _nc(k)}}
 {const _nh=navHtml;navHtml=function(){if(!isSimple())return _nh()+`<div class="navg"><button class="nav-mode" data-navmode="simple">${I.grid4}<span>رجّع الوضع البسيط</span></button></div>`;
-  const keys=SIMPLE.filter(k=>VIEWS[k]);if(!keys.includes(ui.view)&&VIEWS[ui.view])keys.splice(keys.length-1,0,ui.view);
-  const hidden=Object.keys(VIEWS).length-SIMPLE.filter(k=>VIEWS[k]).length;
+  const mine=navMine(),keys=[...mine];if(!keys.includes(ui.view)&&VIEWS[ui.view])keys.splice(keys.length-1,0,ui.view);
+  const hidden=Object.keys(VIEWS).length-mine.length;
   return `<div class="navg"><div style="height:8px"></div>${keys.map(k=>{const v=VIEWS[k],c=navCount(k);return `<button data-act="go" data-v="${k}" ${ui.view===k?'aria-current="page"':''}>${I[v.i]||I.home}<span>${v.n}</span>${c?`<span class="count num">${c}</span>`:''}</button>`}).join('')}
     <button class="nav-mode" data-navmode="all">${I.grid4}<span>كل الأقسام</span><span class="count num">+${hidden}</span></button></div>`}}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-navmode]');if(!b)return;e.preventDefault();e.stopPropagation();setPref('simple',b.dataset.navmode==='simple');toast(b.dataset.navmode==='simple'?'رجعت للوضع البسيط':'كل الأقسام ظاهرة. ترجع للبسيط من آخر القائمة')},true);
