@@ -14,7 +14,7 @@ VIEW_FNS.shoot=()=>vShoot();VIEW_FNS.release=()=>vRelease();VIEW_FNS.shorts=()=>
 I.shorts=I.shorts||ic('<rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M10.5 9.5v5l4-2.5z"/>');
 const isShort=p=>/ريلز|قصير|ستوري/.test(p.format||'');
 
-const KINDS={prep:['تحضير وبحث','#8B9BFF'],script:['سكربت','#B58CFF'],shoot:['تصوير','#FF6B6B'],voice:['تسجيل صوت','#FF9F43'],edit:['مونتاج','#3DDC97'],thumb:['مصغّرة وعنوان','#4DA8FF'],other:['ثاني','#98A1B2']};
+const KINDS={prep:['تحضير وبحث','#8B9BFF'],read:['قراءة','#E0B050'],script:['سكربت','#B58CFF'],shoot:['تصوير','#FF6B6B'],voice:['تسجيل صوت','#FF9F43'],edit:['مونتاج','#3DDC97'],thumb:['مصغّرة وعنوان','#4DA8FF'],other:['ثاني','#98A1B2']};
 const kchip=k=>{const x=KINDS[k]||KINDS.other;return `<span class="chip"><i style="background:${x[1]}"></i>${x[0]}</span>`};
 const today=()=>ymd(new Date());
 const dIso=s=>pd(s+'T12:00');
