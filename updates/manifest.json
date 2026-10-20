@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.44",
-    "notes": "جدول للشورتس لحالها، كتب أنصح فيها لكل فيديو وفكرة، وفكرة «هوس الشهرة»",
+    "version": "2.9.45",
+    "notes": "الجوال صار J2 Pro (2018) بمواصفاته، والعنوان «جوال من 2018.. يعيش في 2026؟»",
     "minShell": "2.9.8",
     "files": [
       {
@@ -481,8 +481,8 @@
       },
       {
         "path": "plan-oct26.js",
-        "sha256": "e11d520a4c0b873bb6114bde34fb820f3e17aae4442ebb4db67b3f0ffcb9f3b6",
-        "size": 25061
+        "sha256": "de762b54d06e25bbb52b2ce2d44d875035e8440ff6b3ed53710f0d976c89b53b",
+        "size": 25180
       },
       {
         "path": "polish.js",
@@ -571,8 +571,8 @@
       },
       {
         "path": "seeds.js",
-        "sha256": "2912c92dc5df44626b2ef91b9b41bd315ec361a583d8ec8d75f8f58f6ecba810",
-        "size": 12365
+        "sha256": "e4feee46215d3ba89efd98b399955b2479e48a47ecf21f559cbc901ab0255c7c",
+        "size": 14495
       },
       {
         "path": "snap.css",
