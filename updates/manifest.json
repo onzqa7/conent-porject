@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.42",
-    "notes": "خصّص البرنامج من الإعدادات: وش يطلع بالقائمة والرئيسية وصفحة البداية",
+    "version": "2.9.43",
+    "notes": "فكرة جديدة ببنك الأفكار: الذباب الإلكتروني",
     "minShell": "2.9.8",
     "files": [
       {
@@ -436,8 +436,8 @@
       },
       {
         "path": "index.html",
-        "sha256": "e2c9f8ac79d27ea77026743a91eef4b6bb2960a821c955e373f13d48cf731a4f",
-        "size": 3347
+        "sha256": "8d47156c3460f62135e66db47f6f116bff41953182daec7254819ef2bf2cc1e7",
+        "size": 3380
       },
       {
         "path": "insights.js",
@@ -563,6 +563,11 @@
         "path": "seasons.js",
         "sha256": "53beeee82d2bca31b956564eceec60be587df40bde62d82f8977fce7a95ee024",
         "size": 48768
+      },
+      {
+        "path": "seeds.js",
+        "sha256": "47b992b26aa902464e0c6e094faaf0014cb089b75ac8f9f20708780487c8d229",
+        "size": 4706
       },
       {
         "path": "snap.css",
