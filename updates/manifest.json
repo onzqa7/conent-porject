@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.39",
-    "notes": "مواعيد النزول: تنحسب من قناتك الرئيسية بس، والخاص ما ينحسب",
+    "version": "2.9.40",
+    "notes": "خطة نوفمبر: الفيديوهات والشورتس ومهام التصوير انضافت لتقويمك ومهامك",
     "minShell": "2.9.8",
     "files": [
       {
@@ -431,8 +431,8 @@
       },
       {
         "path": "index.html",
-        "sha256": "45c128bd83eca2abbd551dc08ea4b4866e2396f138abbff371441c5e08fed618",
-        "size": 3195
+        "sha256": "9aa3703b0f02332d5d5028e67dedbbd78190c6c710cde2288be42e7c1ef48686",
+        "size": 3233
       },
       {
         "path": "insights.js",
@@ -468,6 +468,11 @@
         "path": "overlay-ui.js",
         "sha256": "ccc0dfb55ece7e369b092b0e48ccc53ecefd68492962aa7a04398b2997301846",
         "size": 38441
+      },
+      {
+        "path": "plan-oct26.js",
+        "sha256": "767427438eb5ae92a4989a430e0ab22d9488e4d0898a8cd0d9db6773fc0862e9",
+        "size": 24756
       },
       {
         "path": "polish.js",
