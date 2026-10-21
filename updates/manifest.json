@@ -1,7 +1,7 @@
 {
   "ui": {
-    "version": "2.9.50",
-    "notes": "شورت 2 صار ابن سينا ومكتبة السلطان",
+    "version": "2.9.51",
+    "notes": "الجدول انرتّب من جديد: تبدأ اليوم الخميس 22",
     "minShell": "2.9.8",
     "files": [
       {
@@ -571,8 +571,8 @@
       },
       {
         "path": "seeds.js",
-        "sha256": "37aba44676f2d6beadda893d01e97659a313959c61a776560c57a1eb48ee8ecd",
-        "size": 71253
+        "sha256": "74c1047cd070b15649f53f9943b7a14bf1d44372bcaf6e9cbc1fd81d8f9f55f7",
+        "size": 81497
       },
       {
         "path": "snap.css",
